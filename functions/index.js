@@ -18,6 +18,6 @@ app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 
 const router = require('./src/router');
-app.use('/video', router)
+app.use('/', router)
 
 exports.app = functions.https.onRequest(app);
