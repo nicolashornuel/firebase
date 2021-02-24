@@ -1,5 +1,5 @@
 /functions/resources
-.DS_Store
+*.DS_Store
 /functions/.DS_Store
 
 # Logs
