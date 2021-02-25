@@ -4,6 +4,7 @@ const controller = require('../controllers/controller.realtime');
 
 router.get('/', controller.getAll);
 router.get('/:categorie', controller.getByCategorie);
+router.get('/:categorie/:id', controller.getById);
 router.post('/', controller.create);
 router.put('/:id', controller.update);
 router.delete('/:id', controller.remove);
