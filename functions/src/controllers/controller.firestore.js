@@ -1,4 +1,4 @@
-const db = require("./db");
+const db = require("../config/config.firestore.js");
 const collection = db.collection('videoCenter')
 
 /// GET

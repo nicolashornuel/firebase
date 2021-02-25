@@ -17,7 +17,9 @@ const app = express();
 app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 
-const router = require('./src/router');
-app.use('/', router)
+const firestore = require('./src/routers/router.firestore');
+app.use('/fire', firestore)
+const realtime = require('./src/routers/router.realtime');
+app.use('/real', realtime)
 
 exports.app = functions.https.onRequest(app);

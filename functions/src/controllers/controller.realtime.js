@@ -1,9 +1,9 @@
-const db = require("./db");
+const db = require("../config/config.realtime.js");
 
 // GET
 exports.getAll = async (req, res) => {
     try {
-        const querySnapshot = await db.ref("/videoCenter").get();
+        const querySnapshot = await db.ref("videoCenter").get();
         res.status(200).json(querySnapshot);
     } catch (error) {
         res.status(500).send(error);
@@ -14,12 +14,31 @@ exports.getAll = async (req, res) => {
 exports.getByCategorie = async (req, res) => {
     if (req.params.categorie) {
         try {
-            //const querySnapshot = await db.ref('/videoCenter/').get();
-            console.log(req.params.categorie);
-            const rootRef = db.ref('/videoCenter');
-            let result = rootRef.orderByValue('categorie');
-            console.log(result);
-            res.status(200).json(result);
+            let querySnapshot = db.ref("/videoCenter").orderByChild("categorie").equalTo("Angular");
+            await querySnapshot.once("value", function(snapshot) {
+                console.log(snapshot.val());
+                snapshot.forEach(function(data) {
+                    console.log(data.key);
+                });
+                res.status(200).json(snapshot.val());
+            });
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    } else {
+        res.status(400)
+        res.json({ "message": "Bad request" })
+
+    }
+}
+
+// GET by id
+exports.getById = async (req, res) => {
+    console.log(req.params.id);
+    if (req.params.id) {
+        try {
+            const querySnapshot = await db.ref('/' + req.params.id).get();
+            res.status(200).json(querySnapshot);
         } catch (error) {
             res.status(500).send(error);
         }
@@ -47,7 +66,6 @@ exports.create = async (req, res) => {
 // PUT with id
 exports.update = async (req, res) => {
     try {
-
         const querySnapshot = await db.ref('/videoCenter/' + req.params.id).set(req.body);
         res.status(200).json(querySnapshot);
     } catch (error) {
