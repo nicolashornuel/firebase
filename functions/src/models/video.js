@@ -8,11 +8,16 @@ class Video {
     } */
     constructor(data) {
         this.videoId = data.videoId,
+        this.publishedAt = data.publishedAt,
         this.title = data.title,
-        this.channelTitle = data.channelTitle,
         this.description = data.description,
+        this.thumbnail = data.thumbnail,
+        this.channelTitle = data.channelTitle,
+        this.src = data.src,
         this.categorie = data.categorie
     }
 }
 
 module.exports = Video;
+
+

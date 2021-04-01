@@ -1,0 +1,28 @@
+.button-search {
+    align-self:center;
+  }
+
+
+  mat-toolbar {
+    justify-content: space-between;
+}
+
+.content {
+    padding: 16px;
+}
+
+.content > mat-card {
+    margin-bottom: 16px;
+}
+
+.column-label {
+    margin-right: 8px;
+    font-size: 1rem;
+}
+
+.mat-expansion-panel {
+    background: cornflowerblue !important;
+}
+.mat-sub-expansion-panel {
+    background: white !important;
+}

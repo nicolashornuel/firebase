@@ -1,6 +1,8 @@
 /functions/resources
 *.DS_Store
 /functions/.DS_Store
+/FrontEnd/e2e
+/FrontEnd/node_modules
 
 # Logs
 logs

@@ -39,6 +39,7 @@ exports.getByCategorie = async (req, res) => {
 // POST
 exports.create = async (req, res) => {
     try {
+        console.log(req.body);
         const snapshot = await collection.add(req.body);
         console.log('Document ajouté ID: ', snapshot.id);
         res.status(200).json(snapshot.id);

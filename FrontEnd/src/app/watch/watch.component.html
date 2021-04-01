@@ -1,0 +1,40 @@
+<h1 mat-dialog-title>Dialog with elements</h1>
+<mat-dialog-content class="mat-typography">
+  <p>{{ video.description }}</p>
+  <div class="container">
+      <iframe class="responsive-iframe" [src]="video.sanitized" allowfullscreen frameborder="0">
+      </iframe>
+</div>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Ajouter à mes Favoris
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-form-field>
+        <mat-label>Catégorie</mat-label>
+        <input #input matInput>
+      </mat-form-field>
+      <form>
+        <mat-form-field appearance="fill">
+          <mat-label>Catégories favorites</mat-label>
+          <mat-select [(ngModel)]="selectedCategorie" name="categorie">
+            <mat-option *ngFor="let categorie of categories" [value]="categorie">
+              {{categorie}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+      <button mat-raised-button color="accent" (click)="addVideo(video)">+</button>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+
+
+</mat-dialog-content>
+
+<!-- <mat-dialog-actions>
+  <button mat-button mat-dialog-close>Close</button>
+  <button mat-raised-button color="accent" (click)="addVideo(video)">+</button>
+</mat-dialog-actions> -->

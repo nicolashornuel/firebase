@@ -1,0 +1,23 @@
+<div class="content">
+  <div fxLayout="row wrap" fxLayoutGap="16px grid">
+    <div [fxFlex]="(100/gridColumns) + '%'" fxLayout="row" fxFlex.md="25%" fxFlex.sm="33%" *ngFor="let video of videos; index as i;">
+        <mat-card fxLayout="column" fxLayoutAlign="space-between stretch">
+          <mat-card-header>
+            <mat-card-title>{{ video.channelTitle }}</mat-card-title>
+            <mat-card-subtitle>{{ video.publishedAt }}</mat-card-subtitle>
+          </mat-card-header>
+          <img mat-card-image [src]="video.thumbnail">
+          <mat-card-content>
+            <p>
+              {{ video.title }}
+            </p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="openDialog(i)">LIRE</button>
+          </mat-card-actions>
+        </mat-card>
+    </div>
+  </div>
+</div>
+
+     
