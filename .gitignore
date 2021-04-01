@@ -3,6 +3,8 @@
 /functions/.DS_Store
 /FrontEnd/e2e
 /FrontEnd/node_modules
+/BackEnd
+/FrontEnd/src/app/shared/services
 
 # Logs
 logs
