@@ -4,7 +4,7 @@
 /FrontEnd/e2e
 /FrontEnd/node_modules
 /BackEnd
-/FrontEnd/src/app/shared/services
+/FrontEnd/src/app/shared/services/search.service.ts
 
 # Logs
 logs

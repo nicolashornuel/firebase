@@ -13,9 +13,9 @@ export class SearchInputComponent {
   @Output() search: EventEmitter<QueryGAPI> = new EventEmitter<QueryGAPI>();
   @Output() gridsizeChange = new EventEmitter();
   @ViewChild('myForm') ngForm: NgForm;
-  gridsize: number = 0;
+  gridsize: number = 1;
   panelOpenState = true;
-  matSelectValue: any;
+  matSelectValue: any = "DATE";
   query: QueryGAPI = {
     q: null,
     maxResults: null,

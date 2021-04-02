@@ -2,17 +2,8 @@
     align-self:center;
   }
 
-
   mat-toolbar {
     justify-content: space-between;
-}
-
-.content {
-    padding: 16px;
-}
-
-.content > mat-card {
-    margin-bottom: 16px;
 }
 
 .column-label {
@@ -25,4 +16,34 @@
 }
 .mat-sub-expansion-panel {
     background: white !important;
+}
+
+.slider {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+// FORMAT XS
+@media (max-width:599px) {
+    .form, div {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-items: stretch;
+        justify-content: center;
+        align-content: center;
+    }
+    .mat-form-field, .form > .button-search {
+        display: inherit;
+        align-self: stretch;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: auto;
+    }
+}
+
+// FORMAT SM
+@media (min-width:600px) {
+
 }

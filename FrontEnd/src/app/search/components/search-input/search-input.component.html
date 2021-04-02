@@ -9,29 +9,26 @@
             <mat-panel-description>
             </mat-panel-description>
         </mat-expansion-panel-header>
-        
+
         <mat-expansion-panel id="RECHERCHE YOUTUBE" hideToggle class="mat-sub-expansion-panel"
-        [expanded]="panelOpenState === true"
-        (opened)="panelOpenState = true"
-        (closed)="panelOpenState = false">
+            [expanded]="panelOpenState === true" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
             <mat-expansion-panel-header>
-                <mat-panel-title>RECHERCHE SUR YOUTUBE</mat-panel-title>
-                <mat-panel-description>MaxResult, order by date or view...</mat-panel-description>
+                <mat-panel-title>Recherche sur youtube</mat-panel-title>
             </mat-expansion-panel-header>
 
-            <form #myForm="ngForm" fxLayout="row" fxLayoutAlign="space-between stretch" >
+            <form #myForm="ngForm">
                 <mat-form-field>
                     <mat-label required>Recherche</mat-label>
-                    <input #input matInput name="q" ngModel>
+                    <input matInput name="q" ngModel>
                 </mat-form-field>
-    
+
                 <mat-form-field>
                     <mat-label>Resultat Max</mat-label>
-                    <input matInput type="number" min="1" max="24"  name="maxResults" ngModel>
+                    <input matInput type="number" min="1" max="24" name="maxResults" value="12">
                 </mat-form-field>
-    
+
                 <mat-form-field>
-                    <mat-select [(value)]="matSelectValue" name="order" ngModel>
+                    <mat-select [(value)]="matSelectValue" name="order">
                         <mat-option value="DATE">Date</mat-option>
                         <mat-option value="RATING">Rating</mat-option>
                         <mat-option value="RELEVANCE">Relevance default</mat-option>
@@ -45,37 +42,38 @@
                     <mat-icon>search</mat-icon>
                 </button>
             </form>
-           
+
         </mat-expansion-panel>
 
-        <mat-expansion-panel  id="PREFERENCE AFFICHAGE" hideToggle class="mat-sub-expansion-panel" 
-        [expanded]="panelOpenState === false"
-        (opened)="panelOpenState = false"
-        (closed)="panelOpenState = true">
+        <mat-expansion-panel id="PREFERENCE AFFICHAGE" hideToggle class="mat-sub-expansion-panel"
+            [expanded]="panelOpenState === false" (opened)="panelOpenState = false" (closed)="panelOpenState = true">
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    PREFERENCE D'AFFICHAGE
+                    Préference d'affichage
                 </mat-panel-title>
-                <mat-panel-description>
-                    nombre de colonne
-                </mat-panel-description>
             </mat-expansion-panel-header>
-            <mat-icon>apps</mat-icon>
-            <mat-icon>view_comfy</mat-icon>
-            <mat-icon>grid_on</mat-icon>
-            <mat-icon> list_alt</mat-icon>
-            <mat-icon>view_list</mat-icon>
-            <mat-icon>view_module</mat-icon>
-            <mat-icon>view_column</mat-icon>
-            <mat-slider [max]="8" [min]="1" [(ngModel)]="gridsize" (change)="updateGrid($event)" [thumbLabel]="true">
-            </mat-slider>
-            <mat-radio-group aria-label="Select an option">
-                <mat-radio-button value="1">Firestore</mat-radio-button>
-                <mat-radio-button value="2">RealTime Database</mat-radio-button>
-              </mat-radio-group>
-              
+            <div class="slider">
+                <mat-icon>view_comfy</mat-icon>
+                <mat-slider [max]="8" [min]="1" [(ngModel)]="gridsize" (change)="updateGrid($event)" [thumbLabel]="true">
+                </mat-slider>
+            </div>
+            <div>
+                <mat-radio-group aria-label="Select an option">
+                    <mat-radio-button value="1">Firestore</mat-radio-button>
+                    <mat-radio-button value="2">Realtime db</mat-radio-button>
+                </mat-radio-group>
+            </div>
+
         </mat-expansion-panel>
 
     </mat-expansion-panel>
 
 </mat-accordion>
+
+<!-- <mat-icon>apps</mat-icon>
+<mat-icon>view_comfy</mat-icon>
+<mat-icon>grid_on</mat-icon>
+<mat-icon> list_alt</mat-icon>
+<mat-icon>view_list</mat-icon>
+<mat-icon>view_module</mat-icon>
+<mat-icon>view_column</mat-icon> -->

@@ -13,9 +13,6 @@ export class SearchListComponent implements OnInit {
 
   @Input() videos: VideoGAPI[];
   @Input() gridColumns: number;
-  //video?: any;
-
-  gridColums = 3;
   
   constructor(public dialog: MatDialog, private _sanitizer: DomSanitizer) { }
 

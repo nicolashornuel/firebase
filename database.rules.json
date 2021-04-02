@@ -3,7 +3,10 @@
     ".read": true,
     ".write": true,
     "videoCenter": {
-      ".indexOn": ["key","categorie"]
+      ".indexOn": [
+        "key",
+        "categorie"
+      ]
     }
   }
 }

@@ -14,11 +14,11 @@ export class SearchContainerComponent {
   inputTouched = false;
   loading = false;
   videos: VideoGAPI[] = [];
-  gridColumns = 1;
+  gridColumns: number = 3;
 
   constructor(private searchService: SearchService, private videoService: VideoService) { }
 
-  updatGridSize(count) {
+  updateGridSize(count) {
     this.gridColumns = count;
   }
 

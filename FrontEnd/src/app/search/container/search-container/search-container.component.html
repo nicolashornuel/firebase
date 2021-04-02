@@ -1,5 +1,5 @@
 <div>
-    <app-search-input (gridsizeChange)='updatGridSize($event)' (search)="handleSearch($event)">
+    <app-search-input (gridsizeChange)='updateGridSize($event)' (search)="handleSearch($event)">
     </app-search-input>
     <div *ngIf="inputTouched && !videos.length" class="ui four wide column centered grid" style="margin: 3rem;">
       <div class="ui raised aligned segment red warning message">

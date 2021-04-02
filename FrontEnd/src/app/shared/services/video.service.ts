@@ -7,9 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class VideoService {
 
-    //private API_URL = 'http://localhost:3000/video/';
-    private API_URL = 'http://localhost:5000/fourthproject-aff75/us-central1/app/fire';
-
+    private API_URL = 'http://localhost:5001/fourthproject-aff75/us-central1/app/fire';
+    //private API_URL = "https://us-central1-fourthproject-aff75.cloudfunctions.net/app/fire";
 
     constructor(private http: HttpClient) { }
 
