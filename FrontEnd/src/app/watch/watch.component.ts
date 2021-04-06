@@ -1,8 +1,11 @@
-import { Component, Inject, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { VideoGAPI } from '../shared/models/videoGAPI.interface';
 import { VideoService } from '../shared/services/video.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet.component';
+
 
 @Component({
   selector: 'app-watch',
@@ -12,27 +15,24 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class WatchComponent {
 
   @Input() videos: VideoGAPI[];
-  @ViewChild('input') inputElement: ElementRef;
-
-  panelOpenState = false;
-  selectedValue: string;
   selectedCategorie: string;
   categories: any = [];
+  
+  panelOpenState = false;
+  selectedValue: string;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public video: VideoGAPI,
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public video: VideoGAPI,
     private videoService: VideoService,
-    private _snackBar: MatSnackBar) {
+    private _bottomSheet: MatBottomSheet) { }
 
-    this.videoService.findAll().subscribe(array => {
-      this.categories = new Set(array.map(item => item.categorie));
-    })
 
+
+  openBottomSheet(video: VideoGAPI): void {
+    this._bottomSheet.open(BottomSheetComponent, {data: video});
+    console.log(video);
   }
 
-  addVideo(data: VideoGAPI) {
-    data.categorie = this.inputElement.nativeElement.value;
-    this.videoService.createVideo(data).subscribe(item => {
-      this._snackBar.open(data.title + " id:" + item, "Ajouté", { duration: 5000, });
-    })
-  }
+
+
 }

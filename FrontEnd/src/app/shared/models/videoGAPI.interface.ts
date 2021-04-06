@@ -8,5 +8,7 @@ export interface VideoGAPI {
     src: string;
     sanitized: string;
     categorie: string;
+    extractWiki: string;
+    rating: number;
   }
   

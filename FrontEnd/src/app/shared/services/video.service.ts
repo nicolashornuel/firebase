@@ -7,17 +7,24 @@ import { Observable } from 'rxjs';
 })
 export class VideoService {
 
-    //private API_URL = 'http://localhost:5001/fourthproject-aff75/us-central1/app/fire';
-    private API_URL = "https://us-central1-fourthproject-aff75.cloudfunctions.net/app/fire";
+    private API_URL_LOCAL = 'http://localhost:5001/fourthproject-aff75/us-central1/app/fire';
+    private API_URL_FIREBASE = "https://us-central1-fourthproject-aff75.cloudfunctions.net/app/fire";
+    private CURRENT_API_URL: string;
 
     constructor(private http: HttpClient) { }
 
     createVideo(video: any): Observable<any> {
-        return this.http.post(this.API_URL, video, { responseType: 'json' });
+        return this.http.post(this.API_URL_FIREBASE, video, { responseType: 'json' });
     }
 
-    findAll(): Observable<any> {
-        return this.http.get(this.API_URL,{ responseType: 'json' });
+    findAll($event): Observable<any> {
+        if ($event.switchBackEnd==="FIREBASE" || $event.switchBackEnd===null) {
+            this.CURRENT_API_URL = this.API_URL_FIREBASE;
+        } else {
+            this.CURRENT_API_URL = this.API_URL_LOCAL;
+        }
+        console.log(this.CURRENT_API_URL);
+        return this.http.get(this.CURRENT_API_URL,{ responseType: 'json' });
     }
 
 }

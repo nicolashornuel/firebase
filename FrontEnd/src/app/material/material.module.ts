@@ -16,6 +16,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTableModule} from '@angular/material/table';
+import {MatTooltipModule} from '@angular/material/tooltip';
+
 
 const MaterialComponents = [
   MatSliderModule,
@@ -33,7 +37,10 @@ const MaterialComponents = [
   MatSnackBarModule,
   MatExpansionModule,
   MatSelectModule,
-  MatRadioModule
+  MatRadioModule,
+  MatTabsModule,
+  MatTableModule,
+  MatTooltipModule
 ];
 
 @NgModule({

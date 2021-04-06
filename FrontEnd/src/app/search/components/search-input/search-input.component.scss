@@ -1,49 +1,46 @@
-.button-search {
-    align-self:center;
-  }
-
-  mat-toolbar {
-    justify-content: space-between;
-}
-
-.column-label {
-    margin-right: 8px;
-    font-size: 1rem;
-}
 
 .mat-expansion-panel {
-    background: cornflowerblue !important;
+    background: #3f51b5 !important;
 }
 .mat-sub-expansion-panel {
     background: white !important;
 }
 
-.slider {
+mat-radio-group {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    margin: 9px 0 8px 15px;
+}
+mat-radio-button {
+    margin: 5px;
+}
+mat-slider {
+    margin-left: 15px;
 }
 
-// FORMAT XS
+
+// FORMAT inférieur à XS
 @media (max-width:599px) {
-    .form, div {
-        display: flex;
+    form {
         flex-direction: column;
+    }
+    .mat-form-field, form > .button-search {
+        display:block;
+        align-self:center;
+    }
+}
+
+// FORMAT supérieur à SM
+@media (min-width:600px) {
+    form {
+        display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
-        align-items: stretch;
-        justify-content: center;
+        justify-content: space-between;
         align-content: center;
     }
-    .mat-form-field, .form > .button-search {
-        display: inherit;
-        align-self: stretch;
-        flex-grow: 1;
-        flex-shrink: 1;
-        flex-basis: auto;
+    .mat-form-field, form > .button-search {
+        flex-grow: 0;
+        align-self:center;
     }
-}
-
-// FORMAT SM
-@media (min-width:600px) {
-
 }

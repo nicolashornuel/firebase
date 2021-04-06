@@ -13,6 +13,7 @@ export class SearchListComponent implements OnInit {
 
   @Input() videos: VideoGAPI[];
   @Input() gridColumns: number;
+  @Input() extractWiki: string;
   
   constructor(public dialog: MatDialog, private _sanitizer: DomSanitizer) { }
 
@@ -31,6 +32,7 @@ export class SearchListComponent implements OnInit {
         channelTitle: this.videos[index].channelTitle,
         src: this.videos[index].src,
         sanitized: this._sanitizer.bypassSecurityTrustResourceUrl(this.videos[index].src),
+        extractWiki: this.extractWiki,
       }
     });
   }

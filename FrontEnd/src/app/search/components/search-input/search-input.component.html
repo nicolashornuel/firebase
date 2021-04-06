@@ -24,11 +24,11 @@
 
                 <mat-form-field>
                     <mat-label>Resultat Max</mat-label>
-                    <input matInput type="number" min="1" max="24" name="maxResults" value="12">
+                    <input matInput type="number" min="1" max="24" name="maxResults" [(ngModel)]="maxResults">
                 </mat-form-field>
 
                 <mat-form-field>
-                    <mat-select [(value)]="matSelectValue" name="order">
+                    <mat-select name="order" [(ngModel)]="order">
                         <mat-option value="DATE">Date</mat-option>
                         <mat-option value="RATING">Rating</mat-option>
                         <mat-option value="RELEVANCE">Relevance default</mat-option>
@@ -49,31 +49,39 @@
             [expanded]="panelOpenState === false" (opened)="panelOpenState = false" (closed)="panelOpenState = true">
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Préference d'affichage
+                    Préferences d'affichage
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            <div class="slider">
-                <mat-icon>view_comfy</mat-icon>
-                <mat-slider [max]="8" [min]="1" [(ngModel)]="gridsize" (change)="updateGrid($event)" [thumbLabel]="true">
-                </mat-slider>
-            </div>
-            <div>
-                <mat-radio-group aria-label="Select an option">
-                    <mat-radio-button value="1">Firestore</mat-radio-button>
-                    <mat-radio-button value="2">Realtime db</mat-radio-button>
-                </mat-radio-group>
-            </div>
 
+            <mat-tab-group>
+                <mat-tab label="Nombre de colonne">
+                    <mat-slider [max]="8" [min]="1" [(ngModel)]="matSliderValue" (change)="updateGrid($event)"
+                        ></mat-slider>
+                </mat-tab>
+                <mat-tab label="Affichage en tableau">
+                    <mat-radio-group [(ngModel)]="switchTableCard">
+                        <mat-radio-button value="CARD">Cartes</mat-radio-button>
+                        <mat-radio-button value="TABLE">Tableau</mat-radio-button>
+                    </mat-radio-group>
+                </mat-tab>
+                <mat-tab label="Choix Serveur">
+                    <mat-radio-group [(ngModel)]="switchBackEnd">
+                        <mat-radio-button value="FIREBASE">Firebase</mat-radio-button>
+                        <mat-radio-button value="LOCALHOST">Localhost</mat-radio-button>
+                    </mat-radio-group>
+                </mat-tab>
+                <mat-tab label="Base de données">
+                    <mat-radio-group [(ngModel)]="switchDataBase">
+                        <mat-radio-button value="FIRESTORE">Firestore</mat-radio-button>
+                        <mat-radio-button value="REALTIME">Realtime</mat-radio-button>
+                    </mat-radio-group>
+                </mat-tab>
+            </mat-tab-group>
+            <button mat-raised-button color="primary" class="button-update" (click)="updatePref()">
+                <mat-icon>update</mat-icon>
+            </button>
         </mat-expansion-panel>
 
     </mat-expansion-panel>
 
 </mat-accordion>
-
-<!-- <mat-icon>apps</mat-icon>
-<mat-icon>view_comfy</mat-icon>
-<mat-icon>grid_on</mat-icon>
-<mat-icon> list_alt</mat-icon>
-<mat-icon>view_list</mat-icon>
-<mat-icon>view_module</mat-icon>
-<mat-icon>view_column</mat-icon> -->

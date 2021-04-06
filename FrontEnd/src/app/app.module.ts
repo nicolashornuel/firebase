@@ -12,6 +12,9 @@ import { SearchContainerComponent } from './search/container/search-container/se
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { WatchComponent } from './watch/watch.component';
+import { BottomSheetComponent } from './bottom-sheet/bottom-sheet.component';
+import { TableComponent } from './search/components/table/table.component';
+import { StarRatingComponent } from './star-rating/star-rating.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +22,10 @@ import { WatchComponent } from './watch/watch.component';
     SearchInputComponent,
     SearchListComponent,
     SearchContainerComponent,
-    WatchComponent
+    WatchComponent,
+    BottomSheetComponent,
+    TableComponent,
+    StarRatingComponent
   ],
   imports: [
     BrowserModule,

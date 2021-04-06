@@ -10,33 +10,48 @@ import { QueryGAPI } from '../../../shared/models/queryGAPI.interface';
 })
 export class SearchInputComponent {
 
-  @Output() search: EventEmitter<QueryGAPI> = new EventEmitter<QueryGAPI>();
+  @Output() search: EventEmitter<{query: QueryGAPI, switchBackEnd: string}> = new EventEmitter<{query: QueryGAPI, switchBackEnd: string}>();
+  @Output() update: EventEmitter<{switchTableCard: string, switchBackEnd: string, switchDataBase: string}> = new EventEmitter<{switchTableCard: string, switchBackEnd: string, switchDataBase: string}>();
   @Output() gridsizeChange = new EventEmitter();
   @ViewChild('myForm') ngForm: NgForm;
-  gridsize: number = 1;
   panelOpenState = true;
-  matSelectValue: any = "DATE";
+
+  maxResults:number = 12;
+  order: string = "DATE";
   query: QueryGAPI = {
     q: null,
     maxResults: null,
     order: null,
   };
+  
+  matSliderValue: number = 3;
+  switchTableCard:string = "CARD";
+  switchBackEnd:string = "FIREBASE"
+  switchDataBase: string = "FIRESTORE";
 
   constructor() { }
 
-  updateGrid(event) {
-    this.gridsize = event.value;
-    this.gridsizeChange.emit(this.gridsize);
+  ngOnInit() {
+    this.updatePref();
+  }
+
+  updateGrid($event) {
+    this.matSliderValue = $event.value;
+    this.gridsizeChange.emit(this.matSliderValue);
   }
 
   sendToSearch() {
     this.query.q = this.ngForm.form.value.q;
     this.query.maxResults = this.ngForm.form.value.maxResults;
     this.query.order = this.ngForm.form.value.order;
-    console.log(this.query);
-    this.search.emit(this.query);
-    
+    this.search.emit({
+      query: this.query,
+      switchBackEnd: this.switchBackEnd,
+      });  
   }
 
+  updatePref() {
+    this.update.emit({switchTableCard: this.switchTableCard, switchBackEnd: this.switchBackEnd, switchDataBase: this.switchDataBase})
+  }
 
 }

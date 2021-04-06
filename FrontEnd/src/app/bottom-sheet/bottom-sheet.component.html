@@ -1,0 +1,37 @@
+<mat-nav-list>
+
+    <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Ajouter à mes Favoris
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-form-field>
+            <mat-label>Catégorie</mat-label>
+            <input #input matInput>
+          </mat-form-field>
+          <form>
+            <mat-form-field appearance="fill">
+              <mat-label>Catégories favorites</mat-label>
+              <mat-select [(ngModel)]="selectedCategorie" name="categorie">
+                <mat-option *ngFor="let categorie of categories" [value]="categorie">
+                  {{categorie}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+          <button mat-raised-button color="accent" (click)="addVideo(video)">+</button>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+              <img src="assets/Wikipedia.svg" alt="logo Wikipedia" width="100px" />
+          </mat-expansion-panel-header>
+                  {{video.extractWiki}}
+        </mat-expansion-panel>
+      </mat-accordion>
+
+  </mat-nav-list>
