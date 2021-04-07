@@ -21,7 +21,7 @@
               </mat-select>
             </mat-form-field>
           </form>
-          <button mat-raised-button color="accent" (click)="addVideo(video)">+</button>
+          <button mat-raised-button color="accent" (click)="addVideo(data.video)">+</button>
         </mat-expansion-panel>
       </mat-accordion>
 
@@ -30,7 +30,7 @@
           <mat-expansion-panel-header>
               <img src="assets/Wikipedia.svg" alt="logo Wikipedia" width="100px" />
           </mat-expansion-panel-header>
-                  {{video.extractWiki}}
+                  {{data.video.extractWiki}}
         </mat-expansion-panel>
       </mat-accordion>
 

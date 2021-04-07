@@ -19,6 +19,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 const MaterialComponents = [
@@ -40,7 +41,8 @@ const MaterialComponents = [
   MatRadioModule,
   MatTabsModule,
   MatTableModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatProgressSpinnerModule
 ];
 
 @NgModule({

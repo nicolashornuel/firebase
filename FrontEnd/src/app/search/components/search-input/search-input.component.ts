@@ -2,6 +2,7 @@
 import { Component, ViewChild, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { QueryGAPI } from '../../../shared/models/queryGAPI.interface';
+import { Preference } from '../../../shared/models/preference.interface';
 
 @Component({
   selector: 'app-search-input',
@@ -10,24 +11,25 @@ import { QueryGAPI } from '../../../shared/models/queryGAPI.interface';
 })
 export class SearchInputComponent {
 
-  @Output() search: EventEmitter<{query: QueryGAPI, switchBackEnd: string}> = new EventEmitter<{query: QueryGAPI, switchBackEnd: string}>();
-  @Output() update: EventEmitter<{switchTableCard: string, switchBackEnd: string, switchDataBase: string}> = new EventEmitter<{switchTableCard: string, switchBackEnd: string, switchDataBase: string}>();
+  @Output() search: EventEmitter<{ query: QueryGAPI, preference: Preference }> = new EventEmitter<{ query: QueryGAPI, preference: Preference }>();
+  @Output() update: EventEmitter<{ preference: Preference }> = new EventEmitter<{ preference: Preference }>();
   @Output() gridsizeChange = new EventEmitter();
   @ViewChild('myForm') ngForm: NgForm;
   panelOpenState = true;
+  
 
-  maxResults:number = 12;
-  order: string = "DATE";
   query: QueryGAPI = {
     q: null,
-    maxResults: null,
-    order: null,
-  };
-  
-  matSliderValue: number = 3;
-  switchTableCard:string = "CARD";
-  switchBackEnd:string = "FIREBASE"
-  switchDataBase: string = "FIRESTORE";
+    maxResults: 12,
+    order: "DATE",
+  }
+
+  preference: Preference = {
+    matSliderValue: 3,
+    switchTableCard: "TABLE",
+    switchBackEnd: "FIREBASE",
+    switchDataBase: "FIRESTORE",
+  }
 
   constructor() { }
 
@@ -36,22 +38,19 @@ export class SearchInputComponent {
   }
 
   updateGrid($event) {
-    this.matSliderValue = $event.value;
-    this.gridsizeChange.emit(this.matSliderValue);
+    this.preference.matSliderValue = $event.value;
+    this.gridsizeChange.emit(this.preference.matSliderValue);
   }
 
   sendToSearch() {
     this.query.q = this.ngForm.form.value.q;
     this.query.maxResults = this.ngForm.form.value.maxResults;
     this.query.order = this.ngForm.form.value.order;
-    this.search.emit({
-      query: this.query,
-      switchBackEnd: this.switchBackEnd,
-      });  
+    this.search.emit({ query: this.query, preference: this.preference });
   }
 
   updatePref() {
-    this.update.emit({switchTableCard: this.switchTableCard, switchBackEnd: this.switchBackEnd, switchDataBase: this.switchDataBase})
+    this.update.emit({ preference: this.preference })
   }
 
 }

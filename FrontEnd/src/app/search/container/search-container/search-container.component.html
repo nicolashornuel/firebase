@@ -1,17 +1,12 @@
 <div>
-    <app-search-input (gridsizeChange)='updateGridSize($event)' (search)="handleSearch($event)" (update)="handleUpdate($event)">
-    </app-search-input>
-    <div *ngIf="inputTouched && !videos.length" class="ui four wide column centered grid" style="margin: 3rem;">
-      <div class="ui raised aligned segment red warning message">
-        <i class="warning icon"></i>
-        <span class="ui centered" style="margin: 0 auto;">No Video Found</span>
-      </div>
-    </div>
-    <div *ngIf="loading" style="margin: 3rem;">
-      <div class="ui active centered inline loader"></div>
-    </div>
-    <h1 *ngIf="!loading">{{h1}}</h1>
-    <app-table *ngIf="!loading && !searching" [videos]="videos"></app-table>
-    <app-search-list *ngIf="!loading && searching" [videos]="videos" [gridColumns]="gridColumns" [extractWiki]="extractWiki"></app-search-list>
+  <app-search-input (gridsizeChange)='updateGridSize($event)' (search)="handleSearch($event)"
+    (update)="handleUpdate($event)">
+  </app-search-input>
+  <div *ngIf="loading || !videos.length" class="spinner-container">
+    <mat-spinner></mat-spinner>
   </div>
-  
+  <h1 *ngIf="!loading">{{h1}}</h1>
+  <app-table *ngIf="!loading && !searching" [videos]="videos"></app-table>
+  <app-search-list *ngIf="!loading && searching" [videos]="videos" [gridColumns]="preference.matSliderValue"
+    [extractWiki]="extractWiki" [preference]="preference"></app-search-list>
+</div>

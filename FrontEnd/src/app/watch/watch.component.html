@@ -1,19 +1,13 @@
-<h1 mat-dialog-title>Dialog with elements</h1>
 <mat-dialog-content class="mat-typography">
-  <p>{{ video.description }}</p>
+  <h1 matTooltip="Titre" matTooltipPosition="left">{{ data.video.title }}</h1>
+  <h2 matTooltip="Chaine Youtube" matTooltipPosition="left">{{ data.video.channelTitle }}</h2>
+  <h3 matTooltip="Date de publication" matTooltipPosition="left">{{ data.video.publishedAt }}</h3>
+  <p><span class="label"> Description : </span>{{ data.video.description }}</p>
   <div class="container">
-      <iframe class="responsive-iframe" [src]="video.sanitized" allowfullscreen frameborder="0">
-      </iframe>
-</div>
-
-      <button mat-raised-button color="accent" (click)="openBottomSheet(video)"><mat-icon>settings</mat-icon></button>
-
-
-
-
+    <iframe class="responsive-iframe" [src]="data.video.sanitized" allowfullscreen frameborder="0">
+    </iframe>
+  </div>
+  <button mat-raised-button color="accent" (click)="openBottomSheet(data)">
+    <mat-icon>settings</mat-icon>
+  </button>
 </mat-dialog-content>
-
-<!-- <mat-dialog-actions>
-  <button mat-button mat-dialog-close>Close</button>
-  <button mat-raised-button color="accent" (click)="addVideo(video)">+</button>
-</mat-dialog-actions> -->
