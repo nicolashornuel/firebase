@@ -19,7 +19,7 @@ export class WatchComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _bottomSheet: MatBottomSheet) { }
 
-  openBottomSheet(data: any): void {
+  openBottomSheet(data: any): void {    
     this._bottomSheet.open(BottomSheetComponent, {data: data});
   }
 

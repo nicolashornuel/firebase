@@ -2,8 +2,8 @@ import { Component, Inject, Input, ViewChild, ElementRef, OnInit } from '@angula
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { VideoGAPI } from '../shared/models/videoGAPI.interface';
 import { VideoService } from '../shared/services/video.service';
-import {MatBottomSheetRef} from '@angular/material/bottom-sheet';
-import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
+import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Preference } from '../shared/models/preference.interface';
 
@@ -22,6 +22,7 @@ export class BottomSheetComponent implements OnInit {
   @ViewChild('input') inputElement: ElementRef;
   selectedCategorie: string;
   categories: any = [];
+  rating: number;
 
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
@@ -29,22 +30,34 @@ export class BottomSheetComponent implements OnInit {
     private _bottomSheetRef: MatBottomSheetRef<BottomSheetComponent>,
     private videoService: VideoService) { }
 
-    ngOnInit(): void {            
-      this.videoService.findAll(this.data).subscribe(array => {
-        this.categories = new Set(array.map(item => item.categorie));
-      })
+    show: boolean = false;
+
+    suggest() {
+      this.show = true;
     }
+    selectSuggestion(categorie) {
+      this.data.video.categorie = categorie;
+      this.show = false;
+    }
+
+  ngOnInit(): void {
+    this.rating = this.data.video.rating;
+    this.selectedCategorie = this.data.video.categorie;
+    this.videoService.findAll(this.data).subscribe(array => {
+      this.categories = new Set(array.map(item => item.categorie));
+    })
+  }
 
   openLink(event: MouseEvent): void {
     this._bottomSheetRef.dismiss();
     event.preventDefault();
   }
 
-  addVideo(video) {
-    console.log(video);
-    video.categorie = this.inputElement.nativeElement.value;
-    this.videoService.createVideo(video).subscribe(item => {
-      this._snackBar.open(video.title + " id:" + item, "Ajouté", { duration: 5000, });
+  addVideo(data) {
+    data.video.rating = this.rating;
+    data.video.categorie = this.inputElement.nativeElement.value;
+    this.videoService.createVideo(data).subscribe(item => {
+      this._snackBar.open(data.video.title + " id:" + item, "Ajouté", { duration: 5000, });
     })
   }
 

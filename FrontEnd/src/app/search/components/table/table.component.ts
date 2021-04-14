@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { VideoGAPI } from 'src/app/shared/models/videoGAPI.interface';
 import { WatchComponent } from '../../../watch/watch.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
-import {MatSort} from '@angular/material/sort';
-import {MatPaginator} from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { Preference } from 'src/app/shared/models/preference.interface';
 
 
 
@@ -15,8 +16,8 @@ import {MatPaginator} from '@angular/material/paginator';
   styleUrls: ['./table.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
@@ -24,7 +25,8 @@ import {MatPaginator} from '@angular/material/paginator';
 export class TableComponent implements OnInit {
 
   @Input() videos: VideoGAPI[];
-  @Input() ratingArr: number[] = [0,1,2,3,4];
+  @Input() preference: Preference;
+  @Input() ratingArr: number[] = [0, 1, 2, 3, 4];
   dataSource = null;
   columnsToDisplay = ['categorie', 'channelTitle', 'title', 'publishedAt', 'rating'];
   expandedElement: VideoGAPI | null;
@@ -42,7 +44,7 @@ export class TableComponent implements OnInit {
     this.paginator.pageIndex = 0;
   }
 
-  showIcon(element: VideoGAPI, index:number) {
+  showIcon(element: VideoGAPI, index: number) {
     if (element.rating >= index + 1) {
       return 'star';
     } else {
@@ -52,18 +54,32 @@ export class TableComponent implements OnInit {
 
   openDialog(element: VideoGAPI) {
     this.dialog.open(WatchComponent, {
+      width: '432px',
       data: {
-        videoId: element.videoId,
-        publishedAt: element.publishedAt,
-        title: element.title,
-        description: element.description,
-        thumbnail: element.thumbnail,
-        channelTitle: element.channelTitle,
-        src: element.src,
-        sanitized: this._sanitizer.bypassSecurityTrustResourceUrl(element.src),
-        extractWiki: element.extractWiki,
+        video: {
+          videoId: element.videoId,
+          publishedAt: element.publishedAt,
+          title: element.title,
+          description: element.description,
+          thumbnail: element.thumbnail,
+          channelTitle: element.channelTitle,
+          src: element.src,
+          sanitized: this._sanitizer.bypassSecurityTrustResourceUrl(element.src),
+          categorie: element.categorie,
+          extractWiki: element.extractWiki,
+          rating: element.rating
+        },
+        preference: {
+          switchDataBase: this.preference.switchDataBase,
+          switchBackEnd: this.preference.switchBackEnd
+        }
       }
     });
   }
+  
 
+  delete(element: VideoGAPI) {
+    console.log(element);
+
+  }
 }

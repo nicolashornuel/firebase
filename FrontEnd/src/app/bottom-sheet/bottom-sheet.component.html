@@ -1,5 +1,6 @@
 <mat-nav-list>
 
+  <app-star-rating *ngIf="rating != 0" [rating]="rating"></app-star-rating>
     <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
@@ -9,11 +10,17 @@
           </mat-expansion-panel-header>
           <mat-form-field>
             <mat-label>Catégorie</mat-label>
-            <input #input matInput>
+            <div  *ngIf="show">
+              <div *ngFor="let categorie of categories" [value]="categorie" (click)="selectSuggestion(categorie)">{{categorie}}</div>
+            </div>
+            <input #input matInput (click)="suggest()" [(ngModel)]="data.video.categorie">
+
           </mat-form-field>
+
+
           <form>
             <mat-form-field appearance="fill">
-              <mat-label>Catégories favorites</mat-label>
+              <mat-label>Catégories favorites existantes</mat-label>
               <mat-select [(ngModel)]="selectedCategorie" name="categorie">
                 <mat-option *ngFor="let categorie of categories" [value]="categorie">
                   {{categorie}}
@@ -21,7 +28,7 @@
               </mat-select>
             </mat-form-field>
           </form>
-          <button mat-raised-button color="accent" (click)="addVideo(data.video)">+</button>
+          <button mat-raised-button color="accent" (click)="addVideo(data)">+</button>
         </mat-expansion-panel>
       </mat-accordion>
 

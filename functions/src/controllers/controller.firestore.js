@@ -1,17 +1,14 @@
 const db = require("../config/config.firestore.js");
 const collection = db.collection('videoCenter')
 
+
 /// GET
 exports.getAll = async (req, res) => {
     try {
         const snapshot = await collection.get();
         let liste = [];
-        let lastId = 0;
-        snapshot.forEach(doc => {
-            liste.push(doc.data())
-            lastId = doc.id;
-        });
-        console.log(liste, lastId);
+        snapshot.forEach(doc => liste.push(doc.data()));
+        console.log(liste);
         res.status(200).json(liste);
     } catch (error) {
         res.status(500).send(error);

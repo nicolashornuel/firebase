@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { map } from 'rxjs/operators';
+import { map, defaultIfEmpty } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { VideoGAPI } from '../models/videoGAPI.interface';
 
@@ -11,38 +11,30 @@ import { VideoGAPI } from '../models/videoGAPI.interface';
 export class WikipediaService {
 
     // https://en.wikipedia.org/wiki/Special:ApiSandbox
-    private API_URL_FR = "https://fr.wikipedia.org/w/api.php";
-    private API_URL_EN = "https://en.wikipedia.org/w/api.php";
     private params = {
-
         action: "query",
         format: "json",
         uselang: "user",
-
         prop: "extracts",
         titles: null,
         redirects: 1,
         converttitles: 1,
-
         exintro: 1,
         explaintext: 1,
     };
 
     constructor(private http: HttpClient) { }
 
-    getWiki(q: string): Observable<any> {
-        let url = this.API_URL_FR + "?origin=*";
+    getWiki(q: string, lang: string): Observable<any> {
+
+        let API_URL = `https://${lang}.wikipedia.org/w/api.php?origin=*`;
         this.params.titles = encodeURI(q);
-        Object.keys(this.params).forEach(key => url += "&" + key + "=" + this.params[key]);
-        let result = this.http.get(url, { responseType: 'json' });
-        console.log("getWiki(q: string), result : " + result)
-        if (result === null) {
-            url = this.API_URL_EN + "?origin=*";
-            this.params.titles = encodeURI(q);
-            Object.keys(this.params).forEach(key => url += "&" + key + "=" + this.params[key]);
-            result = this.http.get(url, { responseType: 'json' });
-        }
-        return result;
+        Object.keys(this.params).forEach(key => API_URL += "&" + key + "=" + this.params[key]);
+
+        /* let count = this.http.get(url + `&action=opensearch&format=json&search=${this.params.titles}`, { responseType: 'json' });
+        count.subscribe(res => console.log("getWiki1 : " + res[3][0])); */
+
+        return this.http.get(API_URL, { responseType: 'json' });
     }
 
 

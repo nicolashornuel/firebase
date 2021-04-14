@@ -13,8 +13,18 @@ export class VideoService {
 
     constructor(private http: HttpClient) { }
 
-    createVideo(video: any): Observable<any> {
-        return this.http.post(this.API_URL_FIREBASE, video, { responseType: 'json' });
+    createVideo(data): Observable<any> {
+        if (data.preference.switchBackEnd==="FIREBASE") {
+            this.CURRENT_API_URL = this.API_URL_FIREBASE;
+        } else {
+            this.CURRENT_API_URL = this.API_URL_LOCAL;
+        }
+        if (data.preference.switchDataBase==="FIRESTORE") {
+            this.CURRENT_API_URL += "/fire";
+        } else if (data.preference.switchDataBase==="REALTIME") {
+            this.CURRENT_API_URL += "/real";
+        }
+        return this.http.post(this.CURRENT_API_URL, data.video, { responseType: 'json' });
     }
 
     findAll($event): Observable<any> {
@@ -28,7 +38,11 @@ export class VideoService {
         } else if ($event.preference.switchDataBase==="REALTIME") {
             this.CURRENT_API_URL += "/real";
         }
-        return this.http.get(this.CURRENT_API_URL,{ responseType: 'json' });
+        return this.http.get(this.CURRENT_API_URL, { responseType: 'json' });
+    }
+
+    deleteVideo(id: number): Observable<any> {
+        return this.http.delete(this.API_URL_FIREBASE + id, { responseType: 'json' });
     }
 
 }

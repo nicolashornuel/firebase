@@ -19,9 +19,9 @@ export class SearchContainerComponent {
   extractWiki: string;
   preference: Preference = {
     matSliderValue: 3,
-    switchTableCard: null,
-    switchBackEnd: null,
-    switchDataBase: null,
+    switchTableCard: "TABLE",
+    switchBackEnd: "FIREBASE",
+    switchDataBase: "FIRESTORE",
   }
 
   constructor(
@@ -37,16 +37,19 @@ export class SearchContainerComponent {
     this.loading = true;
     this.searching = false;
     this.videoService.findAll($event).subscribe((items: any) => {
+      console.log(items);
       this.videos = items.map(item => {
         return {
-          description: item.description,
-          categorie: item.categorie,
-          channelTitle: item.channelTitle,
           videoId: item.videoId,
-          thumbnail: item.thumbnail,
+          publishedAt: item.publishedAt,
           title: item.title,
-          publishedAt: new Date(item.publishedAt).toLocaleDateString(),
+          description: item.description,
+          thumbnail: item.thumbnail,
+          channelTitle: item.channelTitle,
           src: item.src,
+          categorie: item.categorie,
+          extractWiki: item.extractWiki,
+          rating: item.rating
         };
       });
       this.h1 = "Affichage des données " + $event.preference.switchDataBase
@@ -60,9 +63,16 @@ export class SearchContainerComponent {
     this.searching = true;
     this.preference.switchBackEnd = $event.preference.switchBackEnd;
     this.preference.switchDataBase = $event.preference.switchDataBase;
-    this.wikipediaService.getWiki($event.query.q).subscribe(result => {
+    this.wikipediaService.getWiki($event.query.q, "fr").subscribe(result => {
       for (var i in result.query.pages) {
         this.extractWiki = result.query.pages[i].extract;
+      }
+      if (this.extractWiki == "" ) {
+        this.wikipediaService.getWiki($event.query.q, "en").subscribe(result => {
+          for (var i in result.query.pages) {
+            this.extractWiki = result.query.pages[i].extract;
+          }
+        });
       }
     });
     this.searchService.getVideos($event).subscribe((items: any) => {
