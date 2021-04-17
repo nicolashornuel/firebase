@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet.component';
 
+
 @Component({
   selector: 'app-watch',
   templateUrl: './watch.component.html',
@@ -22,7 +23,5 @@ export class WatchComponent {
   openBottomSheet(data: any): void {    
     this._bottomSheet.open(BottomSheetComponent, {data: data});
   }
-
-
 
 }

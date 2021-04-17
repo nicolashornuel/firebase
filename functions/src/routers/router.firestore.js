@@ -3,9 +3,9 @@ const router = express.Router();
 const controller = require('../controllers/controller.firestore');
 
 router.get('/', controller.getAll);
-router.get('/:categorie', controller.getByCategorie);
+router.get('/:videoId', controller.getByVideoId);
 router.post('/', controller.create);
-router.put('/:id', controller.update);
-router.delete('/:id', controller.remove);
+router.put('/:videoId', controller.update);
+router.delete('/:videoId', controller.remove);
 
 module.exports = router;

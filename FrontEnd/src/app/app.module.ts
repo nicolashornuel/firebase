@@ -11,6 +11,7 @@ import { SearchListComponent } from './search/components/search-list/search-list
 import { SearchContainerComponent } from './search/container/search-container/search-container.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { WatchComponent } from './watch/watch.component';
 import { BottomSheetComponent } from './bottom-sheet/bottom-sheet.component';
 import { TableComponent } from './search/components/table/table.component';
@@ -34,7 +35,8 @@ import { StarRatingComponent } from './star-rating/star-rating.component';
     MaterialModule,
     HttpClientModule,
     FlexLayoutModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

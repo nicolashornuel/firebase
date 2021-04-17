@@ -15,11 +15,15 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
-import {MatRadioModule} from '@angular/material/radio';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatTableModule} from '@angular/material/table';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
+
 
 
 const MaterialComponents = [
@@ -42,7 +46,9 @@ const MaterialComponents = [
   MatTabsModule,
   MatTableModule,
   MatTooltipModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatAutocompleteModule,
+  MatProgressBarModule
 ];
 
 @NgModule({

@@ -5,8 +5,8 @@
   <div *ngIf="loading || !videos.length" class="spinner-container">
     <mat-spinner></mat-spinner>
   </div>
-  <h1 *ngIf="!loading">{{h1}}</h1>
-  <app-table *ngIf="!loading && !searching" [videos]="videos"  [preference]="preference"></app-table>
+  <app-table *ngIf="!loading && !searching" [videos]="videos" [preference]="preference" (refresh)="handleUpdate($event)">
+  </app-table>
   <app-search-list *ngIf="!loading && searching" [videos]="videos" [gridColumns]="preference.matSliderValue"
-    [extractWiki]="extractWiki" [preference]="preference"></app-search-list>
+    [extractWiki]="extractWiki" [preference]="preference">{{h1}}</app-search-list>
 </div>

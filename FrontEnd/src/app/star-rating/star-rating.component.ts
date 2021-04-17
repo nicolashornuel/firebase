@@ -15,6 +15,8 @@ export class StarRatingComponent {
   }
 
   onClick(rating:number) {
+    console.log(rating);
+    
     this.rating = rating;
     this.ratingUpdated.emit(rating);
   }

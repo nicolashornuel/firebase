@@ -4,23 +4,18 @@ import { VideoGAPI } from '../shared/models/videoGAPI.interface';
 import { VideoService } from '../shared/services/video.service';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Preference } from '../shared/models/preference.interface';
-
-
 
 
 @Component({
   selector: 'app-bottom-sheet',
   templateUrl: './bottom-sheet.component.html',
-  styleUrls: ['./bottom-sheet.component.scss']
+  styleUrls: ['./bottom-sheet.component.scss'],
 })
 export class BottomSheetComponent implements OnInit {
 
   @Input() videos: VideoGAPI[];
   @Input() video: VideoGAPI;
   @ViewChild('input') inputElement: ElementRef;
-  selectedCategorie: string;
   categories: any = [];
   rating: number;
 
@@ -30,19 +25,9 @@ export class BottomSheetComponent implements OnInit {
     private _bottomSheetRef: MatBottomSheetRef<BottomSheetComponent>,
     private videoService: VideoService) { }
 
-    show: boolean = false;
-
-    suggest() {
-      this.show = true;
-    }
-    selectSuggestion(categorie) {
-      this.data.video.categorie = categorie;
-      this.show = false;
-    }
 
   ngOnInit(): void {
     this.rating = this.data.video.rating;
-    this.selectedCategorie = this.data.video.categorie;
     this.videoService.findAll(this.data).subscribe(array => {
       this.categories = new Set(array.map(item => item.categorie));
     })
@@ -53,8 +38,15 @@ export class BottomSheetComponent implements OnInit {
     event.preventDefault();
   }
 
+  updateVideo($event) {
+    this.data.video.rating = $event;
+    this.videoService.updateVideo(this.data).subscribe(item => {
+      this._snackBar.open(this.data.video.title + " id:" + item, "Modifié", { duration: 5000, });
+    })
+  }
+
   addVideo(data) {
-    data.video.rating = this.rating;
+    data.video.rating = 1;
     data.video.categorie = this.inputElement.nativeElement.value;
     this.videoService.createVideo(data).subscribe(item => {
       this._snackBar.open(data.video.title + " id:" + item, "Ajouté", { duration: 5000, });

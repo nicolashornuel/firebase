@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { VideoGAPI } from 'src/app/shared/models/videoGAPI.interface';
 import { WatchComponent } from '../../../watch/watch.component';
@@ -7,6 +7,12 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { Preference } from 'src/app/shared/models/preference.interface';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { BottomSheetComponent } from '../../../bottom-sheet/bottom-sheet.component';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
+import { VideoService } from '../../../shared/services/video.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {MatTableDataSource} from '@angular/material/table';
 
 
 
@@ -30,14 +36,26 @@ export class TableComponent implements OnInit {
   dataSource = null;
   columnsToDisplay = ['categorie', 'channelTitle', 'title', 'publishedAt', 'rating'];
   expandedElement: VideoGAPI | null;
-
+  @Output() refresh: EventEmitter<{ preference: Preference }> = new EventEmitter<{ preference: Preference }>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  h1: string = null;
 
-  constructor(public dialog: MatDialog, private _sanitizer: DomSanitizer) { }
+  constructor(public dialog: MatDialog,
+    private _sanitizer: DomSanitizer,
+    private _bottomSheet: MatBottomSheet,
+    private videoService: VideoService,
+    private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.dataSource = this.videos;
+    this.dataSource = new MatTableDataSource(this.videos);
+    this.h1 = "Affichage des données " + this.preference.switchDataBase
+    + " avec les functions " + this.preference.switchBackEnd;
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   resetPaging(): void {
@@ -77,9 +95,21 @@ export class TableComponent implements OnInit {
     });
   }
   
+  openBottomSheetCate(element: VideoGAPI): void { 
+    let data = {video:element, preference:this.preference, categorie:true};
+    this._bottomSheet.open(BottomSheetComponent, {data: data});
+  }
+
+  openBottomSheetWiki(element: VideoGAPI): void { 
+    let data = {video:element, preference:this.preference, wiki:true};
+    this._bottomSheet.open(BottomSheetComponent, {data: data});
+  }
 
   delete(element: VideoGAPI) {
-    console.log(element);
-
+    let data = {video:element, preference:this.preference};
+    this.videoService.deleteVideo(data).subscribe(item => {
+      this._snackBar.open(data.video.title + " id:" + item, "Modifié", { duration: 5000, });
+      this.refresh.emit({ preference: this.preference });
+    });
   }
 }

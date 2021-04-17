@@ -19,9 +19,9 @@ export class SearchContainerComponent {
   extractWiki: string;
   preference: Preference = {
     matSliderValue: 3,
-    switchTableCard: "TABLE",
-    switchBackEnd: "FIREBASE",
-    switchDataBase: "FIRESTORE",
+    switchTableCard: null,
+    switchBackEnd: null,
+    switchDataBase: null,
   }
 
   constructor(
@@ -37,7 +37,6 @@ export class SearchContainerComponent {
     this.loading = true;
     this.searching = false;
     this.videoService.findAll($event).subscribe((items: any) => {
-      console.log(items);
       this.videos = items.map(item => {
         return {
           videoId: item.videoId,
@@ -52,8 +51,8 @@ export class SearchContainerComponent {
           rating: item.rating
         };
       });
-      this.h1 = "Affichage des données " + $event.preference.switchDataBase
-      + " avec les functions " + $event.preference.switchBackEnd;
+      this.preference.switchBackEnd = $event.preference.switchBackEnd;
+      this.preference.switchDataBase = $event.preference.switchDataBase;
       this.loading = false;
     });
   }

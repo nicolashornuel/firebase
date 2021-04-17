@@ -15,6 +15,24 @@ exports.getAll = async (req, res) => {
     }
 }
 
+// GET by videoId
+exports.getByVideoId = async (req, res) => {
+    try {
+        const snapshot = await collection.where('videoId', '==', req.params.videoId).get();
+        if (snapshot.empty) {
+            res.status(400).send("ressources inexistante");
+            return;
+        }
+        let liste = [];
+        snapshot.forEach(doc => {
+            liste.push(doc.data());
+        });
+        res.status(200).json(liste);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+}
+
 // GET by categorie
 exports.getByCategorie = async (req, res) => {
     try {
@@ -22,7 +40,7 @@ exports.getByCategorie = async (req, res) => {
         if (snapshot.empty) {
             res.status(400).send("ressources inexistante");
             return;
-        }  
+        }
         let liste = [];
         snapshot.forEach(doc => {
             liste.push(doc.data());
@@ -45,25 +63,29 @@ exports.create = async (req, res) => {
     }
 }
 
-// PUT update categorie with id
+// PUT by videoId
 exports.update = async (req, res) => {
     try {
-        const snapshot = await collection.doc(req.params.id);
-        const result = await snapshot.update({categorie: req.body.categorie});
-        console.log('Document mise à jour ID: ', snapshot.id);
-        res.status(200).json(result);
+        const query = await collection
+            .where('videoId', '==', req.params.videoId)
+            .get();
+        const snapshot = await collection.doc(query.docs[0].id);
+        await snapshot.update({ categorie: req.body.categorie, rating: req.body.rating });
+        console.log('Document modifié ID: ', snapshot.id);
+        res.status(200).json(snapshot.id);
     } catch (error) {
         res.status(500).send(error);
     }
 }
 
-// DELETE with id
+// DELETE by videoId
 exports.remove = async (req, res) => {
     try {
-        console.log(videoId);
-        const snapshot = await collection.doc(req.params.id);
+        const query = await collection
+            .where('videoId', '==', req.params.videoId)
+            .get();
+        const snapshot = await collection.doc(query.docs[0].id);
         const result = await snapshot.delete();
-        console.log('Document supprimé ID: ', snapshot.id);
         res.status(200).json(result);
     } catch (error) {
         res.status(500).send(error);

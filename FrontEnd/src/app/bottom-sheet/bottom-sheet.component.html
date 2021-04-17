@@ -1,44 +1,36 @@
 <mat-nav-list>
 
-  <app-star-rating *ngIf="rating != 0" [rating]="rating"></app-star-rating>
-    <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Ajouter à mes Favoris
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-form-field>
-            <mat-label>Catégorie</mat-label>
-            <div  *ngIf="show">
-              <div *ngFor="let categorie of categories" [value]="categorie" (click)="selectSuggestion(categorie)">{{categorie}}</div>
-            </div>
-            <input #input matInput (click)="suggest()" [(ngModel)]="data.video.categorie">
+  <p *ngIf="!data.wiki && rating">Modifier le classement : 
+    <app-star-rating [rating]="rating" (ratingUpdated)='updateVideo($event)'></app-star-rating>
+  </p>
+  <mat-accordion>
+    <mat-expansion-panel *ngIf="!data.wiki" [expanded]="data.categorie === true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{rating ? "Changer de categorie : " + data.video.categorie : "Ajouter à mes Favoris"}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="item-container">
+        <mat-form-field class="item" appearance="fill">
+          <mat-label>Catégories favorites existantes</mat-label>
+          <input #input matInput list="id-categorie" [(ngModel)]="data.video.categorie">
+          <datalist id="id-categorie">
+            <option *ngFor="let categorie of categories" [value]="categorie">{{categorie}}</option>
+          </datalist>
+        </mat-form-field>
+        <button *ngIf="!rating" class="item" mat-raised-button color="accent" (click)="addVideo(data)">+</button>
+        <button *ngIf="rating" class="item" mat-raised-button color="accent" (click)="updateVideo(data)"><mat-icon>save</mat-icon></button>
+      </div>
+    </mat-expansion-panel>
 
-          </mat-form-field>
+  </mat-accordion>
 
+  <mat-accordion>
+    <mat-expansion-panel *ngIf="!data.categorie && data.video.extractWiki" [expanded]="data.wiki">
+      <mat-expansion-panel-header>
+        <img  src="assets/Wikipedia.svg" alt="logo Wikipedia" width="100px" />
+      </mat-expansion-panel-header>
+      {{data.video.extractWiki}}
+    </mat-expansion-panel>
+  </mat-accordion>
 
-          <form>
-            <mat-form-field appearance="fill">
-              <mat-label>Catégories favorites existantes</mat-label>
-              <mat-select [(ngModel)]="selectedCategorie" name="categorie">
-                <mat-option *ngFor="let categorie of categories" [value]="categorie">
-                  {{categorie}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </form>
-          <button mat-raised-button color="accent" (click)="addVideo(data)">+</button>
-        </mat-expansion-panel>
-      </mat-accordion>
-
-      <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-              <img src="assets/Wikipedia.svg" alt="logo Wikipedia" width="100px" />
-          </mat-expansion-panel-header>
-                  {{data.video.extractWiki}}
-        </mat-expansion-panel>
-      </mat-accordion>
-
-  </mat-nav-list>
+</mat-nav-list>

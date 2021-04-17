@@ -1,9 +1,9 @@
 // FORMAT inférieur à XS
 @media (max-width:599px) {
-    form {
+    .item-container {
         flex-direction: column;
     }
-    mat-form-field, form > button-search {
+    .item {
         display:block;
         align-self:center;
     }
@@ -11,15 +11,19 @@
 
 // FORMAT supérieur à SM
 @media (min-width:600px) {
-    form {
+    .item-container {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-between;
         align-content: center;
     }
-    mat-form-field, form > button-search {
+    .item {
         flex-grow: 0;
         align-self:center;
     }
+}
+
+p {
+    margin-left: 20px;
 }

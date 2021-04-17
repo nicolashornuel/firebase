@@ -1,3 +1,10 @@
+<div class="header-table">
+    <h1>{{h1}}</h1>
+    <mat-form-field>
+        <mat-label>Filtre</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Rock" #input>
+    </mat-form-field>
+</div>
 <div class="container">
     <table mat-table matSort matSortActive="categorie" matSortDisableClear matSortDirection="desc"
         (matSortChange)="resetPaging()" [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
@@ -35,26 +42,32 @@
             <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
                 <div class="detail-expanded" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                     <div class="detail-description">
-                        <p><img [src]="element.thumbnail">
+                        <p><img class="thumbnail" [src]="element.thumbnail">
                             <span class="detail-description-titre"> Description : </span>
                             {{element.description}}
                         </p>
-                        <button mat-icon-button color="accent" (click)="openDialog(element)">
-                            <mat-icon>play_circle_outline</mat-icon>
-                        </button>
-                        <button mat-icon-button color="accent" (click)="delete(element)">
-                            <mat-icon>delete_outline</mat-icon>
-                        </button>
-                        <button mat-icon-button color="accent" (click)="openDialog(element)">
-                            <mat-icon>edit</mat-icon>
-                        </button>
+                        <div class="goupe-boutton">
+                            <button mat-icon-button color="accent" (click)="openDialog(element)">
+                                <mat-icon>play_circle_outline</mat-icon>
+                            </button>
+                            <button mat-icon-button color="accent" (click)="openBottomSheetCate(element)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="accent" (click)="delete(element)">
+                                <mat-icon>delete_outline</mat-icon>
+                            </button>
+                            <button *ngIf="element.extractWiki" mat-icon-button color="accent"
+                                (click)="openBottomSheetWiki(element)">
+                                <img class="logo" src="assets/Wiki.svg" alt="logo Wikipedia" />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </td>
         </ng-container>
 
 
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay" class="entete-fixe"></tr>
         <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
             [class.example-expanded-row]="expandedElement === element"
             (click)="expandedElement = expandedElement === element ? null : element">

@@ -16,12 +16,12 @@ export class SearchInputComponent {
   @Output() gridsizeChange = new EventEmitter();
   @ViewChild('myForm') ngForm: NgForm;
   panelOpenState = true;
-  
+  isShowDivIf = false;
 
   query: QueryGAPI = {
     q: null,
     maxResults: 12,
-    order: "DATE",
+    order: "RELEVANCE",
   }
 
   preference: Preference = {
@@ -37,6 +37,10 @@ export class SearchInputComponent {
     this.updatePref();
   }
 
+  toggleDisplayDivIf() {
+    this.isShowDivIf = !this.isShowDivIf;
+
+  }
   updateGrid($event) {
     this.preference.matSliderValue = $event.value;
     this.gridsizeChange.emit(this.preference.matSliderValue);
