@@ -1,0 +1,78 @@
+<div class="header">
+    <div class="item-header">
+        <h1>{{h1}}</h1>
+        <mat-form-field>
+            <mat-label>Filtre</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Rock" #input>
+        </mat-form-field>
+    </div>
+</div>
+<div class="container">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+        <!-- Categorie Column -->
+        <ng-container matColumnDef="categorie">
+            <th mat-header-cell *matHeaderCellDef>Categorie</th>
+            <td mat-cell *matCellDef="let element">{{element.categorie}}</td>
+        </ng-container>
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Titre</th>
+            <td mat-cell *matCellDef="let element">{{element.title}}</td>
+        </ng-container>
+        <!-- channelTitle Column -->
+        <ng-container matColumnDef="channelTitle">
+            <th mat-header-cell *matHeaderCellDef>Chaine Youtube</th>
+            <td mat-cell *matCellDef="let element">{{element.channelTitle}}</td>
+        </ng-container>
+        <!-- publishedAt Column -->
+        <ng-container matColumnDef="publishedAt">
+            <th mat-header-cell *matHeaderCellDef>Date de publication</th>
+            <td mat-cell *matCellDef="let element">{{element.publishedAt}}</td>
+        </ng-container>
+        <!-- Rating Column -->
+        <ng-container matColumnDef="rating">
+            <th mat-header-cell *matHeaderCellDef>Classement</th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon *ngFor="let ratingId of ratingArr;index as i">
+                    {{showIcon(element,i)}}
+                </mat-icon>
+            </td>
+        </ng-container>
+        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+        <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+                <div class="detail-expanded" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                    <div class="detail-description">
+                        <p><img class="thumbnail" [src]="element.thumbnail">
+                            <span class="detail-description-titre"> Description : </span>
+                            {{element.description}}
+                        </p>
+                        <div class="goupe-boutton">
+                            <button mat-icon-button color="accent" (click)="openDialog(element)">
+                                <mat-icon>play_circle_outline</mat-icon>
+                            </button>
+                            <button mat-icon-button color="accent" (click)="openBottomSheetCate(element)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="accent" (click)="delete(element)">
+                                <mat-icon>delete_outline</mat-icon>
+                            </button>
+                            <button *ngIf="element.extractWiki" mat-icon-button color="accent"
+                                (click)="openBottomSheetWiki(element)">
+                                <img class="logo" src="assets/Wiki.svg" alt="logo Wikipedia" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky:'true'" class="entete-fixe"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+            [class.example-expanded-row]="expandedElement === element"
+            (click)="expandedElement = expandedElement === element ? null : element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+    </table>
+</div>

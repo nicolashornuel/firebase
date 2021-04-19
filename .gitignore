@@ -4,8 +4,7 @@
 /FrontEnd/e2e
 /FrontEnd/node_modules
 /BackEnd
-/FrontEnd/src/app/shared/services/search.service.ts
-/FrontEnd/src/app/shared/services/discogs.service.ts
+/FrontEnd/src/environments/environment.prod.ts
 
 # Logs
 logs

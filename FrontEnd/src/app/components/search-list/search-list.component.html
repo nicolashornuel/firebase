@@ -1,0 +1,63 @@
+<div *ngIf="discogs.length>0" class="carousel">
+  <img class="logo" alt="logo Discogs" src='../../../assets/discogs-simplified.svg' />
+  <div class="margin-flow">
+  <div class="row-flow">
+    <div *ngFor="let discog of discogs" class="column-elt">
+      <img [src]="discog.thumb">
+      <p>
+        <span *ngIf="discog.title" class="label">Titre : </span>{{ discog.title }}
+        <span *ngIf="discog.year" class="label">Année : </span>{{ discog.year }}
+        <span *ngIf="discog.style" class="label">Style : </span>{{ discog.style }}
+        <span *ngIf="discog.label" class="label">Label : </span>{{ discog.label }}
+        <span *ngIf="discog.format" class="label">Support : </span>{{ discog.format}}
+      </p>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="extractWiki" class="header">
+  <div class="item-header">
+    <img class="logo" alt="logo Discogs" src='../../../assets/Wikipedia.svg' />
+  </div>
+  <div class="content">
+    {{extractWiki}}
+  </div>
+
+</div>
+
+<div *ngIf="videos.length>0" class="header">
+  <div class="item-header">
+    <img class="logo" alt="logo Youtube" src='../../../assets/youtube.svg' />
+    <h1>{{h1}}</h1>
+    <div class="slider">
+      <mat-label>Taille de la grille : </mat-label>
+      <mat-slider [max]="8" [min]="1" [(ngModel)]="gridColumns"></mat-slider>
+      <mat-icon [matBadge]="gridColumns" matBadgeColor="primary">view_module</mat-icon>
+    </div>
+  </div>
+
+  <div class="content">
+    <div fxLayout="row wrap" fxLayoutGap="16px grid">
+      <div class="grid" [fxFlex]="(100/gridColumns) + '%'" fxFlex.sm="33%" fxFlex.xs="100%"
+        *ngFor="let video of videos; index as i;">
+        <mat-card class="card" fxLayout="column" fxLayoutAlign="space-between stretch">
+          <mat-card-header>
+            <mat-card-title>{{ video.channelTitle }}</mat-card-title>
+            <mat-card-subtitle>{{ video.publishedAt }}</mat-card-subtitle>
+          </mat-card-header>
+          <img mat-card-image [src]="video.thumbnail">
+          <mat-card-content>
+            <p>
+              {{ video.title }}
+            </p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="openDialog(i)">LIRE</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+</div>

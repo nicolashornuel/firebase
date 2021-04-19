@@ -1,0 +1,103 @@
+
+// ENTETE
+h1 { font-size: medium; margin: 0;}
+
+// GRID
+.content { padding: 32px; }
+
+// FORMAT XS
+@media (max-width:599px) {
+    .header {
+        background: transparentize($color: white, $amount: 0.3);
+        margin-top: 16px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+    .item-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .slider {
+        display: flex;
+        align-items: center;
+    }
+    .grid {
+        align-items: stretch;
+    }
+    .header {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+// FORMAT SM
+@media (min-width:600px) {
+    .header {
+        background: transparentize($color: white, $amount: 0.3);
+        margin-top: 32px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+    .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .slider {
+        display: flex;
+        align-items: center;
+        margin-right: 32px;
+    }
+    
+    .grid {
+        display: flex;
+        flex-flow: row;
+    }
+    .card {
+        flex-grow: 1;
+        flex-grow: 1;
+        flex-basis: auto;
+    }
+}
+
+// CAROUSEL DISCOGS
+.carousel {
+    display: flex;
+    flex-direction: column;
+    background: transparentize($color: white, $amount: 0.3);
+    margin-top: 32px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+p {
+    margin-top: 8px;
+}
+.margin-flow {
+    margin-top: 16px;
+    margin-left: 32px;
+    margin-right: 32px;
+}
+.row-flow {
+    overflow: auto;
+    display: flex;
+}
+.column-elt {
+    display: flex;
+    flex-direction: column;
+    margin-right: 12px;
+    flex-wrap: wrap;
+}
+.column-elt img {
+    height: 160px;
+}
+.logo {
+    width: 100px;
+    margin-left: 32px;
+}
+.label {
+    font-weight: bold;
+    color:darkblue;
+    opacity: 0.8;
+}
+

@@ -1,0 +1,119 @@
+
+// ENTETE
+h1 { font-size: medium; }
+
+// FORMAT inférieur à XS
+@media (max-width:599px) {
+  .header {
+    display: flex;
+    justify-content: center;
+  }
+  .item-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background: transparentize($color: white, $amount: 0.5);
+    width: 90%;
+    margin-bottom: 8px;
+    margin-top: 32px;
+  }
+  .item-header > mat-form-field, .item-header > h1, input {
+    margin: 0 5px;
+    display:block;
+  }
+  .container {
+      display: flex;
+      justify-content: center;
+      overflow: auto;
+      max-height: 600px;
+  }
+  table {
+    width: 90%;
+  }
+}
+
+// FORMAT supérieur à SM
+@media (min-width:600px) {
+  .header {
+    display: flex;
+    justify-content: center;
+  }
+  .item-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background: transparentize($color: white, $amount: 0.5);
+    width: 90%;
+    margin-bottom: 8px;
+    margin-top: 32px;
+  }
+  .item-header > mat-form-field, .item-header > h1, input {
+    margin: 0;
+    flex-grow: 0;
+    align-self:center;
+  }
+  .container {
+      display: flex;
+      justify-content: center;
+      overflow: auto;
+      max-height: 600px;  
+  }
+  table {
+      width: 90%;
+  }
+}
+
+
+
+
+.detail-expanded {
+    overflow: hidden;
+}
+
+.thumbnail {
+    border-radius: 10px;
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+    width: 160px;
+    height: 90px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    float: left;
+}
+
+.logo {
+  width: 22px;
+}
+
+td > mat-icon {
+  color:gold;
+  width: 22px;
+}
+
+.detail-description-titre {
+  opacity: 0.5;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: rgb(240, 240, 240);
+}
+  
+  
+  .example-element-row td {
+    border-bottom-width: 0;
+  }
+
+  tr.example-detail-row {
+    height: 0;
+  }
+
+  .goupe-boutton {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 25px;
+  }
+  
+ 
+  
+
+  

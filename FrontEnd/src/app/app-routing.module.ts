@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-import { VideoService } from './shared/services/video.service';
+import { VideoService } from './services/video.service';
 
 const routes: Routes = [
   { path: 'video', component: VideoService },
