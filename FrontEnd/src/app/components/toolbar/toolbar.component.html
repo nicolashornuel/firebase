@@ -1,10 +1,45 @@
-<mat-toolbar color="accent">
-    <img src="assets/VideoCenter.svg" alt="logo VideoCenter" width="200px" />
-    <span class="example-spacer"></span>
-    <button mat-icon-button (click)="openSearch()" aria-label="Example icon-button with heart icon">
-      <mat-icon>search</mat-icon>
-    </button>
-    <button mat-icon-button  (click)="openTable()" class="example-icon" aria-label="Example icon-button with share icon">
-      <mat-icon>view_module</mat-icon>
-    </button>
-  </mat-toolbar>
+
+
+<mat-toolbar color="primary" class="mat-toolbar-example">
+  <img/>
+
+  <span class="example-spacer"></span>
+
+  <div *ngIf="showInputSearch" class="input">
+    <input #box (keyup.enter)="onEnter(box.value)" matInput name="q">
+  </div>
+
+
+  <button type="button" mat-icon-button (click)="toogleInput()">
+    <mat-icon>search</mat-icon>
+  </button>
+
+
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>list</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="table" (click)="drawer.close()" >Toute catégorie confondue</button>
+    <button mat-menu-item *ngFor="let categorie of categories" [value]="categorie" (click)="showTable(categorie)" >{{categorie}}</button>
+  </mat-menu>
+
+  <button mat-icon-button (click)="drawer.toggle()">
+    <mat-icon>settings</mat-icon>
+  </button>
+
+</mat-toolbar>
+
+<mat-drawer-container class="drawer-container">
+  <mat-drawer #drawer class="drawer">
+    <app-preference></app-preference>
+  </mat-drawer>
+  <mat-drawer-content class="drawer-content">
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>
+
+
+
+
+
+

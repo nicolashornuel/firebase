@@ -26,8 +26,9 @@ export class DiscogsService {
         return this.http.get(endPoint, { responseType: 'json' });
     }
 
-    getByArtistName(q: string): Observable<any> {
-        this.params.artist = encodeURI(q);
+    getByArtistName(queryDiscogs: QueryDiscogs): Observable<any> {
+        this.params.artist = encodeURI(queryDiscogs.q);
+        this.params.per_page = queryDiscogs.per_page;
         let endPoint = `${this.url}/database/search?`;
         Object.keys(this.params).forEach(key => endPoint += "&" + key + "=" + this.params[key]);
         return this.http.get(endPoint, { responseType: 'json' });

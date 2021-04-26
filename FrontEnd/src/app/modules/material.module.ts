@@ -23,7 +23,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatBadgeModule } from '@angular/material/badge';
-
+import { MatChipsModule } from '@angular/material/chips';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 const MaterialComponents = [
@@ -49,7 +52,11 @@ const MaterialComponents = [
   MatProgressSpinnerModule,
   MatAutocompleteModule,
   MatProgressBarModule,
-  MatBadgeModule
+  MatBadgeModule,
+  MatChipsModule,
+  MatCheckboxModule,
+  MatSlideToggleModule,
+  MatDividerModule
 ];
 
 @NgModule({

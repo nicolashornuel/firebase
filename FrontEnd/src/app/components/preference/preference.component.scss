@@ -1,0 +1,72 @@
+.container {
+    background: transparentize($color: white, $amount: 0.1);
+    margin-top: 64px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;    
+}
+mat-radio-button {
+    margin-right: 10px;
+}
+.row {
+    display: flex;
+    justify-content: center;
+    margin: 16px;
+}
+h2 {
+    margin-left:16px;
+    margin-bottom: 8px;
+    margin-top: 16px;
+}
+.button-save, .button-reload {
+    margin: 16px;
+}
+
+// FORMAT inférieur à XS
+@media (max-width:599px) {
+    mat-list {
+        width: 100%;
+    }
+    mat-list-item {
+        background-color: rgb(240,240,240);
+        padding-right: 32px;
+        display:flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        align-content: stretch;
+    }
+    .logo {
+        width: 32px;
+        margin-right: 12px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        align-content: stretch;
+        padding: 16px
+    }
+}
+
+// FORMAT supérieur à SM
+@media (min-width:600px) {
+    mat-list-item {
+        background-color: rgb(240,240,240);
+        padding-right: 16px;
+        display:flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        align-content: stretch;
+    }
+    .logo {
+        width: 32px;
+        margin-right: 12px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        align-content: stretch;
+        padding: 16px
+    }
+}

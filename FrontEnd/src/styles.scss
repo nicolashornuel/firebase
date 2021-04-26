@@ -4,12 +4,17 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 body {
-
     background: url("/assets/fond-abstrait.svg");
-    //background: #3f51b5;
-    //background-color: rgb(255, 187, 0);
-    //background-repeat: round;
     background-size: cover;
     background-position: initial;
-    //width:100%;
+}
+
+// FORMAT inférieur à XS
+@media (max-width:599px) {
+    .mat-drawer {
+        width: 100%;
+    }
+    table {
+        width: 100%;
+    }
 }

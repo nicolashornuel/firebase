@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.prod';
+import { QueryGAPI } from '../models/queryGAPI.interface';
 
 
 @Injectable({
@@ -22,10 +23,10 @@ export class SearchService {
 
   constructor(private http: HttpClient) { }
 
-  getVideos($event): Observable<any> {
-    this.params.q = encodeURI($event.query.q);
-    this.params.order = $event.query.order;
-    this.params.maxResults = $event.query.maxResults;
+  getVideos(query: QueryGAPI): Observable<any> {
+    this.params.q = encodeURI(query.q);
+    this.params.order = query.order;
+    this.params.maxResults = query.maxResults;
     let endPoint = `${this.url}/youtube/v3/search?`;
     Object.keys(this.params).forEach(key => endPoint += "&" + key + "=" + this.params[key]);
    

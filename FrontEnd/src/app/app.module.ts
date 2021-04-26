@@ -14,8 +14,7 @@ import { BottomSheetComponent } from './components/bottom-sheet/bottom-sheet.com
 import { TableComponent } from './components/table/table.component';
 import { StarRatingComponent } from './components/star-rating/star-rating.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
-import { ContainerComponent } from './components/container/container.component';
-import { SearchComponent } from './components/search/search.component';
+import { PreferenceComponent } from './components/preference/preference.component';
 
 @NgModule({
   declarations: [
@@ -26,8 +25,7 @@ import { SearchComponent } from './components/search/search.component';
     TableComponent,
     StarRatingComponent,
     ToolbarComponent,
-    ContainerComponent,
-    SearchComponent
+    PreferenceComponent
   ],
   imports: [
     BrowserModule,

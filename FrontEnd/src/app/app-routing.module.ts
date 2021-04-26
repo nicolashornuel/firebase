@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { VideoService } from './services/video.service';
+import { SearchListComponent } from './components/search-list/search-list.component';
+import { TableComponent } from './components/table/table.component';
 
 const routes: Routes = [
-  { path: 'video', component: VideoService },
+  { path: 'table', component: TableComponent },
+  { path: 'list', component: SearchListComponent },
+  { path: '', redirectTo: 'table', pathMatch: 'full' }
 ];
 
 @NgModule({

@@ -28,7 +28,7 @@ export class BottomSheetComponent implements OnInit {
 
   ngOnInit(): void {
     this.rating = this.data.video.rating;
-    this.videoService.findAll(this.data).subscribe(array => {
+    this.videoService.findAll().subscribe(array => {
       this.categories = new Set(array.map(item => item.categorie));
     })
   }

@@ -1,22 +1,34 @@
-<div *ngIf="discogs.length>0" class="carousel">
+<div class="chip-container" >
+  <mat-chip-list aria-label="Fish selection" >
+    <mat-chip color="primary" selected>Résultat de la recherche : {{keyword}}</mat-chip>
+  </mat-chip-list>
+</div>
+
+<div *ngIf="loading" class="spinner-container">
+  <mat-spinner color="accent"></mat-spinner>
+</div>
+
+
+<div class="content-container">
+<div *ngIf="discogs.length>0 && !loading" class="carousel">
   <img class="logo" alt="logo Discogs" src='../../../assets/discogs-simplified.svg' />
   <div class="margin-flow">
-  <div class="row-flow">
-    <div *ngFor="let discog of discogs" class="column-elt">
-      <img [src]="discog.thumb">
-      <p>
-        <span *ngIf="discog.title" class="label">Titre : </span>{{ discog.title }}
-        <span *ngIf="discog.year" class="label">Année : </span>{{ discog.year }}
-        <span *ngIf="discog.style" class="label">Style : </span>{{ discog.style }}
-        <span *ngIf="discog.label" class="label">Label : </span>{{ discog.label }}
-        <span *ngIf="discog.format" class="label">Support : </span>{{ discog.format}}
-      </p>
-    </div>
+    <div class="row-flow">
+      <div *ngFor="let discog of discogs" class="column-elt">
+        <img [src]="discog.thumb">
+        <p>
+          <span *ngIf="discog.title" class="label">Titre : </span>{{ discog.title }}
+          <span *ngIf="discog.year" class="label">Année : </span>{{ discog.year }}
+          <span *ngIf="discog.style" class="label">Style : </span>{{ discog.style }}
+          <span *ngIf="discog.label" class="label">Label : </span>{{ discog.label}}
+          <span *ngIf="discog.format" class="label">Support : </span>{{ discog.format?.slice(0,50) }}
+        </p>
+      </div>
     </div>
   </div>
 </div>
 
-<div *ngIf="extractWiki" class="header">
+<div *ngIf="extractWiki && !loading" class="header">
   <div class="item-header">
     <img class="logo" alt="logo Discogs" src='../../../assets/Wikipedia.svg' />
   </div>
@@ -26,20 +38,19 @@
 
 </div>
 
-<div *ngIf="videos.length>0" class="header">
+<div *ngIf="videos.length>0 && !loading" class="header">
   <div class="item-header">
     <img class="logo" alt="logo Youtube" src='../../../assets/youtube.svg' />
-    <h1>{{h1}}</h1>
-    <div class="slider">
+    <div class="slider" fxShow fxHide.xs>
       <mat-label>Taille de la grille : </mat-label>
-      <mat-slider [max]="8" [min]="1" [(ngModel)]="gridColumns"></mat-slider>
-      <mat-icon [matBadge]="gridColumns" matBadgeColor="primary">view_module</mat-icon>
+      <mat-slider [max]="8" [min]="1" [(ngModel)]="preference.matSliderValue"></mat-slider>
+      <mat-icon [matBadge]="preference.matSliderValue" matBadgeColor="primary">view_module</mat-icon>
     </div>
   </div>
 
   <div class="content">
     <div fxLayout="row wrap" fxLayoutGap="16px grid">
-      <div class="grid" [fxFlex]="(100/gridColumns) + '%'" fxFlex.sm="33%" fxFlex.xs="100%"
+      <div class="grid" [fxFlex]="(100/preference.matSliderValue) + '%'" fxFlex.sm="33%" fxFlex.xs="100%"
         *ngFor="let video of videos; index as i;">
         <mat-card class="card" fxLayout="column" fxLayoutAlign="space-between stretch">
           <mat-card-header>
@@ -60,4 +71,5 @@
     </div>
   </div>
 
+</div>
 </div>

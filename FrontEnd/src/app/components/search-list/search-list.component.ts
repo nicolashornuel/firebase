@@ -1,11 +1,19 @@
-import { Component, ViewChild, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { VideoGAPI } from '../../models/videoGAPI.interface';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { WatchComponent } from '../watch/watch.component';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+// COMPONENT
+import { WatchComponent } from '../watch/watch.component';
+// SERVICE
+import { DiscogsService } from 'src/app/services/discogs.service';
+import { SearchService } from 'src/app/services/search.service';
+import { WikipediaService } from 'src/app/services/wikipedia.service';
+import { PreferenceService } from 'src/app/services/preference.service';
+//INTERFACE
 import { Preference } from 'src/app/models/preference.interface';
 import { QueryGAPI } from '../../models/queryGAPI.interface';
-import { NgForm } from '@angular/forms';
+import { VideoGAPI } from '../../models/videoGAPI.interface';
+import { QueryDiscogs } from 'src/app/models/queryDiscogs.interface';
 
 
 @Component({
@@ -13,39 +21,116 @@ import { NgForm } from '@angular/forms';
   templateUrl: './search-list.component.html',
   styleUrls: ['./search-list.component.scss']
 })
-export class SearchListComponent implements OnInit {
+export class SearchListComponent implements OnInit, AfterViewInit {
 
-  @Input() videos: VideoGAPI[] = [];
-  @Input() gridColumns: number;
-  @Input() extractWiki: string;
-  @Input() preference: Preference;
-  @Input() discogs: any[] = [];
-  @Output() gridsizeChange = new EventEmitter();
-  @Input() query: QueryGAPI;
-  @ViewChild('myForm') ngForm: NgForm;
-  @Output() search: EventEmitter<{ query: QueryGAPI, preference: Preference }> = new EventEmitter<{ query: QueryGAPI, preference: Preference }>();
+  loading: boolean = true;
+  keyword: string;
+  preference: Preference;
+  queryDiscogs: QueryDiscogs = {
+    q: null,
+    per_page: null,
+    token: null,
+    artist: null,
+  }
+  discogs: any[] = [];
+  extractWiki: string = "";
+  queryGAPI: QueryGAPI = {
+    q: null,
+    maxResults: null,
+    order: null,
+    key: null,
+    part: null,
+    type: null,
+  }
+  videos: VideoGAPI[] = [];
 
-
-  h1: string = null;
-
-
-  constructor(public dialog: MatDialog, private _sanitizer: DomSanitizer) { }
+  constructor(public dialog: MatDialog,
+    private _sanitizer: DomSanitizer,
+    private route: ActivatedRoute,
+    private discogsService: DiscogsService,
+    private searchService: SearchService,
+    private wikipediaService: WikipediaService,
+    private preferenceService: PreferenceService) {
+  }
 
   ngOnInit(): void {
-    //this.h1 = `"${this.query.q}" : ${this.query.maxResults} vidéos Youtube trouvées (TRI PAR : ${this.query.order})`;
+    this.checkParam();
   }
 
-  sendToSearch() {
-    this.h1 = `"${this.query.q}" : ${this.query.maxResults} vidéos Youtube trouvées (TRI PAR : ${this.query.order})`;
-    this.query.q = this.ngForm.form.value.q;
-    this.query.maxResults = this.ngForm.form.value.maxResults;
-    this.query.order = this.ngForm.form.value.order;
-    this.search.emit({ query: this.query, preference: this.preference });
+  ngAfterViewInit() {
+    setTimeout(() => { this.loading = false }, 3000);
   }
 
-  updateGrid($event) {
-    this.preference.matSliderValue = $event.value;
-    this.gridsizeChange.emit(this.preference.matSliderValue);
+  checkParam() {
+    this.route.queryParams.subscribe(params => {
+      this.keyword = params.q;
+      this.preferenceService.find().subscribe(res => {
+        this.preference = res[0];
+        this.factory();
+      })
+    });
+
+  }
+
+  factory() {
+    if (this.preference.switchDiscogs) { this.searchDiscogs() }
+    if (this.preference.switchWikipedia) { this.searchWikipedia() }
+    if (this.preference.switchYoutube) { this.searchYoutube() }
+  }
+
+  searchDiscogs() {
+    this.queryDiscogs.q = this.keyword;
+    this.queryDiscogs.per_page = this.preference.maxResultsDiscogs;
+    this.discogsService.getByArtistName(this.queryDiscogs)
+      .subscribe(result => {
+        this.discogs = result.results.map(elt => {
+          return {
+            title: elt.title,
+            thumb: elt.thumb,
+            year: elt.year,
+            style: elt.style.join(", "),
+            label: [...new Set(elt.label)].slice(0, 6).join(', '),
+            format: [...new Set(elt.format)].join(', '),
+          }
+        })
+
+      });
+
+  }
+
+  searchWikipedia() {
+    this.wikipediaService.getWiki(this.keyword, "fr").subscribe(result => {
+      for (var i in result.query.pages) {
+        this.extractWiki = result.query.pages[i].extract;
+      }
+      if (this.extractWiki == "") {
+        this.wikipediaService.getWiki(this.keyword, "en").subscribe(result => {
+          for (var i in result.query.pages) {
+            this.extractWiki = result.query.pages[i].extract;
+          }
+        });
+      }
+    });
+  }
+
+  searchYoutube() {
+    this.queryGAPI.q = this.keyword;
+    this.queryGAPI.maxResults = this.preference.maxResultsYoutube;
+    this.queryGAPI.order = this.preference.orderYoutube;
+    this.searchService.getVideos(this.queryGAPI).subscribe((items: any) => {
+      this.videos = items.map(item => {
+        return {
+          videoId: item.id.videoId,
+          publishedAt: new Date(item.snippet.publishedAt).toLocaleDateString(),
+          title: this.decodeHTMLEntities(item.snippet.title),
+          description: this.decodeHTMLEntities(item.snippet.description),
+          thumbnail: item.snippet.thumbnails.medium.url,
+          channelTitle: item.snippet.channelTitle,
+          src: `https://www.youtube.com/embed/${item.id.videoId}`,
+          discogs: this.discogs
+        };
+      });
+    });
   }
 
   openDialog(index: number) {
@@ -64,11 +149,31 @@ export class SearchListComponent implements OnInit {
           extractWiki: this.extractWiki,
         },
         preference: {
-          switchDataBase: this.preference.switchDataBase,
-          switchBackEnd: this.preference.switchBackEnd,
+          radioDataBase: this.preference.radioDataBase,
+          radioBackEnd: this.preference.radioBackEnd,
         }
       }
     });
+  }
+
+  decodeHTMLEntities(text: string) {
+    var entities = [
+      ['amp', '&'],
+      ['apos', '\''],
+      ['#x27', '\''],
+      ['#x2F', '/'],
+      ['#39', '\''],
+      ['#47', '/'],
+      ['lt', '<'],
+      ['gt', '>'],
+      ['nbsp', ' '],
+      ['quot', '"']
+    ];
+
+    for (var i = 0, max = entities.length; i < max; ++i)
+      text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
+
+    return text;
   }
 
 }

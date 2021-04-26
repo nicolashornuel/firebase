@@ -1,0 +1,75 @@
+<div class="container">
+
+    <mat-list>
+        <h2>Paramètres</h2>
+        <mat-divider></mat-divider>
+        <!-- Paramètres DISCOGS -->
+        <mat-list-item>
+            <img class="logo" alt="logo Discogs" src='../../../assets/discogs vinyl record mark.svg' />
+            Recherche Discogs
+        </mat-list-item>
+        <div class="row">
+            <mat-slide-toggle [(ngModel)]="preference.switchDiscogs" (toggleChange)="switchDiscogs()">Discogs
+            </mat-slide-toggle>
+        </div>
+        <form *ngIf="preference.switchDiscogs" #formDiscogs="ngForm">
+            <mat-form-field>
+                <mat-label>Resultat Max</mat-label>
+                <input matInput type="number" min="1" max="100" name="maxResults"
+                    [(ngModel)]="preference.maxResultsDiscogs">
+            </mat-form-field>
+        </form>
+        <mat-divider></mat-divider>
+        <!-- Paramètres WIKIPEDIA -->
+        <mat-list-item>
+            <img class="logo" alt="logo Discogs" src='../../../assets/Wiki.svg' />
+            Recherche Wikipedia
+        </mat-list-item>
+        <div class="row">
+            <mat-slide-toggle [(ngModel)]="preference.switchWikipedia" (toggleChange)="switchWikipedia()">
+                Wikipedia</mat-slide-toggle>
+        </div>
+        <mat-divider></mat-divider>
+        <!-- Paramètres YOUTUBE -->
+        <mat-list-item>
+            <img class="logo" alt="logo Discogs" src='../../../assets/YouTube_full-color_icon_(2017).svg' />
+            Recherche Youtube
+        </mat-list-item>
+        <div class="row">
+            <mat-slide-toggle [(ngModel)]="preference.switchYoutube" (toggleChange)="switchYoutube()">Youtube
+            </mat-slide-toggle>
+        </div>
+        <form *ngIf="preference.switchYoutube" #formYoutube="ngForm">
+            <mat-form-field>
+                <mat-label>Resultat Max</mat-label>
+                <input matInput type="number" min="1" max="36" name="maxResults"
+                    [(ngModel)]="preference.maxResultsYoutube">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select name="order" [(ngModel)]="preference.orderYoutube">
+                    <mat-option value="DATE">Date</mat-option>
+                    <mat-option value="RATING">Rating</mat-option>
+                    <mat-option value="RELEVANCE">Relevance (default)</mat-option>
+                    <mat-option value="TITLE">Title</mat-option>
+                    <mat-option value="VIDEOCOUNT">VideoCount</mat-option>
+                    <mat-option value="VIEWCOUNT">ViewCount</mat-option>
+                </mat-select>
+                <mat-label>Trier par</mat-label>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Grille d'affichage : </mat-label>
+                <input matInput type="number" min="1" max="8" name="grille d'affichage"
+                    [(ngModel)]="preference.matSliderValue">
+            </mat-form-field>
+        </form>
+        <mat-divider></mat-divider>
+    </mat-list>
+    <div class="group-button-row">
+        <button type="button" mat-stroked-button color="primary" class="button-reload" (click)="loadPref()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+        <button type="button" mat-stroked-button color="accent" class="button-save" (click)="savePref()">
+            <mat-icon>save</mat-icon>
+        </button>
+    </div>
+</div>

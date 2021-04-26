@@ -1,38 +1,85 @@
 
-// ENTETE
-h1 { font-size: medium; margin: 0;}
 
-// GRID
-.content { padding: 32px; }
+
+// SPINNER loading
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 200px;
+  }
+
+
 
 // FORMAT XS
 @media (max-width:599px) {
+    .chip-container {
+        display:flex;
+        justify-content:flex-end;
+    }
+    .content-container {
+        margin-top: 95px;
+    }
+    mat-chip-list {
+        margin-top: 80px;
+        position: fixed;
+        top: 0%;
+        z-index:1;
+      }
+      mat-chip {
+        font-size:small;
+      }
     .header {
         background: transparentize($color: white, $amount: 0.3);
         margin-top: 16px;
         padding-top: 16px;
         padding-bottom: 16px;
+        flex-direction: column;
     }
     .item-header {
         display: flex;
-        flex-direction: column;
+        justify-content:space-between ;
         align-items: center;
+    }
+    .logo {
+        width: 100px;
+        margin-left: 16px;
     }
     .slider {
         display: flex;
         align-items: center;
+        margin-right: 16px;
+    }
+    .margin-flow {
+        margin-top: 16px;
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+    .content { 
+        padding: 16px;
     }
     .grid {
         align-items: stretch;
-    }
-    .header {
-        display: flex;
-        justify-content: center;
     }
 }
 
 // FORMAT SM
 @media (min-width:600px) {
+    .chip-container {
+        display:flex;
+        justify-content: center;
+    }
+    .content-container {
+        margin-top: 95px;
+    }
+    mat-chip-list {
+        margin: 80px;
+        position: fixed;
+        top: 0%;
+        z-index:1;
+      }
+      mat-chip {
+        font-size:large;
+      }
     .header {
         background: transparentize($color: white, $amount: 0.3);
         margin-top: 32px;
@@ -44,12 +91,23 @@ h1 { font-size: medium; margin: 0;}
         justify-content: space-between;
         align-items: center;
     }
+    .logo {
+        width: 100px;
+        margin-left: 32px;
+    }
     .slider {
         display: flex;
         align-items: center;
         margin-right: 32px;
     }
-    
+    .margin-flow {
+        margin-top: 16px;
+        margin-left: 32px;
+        margin-right: 32px;
+    }
+    .content { 
+        padding: 32px;
+    }
     .grid {
         display: flex;
         flex-flow: row;
@@ -73,11 +131,7 @@ h1 { font-size: medium; margin: 0;}
 p {
     margin-top: 8px;
 }
-.margin-flow {
-    margin-top: 16px;
-    margin-left: 32px;
-    margin-right: 32px;
-}
+
 .row-flow {
     overflow: auto;
     display: flex;
@@ -91,10 +145,7 @@ p {
 .column-elt img {
     height: 160px;
 }
-.logo {
-    width: 100px;
-    margin-left: 32px;
-}
+
 .label {
     font-weight: bold;
     color:darkblue;

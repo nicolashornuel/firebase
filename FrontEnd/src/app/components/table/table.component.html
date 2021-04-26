@@ -1,13 +1,22 @@
-<div class="header">
+
+<div *ngIf="loading" class="spinner-container">
+    <mat-spinner color="accent"></mat-spinner>
+</div>
+
+<div *ngIf="!loading" class="header">
     <div class="item-header">
-        <h1>{{h1}}</h1>
+        <div class="label-table">
+            <mat-icon>queue_music</mat-icon>
+            <h1>{{h1}}</h1>
+        </div>
         <mat-form-field>
             <mat-label>Filtre</mat-label>
             <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Rock" #input>
         </mat-form-field>
     </div>
 </div>
-<div class="container">
+
+<div *ngIf="!loading" class="container">
     <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
         <!-- Categorie Column -->
         <ng-container matColumnDef="categorie">
@@ -22,17 +31,17 @@
         <!-- channelTitle Column -->
         <ng-container matColumnDef="channelTitle">
             <th mat-header-cell *matHeaderCellDef>Chaine Youtube</th>
-            <td mat-cell *matCellDef="let element">{{element.channelTitle}}</td>
+            <td mat-cell *matCellDef="let element" class="hidden">{{element.channelTitle}}</td>
         </ng-container>
         <!-- publishedAt Column -->
         <ng-container matColumnDef="publishedAt">
             <th mat-header-cell *matHeaderCellDef>Date de publication</th>
-            <td mat-cell *matCellDef="let element">{{element.publishedAt}}</td>
+            <td mat-cell *matCellDef="let element" class="hidden">{{element.publishedAt}}</td>
         </ng-container>
         <!-- Rating Column -->
         <ng-container matColumnDef="rating">
             <th mat-header-cell *matHeaderCellDef>Classement</th>
-            <td mat-cell *matCellDef="let element">
+            <td mat-cell *matCellDef="let element" class="hidden">
                 <mat-icon *ngFor="let ratingId of ratingArr;index as i">
                     {{showIcon(element,i)}}
                 </mat-icon>

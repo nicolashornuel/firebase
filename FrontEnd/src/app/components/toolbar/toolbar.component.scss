@@ -1,3 +1,49 @@
+// FIXE
+.mat-toolbar-example{
+  position: fixed;
+  z-index:10;
+}
+
+// ESPACE DROITE GAUCHE
 .example-spacer {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+// INPUT
+.input {
+  background: transparentize($color: white, $amount: 0.1);
+  border-radius: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+// SIDENAV DRAWER
+.drawer-container {
+  position:initial;  
+  display:contents;
+}
+.drawer {
+  top: 56;
+  bottom: 0;
+  left: 0;
+  right: 800;
+}
+.drawer-content {
+  background: transparentize($color: white, $amount: 0.9);
+}
+
+// FORMAT inférieur à XS
+@media (max-width:599px) {
+  img {
+    height: 60px;
+    content:url("/assets/MusicVideoCenter_blanc_little.svg");
   }
+}
+
+// FORMAT supérieur à SM
+@media (min-width:600px) {
+  img {
+    height: 70px;
+    content: url("/assets/MusicVideoCenter_blanc.svg");
+  }
+}

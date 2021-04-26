@@ -21,5 +21,7 @@ const firestore = require('./src/routers/router.firestore');
 app.use('/fire', firestore)
 const realtime = require('./src/routers/router.realtime');
 app.use('/real', realtime)
+const preference = require('./src/routers/router.preference');
+app.use('/firepref', preference)
 
 exports.app = functions.https.onRequest(app);
