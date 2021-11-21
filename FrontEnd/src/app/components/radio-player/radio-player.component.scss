@@ -1,0 +1,95 @@
+.mini-player {
+  display: flex;
+  //width: 25rem;
+  border-radius: 2rem;
+  border-color: #ff4081 !important;
+  border: 2px;
+  border-style: solid;
+  padding: 2px;
+  padding-right: 10px;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  p {
+    margin: 0;
+  }
+  .track-live {
+    margin-left: 1rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 200px;
+    .performers {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.2em;
+    }
+    .title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 400;
+      opacity: 0.5;
+      line-height: 1.2em;
+    }
+  }
+}
+.select {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.9375rem;
+  border-color: #242424 !important;
+  border: 0.1875rem;
+  border-style: solid;
+  cursor: pointer;
+}
+
+@keyframes defilement-performers {
+  0% {
+    transform: translate3d(100%, 0%, 0px);
+    left: 100%;
+  }
+  100% {
+    transform: translate3d(-100%, 0%, 0px);
+    left: 100%;
+  }
+}
+
+@keyframes defilement-title {
+  0% {
+    transform: translate3d(100%, 0%, 0px);
+    left: 100%;
+  }
+  100% {
+    transform: translate3d(-100%, 0%, 0px);
+    left: 100%;
+  }
+}
+
+/* @keyframes defilement-performers {
+  0% {
+    transform: translate3d(0%, 0%, 0px);
+    left: 100%;
+  }
+  50% {
+    transform: translate3d(var(--target-performers), 0%, 0px);
+    left: 0%;
+  }
+  100% {
+    transform: translate3d(0%, 0%, 0px);
+    left: 100%;
+  }
+} */
+
+
+/* @keyframes defilement-title {
+  0% {
+    transform: translate3d(100%, 0%, 0px);
+    left: 100%;
+  }
+  100% {
+    transform: translate3d(-100%, 0%, 0px);
+    left: 100%;
+  }
+} */

@@ -42,6 +42,7 @@ export class BottomSheetComponent implements OnInit {
     this.data.video.rating = $event;
     this.videoService.updateVideo(this.data).subscribe(item => {
       this._snackBar.open(this.data.video.title + " id:" + item, "Modifié", { duration: 5000, });
+      this._bottomSheetRef.dismiss();
     })
   }
 
@@ -50,6 +51,7 @@ export class BottomSheetComponent implements OnInit {
     data.video.categorie = this.inputElement.nativeElement.value;
     this.videoService.createVideo(data).subscribe(item => {
       this._snackBar.open(data.video.title + " id:" + item, "Ajouté", { duration: 5000, });
+      this._bottomSheetRef.dismiss();
     })
   }
 

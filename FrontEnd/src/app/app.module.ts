@@ -15,6 +15,9 @@ import { TableComponent } from './components/table/table.component';
 import { StarRatingComponent } from './components/star-rating/star-rating.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { PreferenceComponent } from './components/preference/preference.component';
+import { RadioPlayerComponent } from './components/radio-player/radio-player.component';
+import { RssFluxComponent } from './components/rss-flux/rss-flux.component';
+import { GraphQLModule } from './graphql.module';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,9 @@ import { PreferenceComponent } from './components/preference/preference.componen
     TableComponent,
     StarRatingComponent,
     ToolbarComponent,
-    PreferenceComponent
+    PreferenceComponent,
+    RadioPlayerComponent,
+    RssFluxComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +40,8 @@ import { PreferenceComponent } from './components/preference/preference.componen
     HttpClientModule,
     FlexLayoutModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    GraphQLModule
   ],
   providers: [],
   bootstrap: [AppComponent]

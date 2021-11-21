@@ -1,7 +1,18 @@
 <div class="container">
 
-    <mat-list>
+    <mat-list *ngIf="preference">
         <h2>Paramètres</h2>
+        <mat-divider></mat-divider>
+        <!-- Paramètres RADIO FRANCE -->
+        <mat-list-item>
+            <img class="logo-large" alt="logo radio france" src='../../../assets/Logo-radio-france.svg' />
+        </mat-list-item>
+            <mat-form-field *ngIf="preference">
+                <mat-select [(ngModel)]="preference.stationRadioFrance">
+                    <mat-option *ngFor="let station of stations" [value]="station">{{station}}</mat-option>
+                </mat-select>
+                <mat-label>Sélection station</mat-label>
+            </mat-form-field>
         <mat-divider></mat-divider>
         <!-- Paramètres DISCOGS -->
         <mat-list-item>
@@ -12,13 +23,11 @@
             <mat-slide-toggle [(ngModel)]="preference.switchDiscogs" (toggleChange)="switchDiscogs()">Discogs
             </mat-slide-toggle>
         </div>
-        <form *ngIf="preference.switchDiscogs" #formDiscogs="ngForm">
             <mat-form-field>
                 <mat-label>Resultat Max</mat-label>
                 <input matInput type="number" min="1" max="100" name="maxResults"
                     [(ngModel)]="preference.maxResultsDiscogs">
             </mat-form-field>
-        </form>
         <mat-divider></mat-divider>
         <!-- Paramètres WIKIPEDIA -->
         <mat-list-item>
@@ -39,7 +48,6 @@
             <mat-slide-toggle [(ngModel)]="preference.switchYoutube" (toggleChange)="switchYoutube()">Youtube
             </mat-slide-toggle>
         </div>
-        <form *ngIf="preference.switchYoutube" #formYoutube="ngForm">
             <mat-form-field>
                 <mat-label>Resultat Max</mat-label>
                 <input matInput type="number" min="1" max="36" name="maxResults"
@@ -61,7 +69,6 @@
                 <input matInput type="number" min="1" max="8" name="grille d'affichage"
                     [(ngModel)]="preference.matSliderValue">
             </mat-form-field>
-        </form>
         <mat-divider></mat-divider>
     </mat-list>
     <div class="group-button-row">

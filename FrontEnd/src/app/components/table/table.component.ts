@@ -34,17 +34,6 @@ export class TableComponent implements OnInit {
   @Output() refresh: EventEmitter<{ preference: Preference }> = new EventEmitter<{ preference: Preference }>();
   h1: string = null;
   loading: boolean = false;
-  @Input() preference: Preference = {
-    matSliderValue: 4,
-    radioBackEnd: "FIREBASE",
-    radioDataBase: "FIRESTORE",
-    switchDiscogs: true,
-    maxResultsDiscogs: 50,
-    switchWikipedia: true,
-    switchYoutube: true,
-    maxResultsYoutube: 12,
-    orderYoutube: "RELEVANCE"
-  }
 
   constructor(public dialog: MatDialog,
     private _sanitizer: DomSanitizer,
@@ -59,8 +48,8 @@ export class TableComponent implements OnInit {
 
   refreshTable() {
     this.loading = true
-    this.route.queryParams.subscribe(params => {
-      if (params.q == '' || params.q == undefined) {
+    this.route.params.subscribe(params => {
+      if (params.categorie === 'all' || params.categorie === undefined) {
         this.videoService.findAll().subscribe((items: any) => {
           this.videos = items;
           this.h1 = `(${items.length}) Vidéos - Toute catégorie confondue`;
@@ -68,9 +57,9 @@ export class TableComponent implements OnInit {
           this.loading = false;
         });
       } else {
-        this.videoService.findByCategorie(params.q).subscribe((items: any) => {
+        this.videoService.findByCategorie(params.categorie).subscribe((items: any) => {
           this.videos = items;
-          this.h1 = `(${items.length}) Vidéos - Catégorie : ${params.q}`;
+          this.h1 = `(${items.length}) Vidéos - Catégorie : ${params.categorie}`;
           this.dataSource = new MatTableDataSource(this.videos);
           this.loading = false;
         });
@@ -108,27 +97,23 @@ export class TableComponent implements OnInit {
           categorie: element.categorie,
           extractWiki: element.extractWiki,
           rating: element.rating
-        },
-        preference: {
-          radioDataBase: this.preference.radioDataBase,
-          radioBackEnd: this.preference.radioBackEnd
         }
       }
     });
   }
 
   openBottomSheetCate(element: VideoGAPI): void {
-    let data = { video: element, preference: this.preference, categorie: true };
+    let data = { video: element, categorie: true };
     this._bottomSheet.open(BottomSheetComponent, { data: data });
   }
 
   openBottomSheetWiki(element: VideoGAPI): void {
-    let data = { video: element, preference: this.preference, wiki: true };
+    let data = { video: element, wiki: true };
     this._bottomSheet.open(BottomSheetComponent, { data: data });
   }
 
   delete(element: VideoGAPI): void {
-    let data = { video: element, preference: this.preference };
+    let data = { video: element};
     this.videoService.deleteVideo(data).subscribe(item => {
       this._snackBar.open(data.video.title, " supprimé.", { duration: 5000, });
       setTimeout( () => { this.refreshTable() }, 3000)

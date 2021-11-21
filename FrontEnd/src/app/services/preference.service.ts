@@ -1,44 +1,96 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable} from 'rxjs';
-import { environment } from '../../environments/environment.prod';
-import { Preference } from '../models/preference.interface';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {environment} from '../../environments/environment.prod';
+import {Preference} from '../models/preference.interface';
+import {filter, map, tap} from 'rxjs/operators';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class PreferenceService {
+  private URL_BACKEND: string = environment.urlBack;
+  private preference$: BehaviorSubject<Preference> =
+    new BehaviorSubject<Preference>(null);
 
-    private URL_BACKEND: string = environment.urlBack;
-    preference: Preference = {
-        matSliderValue: null,
-        radioBackEnd: null,
-        radioDataBase: null,
-        switchDiscogs: null,
-        maxResultsDiscogs: null,
-        switchWikipedia: null,
-        switchYoutube: null,
-        maxResultsYoutube: null,
-        orderYoutube: null
+  constructor(private http: HttpClient) {}
+
+  /**
+   * READ preference FROM database
+   *
+   * @return {*}  {Observable<Preference>}
+   * @memberof PreferenceService
+   */
+  public find(): Observable<Preference> {
+    const result = this.http
+      .get<Preference[]>(this.URL_BACKEND + 'pref', {
+        responseType: 'json'
+      })
+      .pipe(
+        map((preferences: Preference[]) => {
+          return preferences[0];
+        }),
+        tap((preference: Preference) => this.setPreference(preference))
+      );
+    return result;
+  }
+
+  /**
+   * CREATE preference into database
+   *
+   * @param {Preference} preference
+   * @return {*}  {Observable<Preference>}
+   * @memberof PreferenceService
+   */
+  public create(preference: Preference): Observable<Preference> {
+    const result = this.http.post<Preference>(
+      this.URL_BACKEND + 'pref',
+      preference,
+      {
+        responseType: 'json'
       }
+    );
+    this.setPreference(preference);
+    return result;
+  }
 
-    constructor(private http: HttpClient) { }
+  /**
+   * UPDATE preference into database
+   *
+   * @param {Preference} preference
+   * @return {*}  {Observable<Preference>}
+   * @memberof PreferenceService
+   */
+  public update(preference: Preference): Observable<Preference> {
+    const result = this.http.put<Preference>(
+      this.URL_BACKEND + 'pref',
+      preference,
+      {
+        responseType: 'json'
+      }
+    );
+    this.setPreference(preference);
+    return result;
+  }
 
+  /**
+   * GETTER Preference inside global app
+   *
+   * @readonly
+   * @type {Observable<Preference>}
+   * @memberof PreferenceService
+   */
+  public get getPreference$(): Observable<Preference> {
+    return this.preference$.asObservable();
+  }
 
-    find(): Observable<any> {
-        return this.http.get(this.URL_BACKEND + "pref", { responseType: 'json' });
-    }
-
-    create(preference: Preference): Observable<any> {
-        this.preference = preference;
-        return this.http.post(this.URL_BACKEND + "pref", preference, { responseType: 'json' });
-    }
-
-    update(preference: Preference): Observable<any> {
-        this.preference = preference;
-        return this.http.put(this.URL_BACKEND + "pref", preference,  { responseType: 'json' });
-    }
-
+  /**
+   * SETTER Preference inside global app
+   *
+   * @param {Preference} preference
+   * @memberof PreferenceService
+   */
+  public setPreference(preference: Preference): void {
+    this.preference$.next(preference);
+  }
 }
-
-

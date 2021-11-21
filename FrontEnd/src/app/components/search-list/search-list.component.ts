@@ -1,20 +1,19 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import {Component, OnInit, AfterViewInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {DomSanitizer} from '@angular/platform-browser';
+import {ActivatedRoute} from '@angular/router';
 // COMPONENT
-import { WatchComponent } from '../watch/watch.component';
+import {WatchComponent} from '../watch/watch.component';
 // SERVICE
-import { DiscogsService } from 'src/app/services/discogs.service';
-import { SearchService } from 'src/app/services/search.service';
-import { WikipediaService } from 'src/app/services/wikipedia.service';
-import { PreferenceService } from 'src/app/services/preference.service';
+import {DiscogsService} from 'src/app/services/discogs.service';
+import {SearchService} from 'src/app/services/search.service';
+import {WikipediaService} from 'src/app/services/wikipedia.service';
+import {PreferenceService} from 'src/app/services/preference.service';
 //INTERFACE
-import { Preference } from 'src/app/models/preference.interface';
-import { QueryGAPI } from '../../models/queryGAPI.interface';
-import { VideoGAPI } from '../../models/videoGAPI.interface';
-import { QueryDiscogs } from 'src/app/models/queryDiscogs.interface';
-
+import {Preference} from 'src/app/models/preference.interface';
+import {QueryGAPI} from '../../models/queryGAPI.interface';
+import {VideoGAPI} from '../../models/videoGAPI.interface';
+import {QueryDiscogs} from 'src/app/models/queryDiscogs.interface';
 
 @Component({
   selector: 'app-search-list',
@@ -22,7 +21,6 @@ import { QueryDiscogs } from 'src/app/models/queryDiscogs.interface';
   styleUrls: ['./search-list.component.scss']
 })
 export class SearchListComponent implements OnInit, AfterViewInit {
-
   loading: boolean = true;
   keyword: string;
   preference: Preference;
@@ -30,81 +28,86 @@ export class SearchListComponent implements OnInit, AfterViewInit {
     q: null,
     per_page: null,
     token: null,
-    artist: null,
-  }
+    artist: null
+  };
   discogs: any[] = [];
-  extractWiki: string = "";
+  extractWiki: string = '';
   queryGAPI: QueryGAPI = {
     q: null,
     maxResults: null,
     order: null,
     key: null,
     part: null,
-    type: null,
-  }
+    type: null
+  };
   videos: VideoGAPI[] = [];
 
-  constructor(public dialog: MatDialog,
+  constructor(
+    public dialog: MatDialog,
     private _sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private discogsService: DiscogsService,
     private searchService: SearchService,
     private wikipediaService: WikipediaService,
-    private preferenceService: PreferenceService) {
-  }
+    private preferenceService: PreferenceService
+  ) {}
 
   ngOnInit(): void {
     this.checkParam();
   }
 
   ngAfterViewInit() {
-    setTimeout(() => { this.loading = false }, 3000);
+    setTimeout(() => {
+      this.loading = false;
+    }, 3000);
   }
 
   checkParam() {
-    this.route.queryParams.subscribe(params => {
+    this.route.params.subscribe(params => {
       this.keyword = params.q;
-      this.preferenceService.find().subscribe(res => {
-        this.preference = res[0];
+      this.preferenceService.find().subscribe( (preference: Preference) => {
+        this.preference = preference;
         this.factory();
-      })
+      });
     });
-
   }
 
   factory() {
-    if (this.preference.switchDiscogs) { this.searchDiscogs() }
-    if (this.preference.switchWikipedia) { this.searchWikipedia() }
-    if (this.preference.switchYoutube) { this.searchYoutube() }
+    if (this.preference.switchDiscogs) {
+      this.searchDiscogs();
+    }
+    if (this.preference.switchWikipedia) {
+      this.searchWikipedia();
+    }
+    if (this.preference.switchYoutube) {
+      this.searchYoutube();
+    }
   }
 
   searchDiscogs() {
     this.queryDiscogs.q = this.keyword;
     this.queryDiscogs.per_page = this.preference.maxResultsDiscogs;
-    this.discogsService.getByArtistName(this.queryDiscogs)
-      .subscribe(result => {
-        this.discogs = result.results.map(elt => {
-          return {
-            title: elt.title,
-            thumb: elt.thumb,
-            year: elt.year,
-            style: elt.style.join(", "),
-            label: [...new Set(elt.label)].slice(0, 6).join(', '),
-            format: [...new Set(elt.format)].join(', '),
-          }
-        })
-
+    this.discogsService.getByArtistName(this.queryDiscogs).subscribe(result => {
+      this.discogs = result.results.map(elt => {
+        return {
+          title: elt.title,
+          thumb: elt.thumb,
+          year: elt.year,
+          style: elt.style.join(', '),
+          label: [...new Set(elt.label)].slice(0, 6).join(', '),
+          format: [...new Set(elt.format)].join(', ')
+        };
       });
-
+    });
   }
 
   searchWikipedia() {
-    this.wikipediaService.getWiki(this.keyword, "fr").subscribe(result => {
+    this.wikipediaService.getWiki(this.keyword, 'fr').subscribe(result => {
       for (var i in result.query.pages) {
         this.extractWiki = result.query.pages[i].extract;
       }
-      if (this.extractWiki == "") {
-        this.wikipediaService.getWiki(this.keyword, "en").subscribe(result => {
+      if (this.extractWiki == '') {
+        this.wikipediaService.getWiki(this.keyword, 'en').subscribe(result => {
           for (var i in result.query.pages) {
             this.extractWiki = result.query.pages[i].extract;
           }
@@ -145,24 +148,22 @@ export class SearchListComponent implements OnInit, AfterViewInit {
           thumbnail: this.videos[index].thumbnail,
           channelTitle: this.videos[index].channelTitle,
           src: this.videos[index].src,
-          sanitized: this._sanitizer.bypassSecurityTrustResourceUrl(this.videos[index].src),
-          extractWiki: this.extractWiki,
-        },
-        preference: {
-          radioDataBase: this.preference.radioDataBase,
-          radioBackEnd: this.preference.radioBackEnd,
+          sanitized: this._sanitizer.bypassSecurityTrustResourceUrl(
+            this.videos[index].src
+          ),
+          extractWiki: this.extractWiki
         }
       }
     });
   }
 
-  decodeHTMLEntities(text: string) {
+  private decodeHTMLEntities(text: string) {
     var entities = [
       ['amp', '&'],
-      ['apos', '\''],
-      ['#x27', '\''],
+      ['apos', "'"],
+      ['#x27', "'"],
       ['#x2F', '/'],
-      ['#39', '\''],
+      ['#39', "'"],
       ['#47', '/'],
       ['lt', '<'],
       ['gt', '>'],
@@ -171,9 +172,11 @@ export class SearchListComponent implements OnInit, AfterViewInit {
     ];
 
     for (var i = 0, max = entities.length; i < max; ++i)
-      text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
+      text = text.replace(
+        new RegExp('&' + entities[i][0] + ';', 'g'),
+        entities[i][1]
+      );
 
     return text;
   }
-
 }

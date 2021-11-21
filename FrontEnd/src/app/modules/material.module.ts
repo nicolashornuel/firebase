@@ -27,7 +27,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDividerModule } from '@angular/material/divider';
-
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 const MaterialComponents = [
   MatSliderModule,
@@ -56,7 +56,8 @@ const MaterialComponents = [
   MatChipsModule,
   MatCheckboxModule,
   MatSlideToggleModule,
-  MatDividerModule
+  MatDividerModule,
+  DragDropModule
 ];
 
 @NgModule({

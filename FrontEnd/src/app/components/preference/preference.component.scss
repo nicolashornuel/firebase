@@ -11,7 +11,7 @@ mat-radio-button {
 .row {
     display: flex;
     justify-content: center;
-    margin: 16px;
+    margin: 10px;
 }
 h2 {
     margin-left:16px;
@@ -40,11 +40,16 @@ h2 {
         width: 32px;
         margin-right: 12px;
     }
-    form {
+    .logo-large {
+        width: 180px;
+    }
+    mat-form-field {
         display: flex;
         flex-direction: column;
         align-content: stretch;
-        padding: 16px
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 16px;
     }
 }
 
@@ -63,10 +68,15 @@ h2 {
         width: 32px;
         margin-right: 12px;
     }
-    form {
+    .logo-large {
+        width: 180px;
+    }
+    mat-form-field {
         display: flex;
         flex-direction: column;
         align-content: stretch;
-        padding: 16px
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 16px;
     }
 }

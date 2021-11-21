@@ -1,0 +1,14 @@
+<ng-container *ngIf="isLoading; else thread">
+  <div class="spinner-container fx-layout-align-center-center">
+    <mat-spinner color="accent"></mat-spinner>
+  </div>
+</ng-container>
+
+<ng-template #thread>
+
+</ng-template>
+<p></p>
+<div class="marquee-rtl">
+  <!-- le contenu défilant -->
+  <div #child>{{ rssThread }}</div>
+</div>

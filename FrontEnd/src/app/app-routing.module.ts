@@ -4,9 +4,9 @@ import { SearchListComponent } from './components/search-list/search-list.compon
 import { TableComponent } from './components/table/table.component';
 
 const routes: Routes = [
-  { path: 'table', component: TableComponent },
-  { path: 'list', component: SearchListComponent },
-  { path: '', redirectTo: 'table', pathMatch: 'full' }
+  { path: 'table/:categorie', component: TableComponent },
+  { path: 'list/:q', component: SearchListComponent },
+  { path: '', redirectTo: 'table/all', pathMatch: 'full' }
 ];
 
 @NgModule({
