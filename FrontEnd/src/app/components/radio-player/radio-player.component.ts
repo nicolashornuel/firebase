@@ -52,8 +52,6 @@ export class RadioPlayerComponent implements OnInit {
 
   private widthOfPlayer: number = 200; // fenêtre d'affichage du titre courant en pixel
   public historyGrid: Song[];
-  
-  private timer: number = 1000;
 
   constructor(
     private radio: RadioService,
@@ -217,4 +215,5 @@ export class RadioPlayerComponent implements OnInit {
       this.audio.nativeElement.volume -= 0.1;
     }
   }
+
 }

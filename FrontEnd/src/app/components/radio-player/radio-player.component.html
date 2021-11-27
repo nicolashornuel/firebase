@@ -14,12 +14,13 @@
     [matTooltip]="audio.volume"
     matTooltipHideDelay="2000"
     >
-      <button (click)="onVolumeUp()" mat-icon-button color="accent" aria-label="button volume_up">
-        <mat-icon >arrow_drop_up</mat-icon>
+    <button [disabled]="audio.volume <= 0.1 ? true : false" (click)="onVolumeDown()" mat-icon-button color="accent" aria-label="button volume_down">
+      <mat-icon>volume_down</mat-icon>
+    </button>
+      <button [disabled]="audio.volume >= 0.9 ? true : false" (click)="onVolumeUp()" mat-icon-button color="accent" aria-label="button volume_up">
+        <mat-icon >volume_up</mat-icon>
       </button>
-      <button (click)="onVolumeDown()" mat-icon-button color="accent" aria-label="button volume_down">
-        <mat-icon>arrow_drop_down</mat-icon>
-      </button>
+
     </div>
 
     <button mat-icon-button color="accent" [matMenuTriggerFor]="belowMenu"><mat-icon>history</mat-icon></button>
