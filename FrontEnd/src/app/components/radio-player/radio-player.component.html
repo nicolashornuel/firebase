@@ -1,5 +1,4 @@
-<div class="mini-player" [ngStyle]="{width: live ? '25rem;' : '2rem;'}">
-  
+<div class="mini-player" [ngStyle]="{width: title ? '420px;' : '32px;'}">
   <audio [src]="streamSelected" #audio autoplay controls preload="auto" style="display: none">
     <source type="audio/mpeg" />
   </audio>
@@ -9,24 +8,40 @@
     <mat-icon *ngIf="!isPlaying">play_arrow</mat-icon>
   </button>
 
-  <ng-container *ngIf="live">
-    <button mat-icon-button color="accent" [matMenuTriggerFor]="belowMenu"><mat-icon>history</mat-icon></button>
+  <ng-container *ngIf="title">
 
-    
+    <div class="my-level"
+    [matTooltip]="audio.volume"
+    matTooltipHideDelay="2000"
+    >
+      <button (click)="onVolumeUp()" mat-icon-button color="accent" aria-label="button volume_up">
+        <mat-icon >arrow_drop_up</mat-icon>
+      </button>
+      <button (click)="onVolumeDown()" mat-icon-button color="accent" aria-label="button volume_down">
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+    </div>
+
+    <button mat-icon-button color="accent" [matMenuTriggerFor]="belowMenu"><mat-icon>history</mat-icon></button>
     <mat-menu #belowMenu="matMenu" yPosition="below">
       <ng-container *ngIf="historyGrid">
-      <mat-selection-list #songs [multiple]="false" (selectionChange)="searchByHistory(songs.selectedOptions.selected[0]?.value)">
-        <mat-list-option disabled>TITRES DIFFUSÉS (dans la dernière heure) :</mat-list-option>
-        <mat-list-option *ngFor="let song of historyGrid" [value]="song">
-          {{song.start*1000 | date: 'HH:mm'}} - {{song.track.title}} - {{song.track.performers.join(' & ')}}
-        </mat-list-option>
-      </mat-selection-list>
-    </ng-container>
+        <mat-selection-list
+          #songs
+          [multiple]="false"
+          (selectionChange)="searchByHistory(songs.selectedOptions.selected[0]?.value)"
+        >
+          <mat-list-option disabled>TITRES DIFFUSÉS (dans la dernière heure) :</mat-list-option>
+          <mat-list-option *ngFor="let song of historyGrid" [value]="song">
+            {{ song.start * 1000 | date: 'HH:mm' }} - {{ song.track.title }} - {{ song.track.performers.join(' & ') }}
+          </mat-list-option>
+        </mat-selection-list>
+      </ng-container>
     </mat-menu>
 
     <button (click)="onSearch()" mat-icon-button color="accent" aria-label="Example icon button with a bookmark icon">
       <mat-icon>search</mat-icon>
     </button>
+
     <div class="row">
       <p class="countdown">{{ minutesLeft | number: '2.0' }} : {{ secondsLeft | number: '2.0' }}</p>
       <div class="track-live" #track>

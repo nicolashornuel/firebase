@@ -1,17 +1,12 @@
-import {
-  Component,
-  ElementRef,
-  HostBinding,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import {Component, ElementRef, HostBinding, OnInit, ViewChild} from '@angular/core';
 import {NavigationExtras, Router} from '@angular/router';
-import {interval} from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import {EMPTY, interval, timer} from 'rxjs';
+import {concatMap, debounceTime, distinctUntilChanged, mergeMap, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {StationsEnum} from 'src/app/enums/radioFrance.enum';
-import { Preference } from 'src/app/models/preference.interface';
-import {Grid, Live, Song} from 'src/app/models/radioFrance.interface';
-import { PreferenceService } from 'src/app/services/preference.service';
+import {Preference} from 'src/app/models/preference.interface';
+import {Brand, Grid, Live, Song} from 'src/app/models/radioFrance.interface';
+import {DestroyService} from 'src/app/services/destroy.service';
+import {PreferenceService} from 'src/app/services/preference.service';
 import {RadioService} from 'src/app/services/radio.service';
 
 export interface Canal {
@@ -47,7 +42,6 @@ export class RadioPlayerComponent implements OnInit {
   ];
   public streamSelected: string = this.radioStream[1].value;
   public isPlaying: boolean = true;
-  public live: Live;
   public performers: string;
   public title: string;
   public secondsLeft: number = 0;
@@ -58,42 +52,53 @@ export class RadioPlayerComponent implements OnInit {
 
   private widthOfPlayer: number = 200; // fenêtre d'affichage du titre courant en pixel
   public historyGrid: Song[];
+  
+  private timer: number = 1000;
 
-  constructor(private radio: RadioService, private router: Router, private preferenceService: PreferenceService) {}
+  constructor(
+    private radio: RadioService,
+    private router: Router,
+    private preferenceService: PreferenceService,
+    private destroy$: DestroyService
+  ) {}
 
   ngOnInit(): void {
     this.initializeData();
   }
 
-  initializeData(): void {
-    //this.isLoading = true;
-    this.preferenceService.find().subscribe( async (preference: Preference) => {
-      const station: StationsEnum[] = Object.values(StationsEnum).filter(
-        val => val === preference.stationRadioFrance
-      );
-      this.getBrand(station[0]);
-      this.getGrid(station[0]);
-      this.getCurrentTrack(station[0]);
-
-    })
-    //this.isLoading = false;
+  ngAfterViewInit(): void {
+    this.audio.nativeElement.volume = 0.1;
   }
 
-  private async getBrand(station: StationsEnum): Promise<void> {
-     let result = await this.radio.getBrand(station).refetch();
-     //this.streamSelected = result.data.brand.liveStream
-     console.log(this.streamSelected)
+  private initializeData(): void {
+    this.preferenceService.getPreference$.pipe(takeUntil(this.destroy$)).subscribe((preference: Preference) => {
+      let station: StationsEnum =
+        preference !== null
+          ? Object.values(StationsEnum)
+              .filter(val => val === preference.stationRadioFrance)
+              .reduce(res => StationsEnum[res[0]])
+          : StationsEnum.FIP;
+      this.getBrand(station);
+      this.getCurrentTrack(station);
+    });
   }
 
-  private async getGrid(station: StationsEnum): Promise<void> {
-    let result = await this.radio.getGrid(station).refetch();
-    this.historyGrid = result.data.grid.slice().reverse();
+  private getBrand(station: StationsEnum): void {
+    this.radio.subscribeBrand(station).pipe(take(1)).subscribe((liveStream: string) => {
+      this.streamSelected = liveStream;
+    });
+  }
+
+  private getGrid(station: StationsEnum): void {
+    this.radio.subscribeGrid(station).pipe(take(1)).subscribe((songs: Song[]) => {
+      this.historyGrid = songs;
+    });
   }
 
   private async getCurrentTrack(station: StationsEnum): Promise<void> {
     let result = await this.radio.getLive(station).refetch();
+    console.log(result.data);
     if (result.data.live.song) {
-      this.live = result.data;
       this.title = result.data.live.song.track.title;
       this.performers = result.data.live.song.track.performers.join(' & ');
       let end: number = result.data.live.song.end * 1000;
@@ -104,26 +109,31 @@ export class RadioPlayerComponent implements OnInit {
         this.setAnimation();
       }, 50);
       this.getGrid(station);
+      console.log(`Prochaine requête dans ${pollInterval / 1000} secondes`);
       setTimeout(() => {
         this.getCurrentTrack(station);
       }, pollInterval);
     } else {
+      console.log('Aucun résultat à la requête getLive, nouvelle tentative dans 2 secondes');
       setTimeout(() => {
         this.getCurrentTrack(station);
       }, 2000);
     }
   }
 
+
+  test(station, delay, interval) {
+    timer(delay, interval).subscribe(() => {
+      this.test(station, delay, interval);
+    });
+  }
+
   private setTicker(end: number): void {
     interval(1000).subscribe(() => {
       const timeDifference = end - new Date().getTime();
       if (timeDifference > 0) {
-        this.minutesLeft = Math.floor(
-          (timeDifference % this.msPerHour) / this.msPerMinute
-        );
-        this.secondsLeft = Math.floor(
-          (timeDifference % this.msPerMinute) / this.msPerSecond
-        );
+        this.minutesLeft = Math.floor((timeDifference % this.msPerHour) / this.msPerMinute);
+        this.secondsLeft = Math.floor((timeDifference % this.msPerMinute) / this.msPerSecond);
       }
     });
   }
@@ -170,9 +180,7 @@ export class RadioPlayerComponent implements OnInit {
    * @memberof RadioPlayerComponent
    */
   public onTooglePlay() {
-    this.isPlaying
-      ? this.audio.nativeElement.pause()
-      : this.audio.nativeElement.play();
+    this.isPlaying ? this.audio.nativeElement.pause() : this.audio.nativeElement.play();
     this.isPlaying = !this.isPlaying;
   }
 
@@ -182,7 +190,7 @@ export class RadioPlayerComponent implements OnInit {
    * @memberof RadioPlayerComponent
    */
   public onSearch() {
-      this.router.navigateByUrl(`list/${this.performers}`);
+    this.router.navigateByUrl(`list/${this.performers}`);
   }
 
   /**
@@ -192,7 +200,21 @@ export class RadioPlayerComponent implements OnInit {
    * @memberof RadioPlayerComponent
    */
   public searchByHistory(song: Song) {
-    const q = song.track.performers.join(' & ')
+    const q = song.track.performers.join(' & ');
     this.router.navigateByUrl(`list/${q}`);
+  }
+
+  public onVolumeUp() {
+    const volume = this.audio.nativeElement.volume;
+    if (volume <= 1 && volume >= 0) {
+      this.audio.nativeElement.volume += 0.1;
+    }
+  }
+
+  public onVolumeDown() {
+    const volume = this.audio.nativeElement.volume;
+    if (volume <= 1 && volume >= 0) {
+      this.audio.nativeElement.volume -= 0.1;
+    }
   }
 }

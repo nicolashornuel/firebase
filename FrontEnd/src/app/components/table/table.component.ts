@@ -1,16 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { VideoGAPI } from 'src/app/models/videoGAPI.interface';
 import { WatchComponent } from '../watch/watch.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Preference } from 'src/app/models/preference.interface';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet.component';
 import { VideoService } from '../../services/video.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
+import { take, takeUntil } from 'rxjs/operators';
+import { DestroyService } from 'src/app/services/destroy.service';
 
 @Component({
   selector: 'app-table',
@@ -31,7 +32,6 @@ export class TableComponent implements OnInit {
   dataSource = null;
   columnsToDisplay = ['categorie', 'channelTitle', 'title', 'publishedAt', 'rating'];
   expandedElement: VideoGAPI | null;
-  @Output() refresh: EventEmitter<{ preference: Preference }> = new EventEmitter<{ preference: Preference }>();
   h1: string = null;
   loading: boolean = false;
 
@@ -40,7 +40,9 @@ export class TableComponent implements OnInit {
     private _bottomSheet: MatBottomSheet,
     private videoService: VideoService,
     private _snackBar: MatSnackBar,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private destroy$: DestroyService
+    ) { }
 
   ngOnInit(): void {
     this.refreshTable();
@@ -48,16 +50,16 @@ export class TableComponent implements OnInit {
 
   refreshTable() {
     this.loading = true
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(take(1)).subscribe(params => {
       if (params.categorie === 'all' || params.categorie === undefined) {
-        this.videoService.findAll().subscribe((items: any) => {
+        this.videoService.findAll().pipe(takeUntil(this.destroy$)).subscribe((items: any) => {
           this.videos = items;
           this.h1 = `(${items.length}) Vidéos - Toute catégorie confondue`;
           this.dataSource = new MatTableDataSource(this.videos);
           this.loading = false;
         });
       } else {
-        this.videoService.findByCategorie(params.categorie).subscribe((items: any) => {
+        this.videoService.findByCategorie(params.categorie).pipe(takeUntil(this.destroy$)).subscribe((items: any) => {
           this.videos = items;
           this.h1 = `(${items.length}) Vidéos - Catégorie : ${params.categorie}`;
           this.dataSource = new MatTableDataSource(this.videos);

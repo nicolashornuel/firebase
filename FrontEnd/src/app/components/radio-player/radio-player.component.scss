@@ -1,12 +1,22 @@
 .mini-player {
   display: flex;
-  //width: 25rem;
   border-radius: 2rem;
   border-color: #ff4081 !important;
   border: 2px;
   border-style: solid;
   padding: 2px;
   padding-right: 10px;
+  .my-level {
+    display: flex;
+    flex-direction: column;
+   /*  height: 20px;
+    width: 20px; */
+    * {
+      height: 20px;
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
 }
 .row {
   display: flex;
@@ -81,7 +91,6 @@
     left: 100%;
   }
 } */
-
 
 /* @keyframes defilement-title {
   0% {

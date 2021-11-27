@@ -14,6 +14,9 @@ import {Preference} from 'src/app/models/preference.interface';
 import {QueryGAPI} from '../../models/queryGAPI.interface';
 import {VideoGAPI} from '../../models/videoGAPI.interface';
 import {QueryDiscogs} from 'src/app/models/queryDiscogs.interface';
+import {take, takeUntil} from 'rxjs/operators';
+import {DestroyService} from 'src/app/services/destroy.service';
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-search-list',
@@ -49,7 +52,8 @@ export class SearchListComponent implements OnInit, AfterViewInit {
     private discogsService: DiscogsService,
     private searchService: SearchService,
     private wikipediaService: WikipediaService,
-    private preferenceService: PreferenceService
+    private preferenceService: PreferenceService,
+    private destroy$: DestroyService
   ) {}
 
   ngOnInit(): void {
@@ -63,13 +67,15 @@ export class SearchListComponent implements OnInit, AfterViewInit {
   }
 
   checkParam() {
-    this.route.params.subscribe(params => {
-      this.keyword = params.q;
-      this.preferenceService.find().subscribe( (preference: Preference) => {
+    forkJoin([
+      this.route.params.pipe(take(1)),
+      this.preferenceService.getPreference$.pipe(takeUntil(this.destroy$))
+    ]).subscribe( ([params, preference]) => {
+        this.keyword = params.q;
         this.preference = preference;
         this.factory();
-      });
-    });
+      }
+    );
   }
 
   factory() {
@@ -148,9 +154,7 @@ export class SearchListComponent implements OnInit, AfterViewInit {
           thumbnail: this.videos[index].thumbnail,
           channelTitle: this.videos[index].channelTitle,
           src: this.videos[index].src,
-          sanitized: this._sanitizer.bypassSecurityTrustResourceUrl(
-            this.videos[index].src
-          ),
+          sanitized: this._sanitizer.bypassSecurityTrustResourceUrl(this.videos[index].src),
           extractWiki: this.extractWiki
         }
       }
@@ -172,10 +176,7 @@ export class SearchListComponent implements OnInit, AfterViewInit {
     ];
 
     for (var i = 0, max = entities.length; i < max; ++i)
-      text = text.replace(
-        new RegExp('&' + entities[i][0] + ';', 'g'),
-        entities[i][1]
-      );
+      text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
 
     return text;
   }
