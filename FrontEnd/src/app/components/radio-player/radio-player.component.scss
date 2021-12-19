@@ -1,4 +1,11 @@
-.mini-player {
+$width-of-window-player-desktop: 155px;
+
+$height-of-navbar: 56px;
+
+$width-of-tab-icon-mobile: 40px;
+$width-of-tab-container-mobile: 244px;
+
+.player-desktop {
   display: flex;
   border-radius: 2rem;
   border-color: #ff4081 !important;
@@ -6,44 +13,114 @@
   border-style: solid;
   padding: 2px;
   padding-right: 10px;
-  .my-level {
+  .row {
     display: flex;
-    //flex-direction: column;
-    * {
-      /* height: 10px;
-      width: 20px;
-      font-size: 30px;
-      line-height: 20px; */
+    justify-content: space-between;
+    align-items: center;
+    p {
+      margin: 0;
+    }
+    .track-live {
+      margin-left: 1em;
+      overflow-x: auto;
+      white-space: nowrap;
+      width: $width-of-window-player-desktop;
+      .performers {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.2em;
+      }
+      .title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 400;
+        opacity: 0.5;
+        line-height: 1.2em;
+      }
     }
   }
 }
-.row {
+
+.player-mobile {
+  position: absolute;
+  z-index: 10;
+  top: $height-of-navbar;
+  right: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  p {
-    margin: 0;
-  }
-  .track-live {
-    margin-left: 1rem;
-    overflow-x: auto;
-    white-space: nowrap;
-    width: 200px;
-    .performers {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1.2em;
+  width: $width-of-tab-icon-mobile;
+  transition: width 0.5s ease-in;
+
+  &.open {
+    width: 100%;
+    transition: width 0.5s ease-in;
+    .tab-icon mat-icon {
+      transform: rotate(180deg);
+      transition: transform 0.5s ease-in;
     }
-    .title {
+  }
+
+  &.close {
+    .tab-icon mat-icon {
+      transform: rotate(0deg);
+      transition: transform 0.5s ease-in;
+    }
+  }
+
+  .tab-icon {
+    border-bottom-left-radius: 5px;
+    background-color: #3f51b5;
+    width: $width-of-tab-icon-mobile;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    
+  }
+
+  .tab-content {
+    padding: 0.5em;
+    background-color: #3f51b5;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .row-txt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    .countdown {
       margin: 0;
-      font-size: 16px;
-      font-weight: 400;
-      opacity: 0.5;
-      line-height: 1.2em;
+    }
+    .track-live {
+      overflow-x: auto;
+      white-space: nowrap;
+      width: $width-of-window-player-desktop;
+      .performers {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.2em;
+      }
+      .title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 400;
+        opacity: 0.5;
+        line-height: 1.2em;
+      }
     }
   }
 }
+
 .select {
   width: 1.5rem;
   height: 1.5rem;
@@ -54,46 +131,9 @@
   cursor: pointer;
 }
 
-@keyframes defilement-performers {
-  0% {
-    transform: translate3d(100%, 0%, 0px);
-    left: 100%;
-  }
-  100% {
-    transform: translate3d(-100%, 0%, 0px);
-    left: 100%;
-  }
-}
-
-@keyframes defilement-title {
-  0% {
-    transform: translate3d(100%, 0%, 0px);
-    left: 100%;
-  }
-  100% {
-    transform: translate3d(-100%, 0%, 0px);
-    left: 100%;
-  }
-}
-
 /* @keyframes defilement-performers {
   0% {
-    transform: translate3d(0%, 0%, 0px);
-    left: 100%;
-  }
-  50% {
-    transform: translate3d(var(--target-performers), 0%, 0px);
-    left: 0%;
-  }
-  100% {
-    transform: translate3d(0%, 0%, 0px);
-    left: 100%;
-  }
-} */
-
-/* @keyframes defilement-title {
-  0% {
-    transform: translate3d(100%, 0%, 0px);
+    transform: translate3d(var(--target-title), 0%, 0px);
     left: 100%;
   }
   100% {
@@ -101,3 +141,12 @@
     left: 100%;
   }
 } */
+
+@keyframes defilement-track {
+  0% {
+    transform: translate3d($width-of-window-player-desktop, 0%, 0px);
+  }
+  100% {
+    transform: translate3d(-100%, 0%, 0px);
+  }
+}

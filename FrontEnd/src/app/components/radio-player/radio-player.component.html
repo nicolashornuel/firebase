@@ -1,54 +1,143 @@
-<div class="mini-player" [ngStyle]="{width: title ? '420px;' : '32px;'}">
-  <audio [src]="streamSelected" #audio autoplay controls preload="auto" style="display: none">
-    <source type="audio/mpeg" />
-  </audio>
+<ng-container *ngIf="!isMobile; else MobileView">
+  <div #player class="player-desktop" [ngStyle]="{width: title ? '420px;' : '32px;'}">
+    <audio [src]="streamSelected" #audio autoplay controls preload="auto" style="display: none">
+      <source type="audio/mpeg" />
+    </audio>
 
-  <button (click)="onTooglePlay()" mat-mini-fab color="accent" aria-label="Example icon button with a bookmark icon">
-    <mat-icon *ngIf="isPlaying">pause</mat-icon>
-    <mat-icon *ngIf="!isPlaying">play_arrow</mat-icon>
-  </button>
-
-  <ng-container *ngIf="title">
-
-    <div class="my-level"
-    [matTooltip]="audio.volume"
-    matTooltipHideDelay="2000"
-    >
-    <button [disabled]="audio.volume <= 0.1 ? true : false" (click)="onVolumeDown()" mat-icon-button color="accent" aria-label="button volume_down">
-      <mat-icon>volume_down</mat-icon>
+    <button (click)="onTooglePlay()" mat-mini-fab color="accent" aria-label="Example icon button with a bookmark icon">
+      <mat-icon *ngIf="isPlaying">pause</mat-icon>
+      <mat-icon *ngIf="!isPlaying">play_arrow</mat-icon>
     </button>
-      <button [disabled]="audio.volume >= 0.9 ? true : false" (click)="onVolumeUp()" mat-icon-button color="accent" aria-label="button volume_up">
-        <mat-icon >volume_up</mat-icon>
+
+    <ng-container *ngIf="title && player.style.width === '420px'">
+      <div class="my-level" #tooltip="matTooltip" [matTooltip]="audio.volume | number: '1.1-1'"></div>
+      <button
+        [disabled]="audio.volume <= 0.1 ? true : false"
+        (click)="onVolumeDown()"
+        mat-icon-button
+        color="accent"
+        aria-label="button volume_down"
+      >
+        <mat-icon>volume_down</mat-icon>
+      </button>
+      <button
+        [disabled]="audio.volume >= 0.9 ? true : false"
+        (click)="onVolumeUp()"
+        mat-icon-button
+        color="accent"
+        aria-label="button volume_up"
+      >
+        <mat-icon>volume_up</mat-icon>
       </button>
 
-    </div>
+      <button mat-icon-button color="accent" [matMenuTriggerFor]="belowMenu"><mat-icon>history</mat-icon></button>
+      <mat-menu #belowMenu="matMenu" yPosition="below">
+        <ng-container *ngIf="historyGrid">
+          <mat-selection-list
+            #songs
+            [multiple]="false"
+            (selectionChange)="searchByHistory(songs.selectedOptions.selected[0]?.value)"
+          >
+            <mat-list-option disabled>TITRES DIFFUSÉS (dans la dernière heure) :</mat-list-option>
+            <mat-list-option *ngFor="let song of historyGrid" [value]="song">
+              {{ song.start * 1000 | date: 'HH:mm' }} - {{ song.track.title }} - {{ song.track.performers.join(' & ') }}
+            </mat-list-option>
+          </mat-selection-list>
+        </ng-container>
+      </mat-menu>
 
-    <button mat-icon-button color="accent" [matMenuTriggerFor]="belowMenu"><mat-icon>history</mat-icon></button>
-    <mat-menu #belowMenu="matMenu" yPosition="below">
-      <ng-container *ngIf="historyGrid">
-        <mat-selection-list
-          #songs
-          [multiple]="false"
-          (selectionChange)="searchByHistory(songs.selectedOptions.selected[0]?.value)"
-        >
-          <mat-list-option disabled>TITRES DIFFUSÉS (dans la dernière heure) :</mat-list-option>
-          <mat-list-option *ngFor="let song of historyGrid" [value]="song">
-            {{ song.start * 1000 | date: 'HH:mm' }} - {{ song.track.title }} - {{ song.track.performers.join(' & ') }}
-          </mat-list-option>
-        </mat-selection-list>
-      </ng-container>
-    </mat-menu>
+      <button (click)="onSearch()" mat-icon-button color="accent" aria-label="Example icon button with a bookmark icon">
+        <mat-icon>search</mat-icon>
+      </button>
 
-    <button (click)="onSearch()" mat-icon-button color="accent" aria-label="Example icon button with a bookmark icon">
-      <mat-icon>search</mat-icon>
-    </button>
-
-    <div class="row">
-      <p class="countdown">{{ minutesLeft | number: '2.0' }} : {{ secondsLeft | number: '2.0' }}</p>
-      <div class="track-live" #track>
-        <div class="performers">{{ performers }}</div>
-        <div class="title">{{ title }}</div>
+      <div class="row">
+        <p class="countdown">{{ minutesLeft | number: '2.0' }} : {{ secondsLeft | number: '2.0' }}</p>
+        <div class="track-live" #track>
+          <div class="performers">{{ performers }}</div>
+          <div class="title">{{ title }}</div>
+        </div>
       </div>
+    </ng-container>
+  </div>
+</ng-container>
+
+<ng-template #MobileView>
+  <div #player class="player-mobile" [ngClass]="playerIsOpen ? 'open' : 'close'">
+    <div class="tab-icon">
+      <mat-icon (click)="toggleWindowMobile()">chevron_left</mat-icon>
     </div>
-  </ng-container>
-</div>
+
+    <div class="tab-content" *ngIf="title">
+
+      <audio [src]="streamSelected" #audio autoplay controls preload="auto" style="display: none">
+        <source type="audio/mpeg" />
+      </audio>
+
+      <div class="row-btn">
+        <button
+          (click)="onTooglePlay()"
+          mat-mini-fab
+          color="accent"
+          aria-label="Example icon button with a bookmark icon"
+        >
+          <mat-icon *ngIf="isPlaying">pause</mat-icon>
+          <mat-icon *ngIf="!isPlaying">play_arrow</mat-icon>
+        </button>
+
+        <div class="my-level" #tooltip="matTooltip" [matTooltip]="audio.volume | number: '1.1-1'"></div>
+        <button
+          [disabled]="audio.volume <= 0.1 ? true : false"
+          (click)="onVolumeDown()"
+          mat-icon-button
+          color="accent"
+          aria-label="button volume_down"
+        >
+          <mat-icon>volume_down</mat-icon>
+        </button>
+        <button
+          [disabled]="audio.volume >= 0.9 ? true : false"
+          (click)="onVolumeUp()"
+          mat-icon-button
+          color="accent"
+          aria-label="button volume_up"
+        >
+          <mat-icon>volume_up</mat-icon>
+        </button>
+
+        <button mat-icon-button color="accent" [matMenuTriggerFor]="belowMenu"><mat-icon>history</mat-icon></button>
+        <mat-menu #belowMenu="matMenu" yPosition="below">
+          <ng-container *ngIf="historyGrid">
+            <mat-selection-list
+              #songs
+              [multiple]="false"
+              (selectionChange)="searchByHistory(songs.selectedOptions.selected[0]?.value)"
+            >
+              <mat-list-option disabled>TITRES DIFFUSÉS (dans la dernière heure) :</mat-list-option>
+              <mat-list-option *ngFor="let song of historyGrid" [value]="song">
+                {{ song.start * 1000 | date: 'HH:mm' }} - {{ song.track.title }} -
+                {{ song.track.performers.join(' & ') }}
+              </mat-list-option>
+            </mat-selection-list>
+          </ng-container>
+        </mat-menu>
+
+        <button
+          (click)="onSearch()"
+          mat-icon-button
+          color="accent"
+          aria-label="Example icon button with a bookmark icon"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+      <div class="row-txt">
+        <p class="countdown">{{ minutesLeft | number: '2.0' }} : {{ secondsLeft | number: '2.0' }}</p>
+        <div class="track-live" #track>
+          <div class="performers">{{ performers }}</div>
+          <div class="title">{{ title }}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ng-template>

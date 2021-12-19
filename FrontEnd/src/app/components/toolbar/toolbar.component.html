@@ -5,7 +5,7 @@
 
   <span class="example-spacer"></span>
 
-  <app-radio-player></app-radio-player>
+  <app-radio-player #playerComponent></app-radio-player>
 
   <span class="example-spacer"></span>
 
@@ -13,7 +13,7 @@
     <input #box (keyup.enter)="onEnter(box.value)" matInput name="q">
   </div>
 
-  <button type="button" mat-icon-button (click)="toogleInput()">
+  <button type="button" mat-icon-button (click)="toogleInput(); playerComponent.toggleWindowDesktop()">
     <mat-icon>search</mat-icon>
   </button>
 

@@ -1,13 +1,15 @@
 import {Component, ElementRef, HostBinding, OnInit, ViewChild} from '@angular/core';
-import {NavigationExtras, Router} from '@angular/router';
-import {EMPTY, interval, timer} from 'rxjs';
-import {concatMap, debounceTime, distinctUntilChanged, mergeMap, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {MatTooltip} from '@angular/material/tooltip';
+import {Router} from '@angular/router';
+import {interval} from 'rxjs';
+import {take, takeUntil} from 'rxjs/operators';
 import {StationsEnum} from 'src/app/enums/radioFrance.enum';
 import {Preference} from 'src/app/models/preference.interface';
-import {Brand, Grid, Live, Song} from 'src/app/models/radioFrance.interface';
+import {Song} from 'src/app/models/radioFrance.interface';
 import {DestroyService} from 'src/app/services/destroy.service';
 import {PreferenceService} from 'src/app/services/preference.service';
 import {RadioService} from 'src/app/services/radio.service';
+import {BreakpointState, Breakpoints, BreakpointObserver} from '@angular/cdk/layout';
 
 export interface Canal {
   value: string;
@@ -30,6 +32,9 @@ export class RadioPlayerComponent implements OnInit {
   @HostBinding('style.--target-performers') private targetPerformers: string;
   @HostBinding('style.--target-title') private targetTitle: string;
 
+  @ViewChild('tooltip') tooltip: MatTooltip;
+  @ViewChild('player') player: ElementRef;
+
   public radioStream: Canal[] = [
     {
       value: 'https://chi.bassdrive.co:443/;stream/1',
@@ -50,18 +55,29 @@ export class RadioPlayerComponent implements OnInit {
   private msPerMinute = 60 * 1000;
   private msPerHour = 60 * 60 * 1000;
 
-  private widthOfPlayer: number = 200; // fenêtre d'affichage du titre courant en pixel
+  private widthOfPlayer: number = 155; // fenêtre d'affichage du titre en pixel 155
   public historyGrid: Song[];
+
+  public isMobile: boolean;
+  public playerIsOpen: boolean = false;
+
 
   constructor(
     private radio: RadioService,
     private router: Router,
     private preferenceService: PreferenceService,
-    private destroy$: DestroyService
+    private destroy$: DestroyService,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
     this.initializeData();
+    this.breakpointObserver
+      .observe([Breakpoints.Small, Breakpoints.XSmall])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        this.isMobile = result.matches;
+      });
   }
 
   ngAfterViewInit(): void {
@@ -82,15 +98,21 @@ export class RadioPlayerComponent implements OnInit {
   }
 
   private getBrand(station: StationsEnum): void {
-    this.radio.subscribeBrand(station).pipe(take(1)).subscribe((liveStream: string) => {
-      this.streamSelected = liveStream;
-    });
+    this.radio
+      .subscribeBrand(station)
+      .pipe(take(1))
+      .subscribe((liveStream: string) => {
+        this.streamSelected = liveStream;
+      });
   }
 
   private getGrid(station: StationsEnum): void {
-    this.radio.subscribeGrid(station).pipe(take(1)).subscribe((songs: Song[]) => {
-      this.historyGrid = songs;
-    });
+    this.radio
+      .subscribeGrid(station)
+      .pipe(take(1))
+      .subscribe((songs: Song[]) => {
+        this.historyGrid = songs;
+      });
   }
 
   private async getCurrentTrack(station: StationsEnum): Promise<void> {
@@ -119,12 +141,11 @@ export class RadioPlayerComponent implements OnInit {
     }
   }
 
-
-  test(station, delay, interval) {
+  /*   test(station, delay, interval) {
     timer(delay, interval).subscribe(() => {
       this.test(station, delay, interval);
     });
-  }
+  } */
 
   private setTicker(end: number): void {
     interval(1000).subscribe(() => {
@@ -139,20 +160,16 @@ export class RadioPlayerComponent implements OnInit {
   private setAnimation(): void {
     const performersWidth = this.mesureTxt(this.performers);
     const titleWidth = this.mesureTxt(this.title);
+    this.trackElt.nativeElement.children[0].style.width = `${performersWidth}px`;
+    this.trackElt.nativeElement.children[1].style.width = `${titleWidth}px`;
     if (performersWidth > this.widthOfPlayer) {
-      this.targetPerformers = `-${performersWidth - this.widthOfPlayer}px`;
-      this.trackElt.nativeElement.children[0].style.width = `${performersWidth}px`;
-      this.trackElt.nativeElement.children[0].style.animation = `defilement-performers ${this.performers.length}s infinite linear`;
+      this.trackElt.nativeElement.children[0].style.animation = `defilement-track ${this.performers.length / 2}s infinite linear`;
     } else {
-      this.trackElt.nativeElement.children[0].style.width = `${performersWidth}px`;
       this.trackElt.nativeElement.children[0].style.animation = 'none';
     }
     if (titleWidth > this.widthOfPlayer) {
-      this.targetTitle = `-${titleWidth - this.widthOfPlayer}px`;
-      this.trackElt.nativeElement.children[1].style.width = `${titleWidth}px`;
-      this.trackElt.nativeElement.children[1].style.animation = `defilement-title ${this.title.length}s infinite linear`;
+      this.trackElt.nativeElement.children[1].style.animation = `defilement-track ${this.title.length / 2}s infinite linear`;
     } else {
-      this.trackElt.nativeElement.children[1].style.width = `${performersWidth}px`;
       this.trackElt.nativeElement.children[1].style.animation = 'none';
     }
   }
@@ -207,6 +224,7 @@ export class RadioPlayerComponent implements OnInit {
     if (volume <= 1 && volume >= 0) {
       this.audio.nativeElement.volume += 0.1;
     }
+    this.showTooltip();
   }
 
   public onVolumeDown() {
@@ -214,6 +232,20 @@ export class RadioPlayerComponent implements OnInit {
     if (volume <= 1 && volume >= 0) {
       this.audio.nativeElement.volume -= 0.1;
     }
+    this.showTooltip();
   }
 
+  private showTooltip(): void {
+    this.tooltip.show();
+    setTimeout(() => this.tooltip.hide(), 1000);
+  }
+
+  public toggleWindowDesktop(): void {
+    const widthOfWindow = this.player.nativeElement.style.width;
+    this.player.nativeElement.style.width = widthOfWindow === '420px' ? '32px' : '420px';
+  }
+
+  public toggleWindowMobile(): void {
+    this.playerIsOpen = !this.playerIsOpen;
+  }
 }
