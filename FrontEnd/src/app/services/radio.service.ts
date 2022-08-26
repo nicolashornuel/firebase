@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {ApolloQueryResult} from '@apollo/client/core';
 import {Apollo, gql, QueryRef} from 'apollo-angular';
 import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {StationsEnum} from '../enums/radioFrance.enum';
-import {Brand, Grid, Live, Song} from '../models/radioFrance.interface';
+import {Brand, Grid, Live } from '../models/radioFrance.interface';
 
 // see https://apollo-angular.com/docs/development-and-testing/testing
 
@@ -25,18 +25,49 @@ export class RadioService {
     const GET_LIVE = gql`
       query GetLive($station: StationsEnum!) {
         live(station: $station) {
-          song {
-            start
-            end
-            track {
+          show {
+            ... on DiffusionStep {
+              start
+              end
+              __typename
+              diffusion {
+                title
+                standFirst
+              }
+            }
+            ... on BlankStep {
+              start
+              end
+              __typename
               title
-              albumTitle
-              label
-              mainArtists
-              authors
-              composers
-              performers
-              productionDate
+            }
+          }
+          program {
+            ... on DiffusionStep {
+              start
+              end
+              __typename
+              diffusion {
+                title
+                standFirst
+              }
+            }
+            ... on BlankStep {
+              start
+              end
+              __typename
+              title
+            }
+          }
+          song {
+            ... on TrackStep {
+              start
+              end
+              __typename
+              track {
+                title
+                performers
+              }
             }
           }
         }
@@ -104,16 +135,26 @@ export class RadioService {
           ... on TrackStep {
             start
             end
+            __typename
             track {
               title
-              albumTitle
-              label
-              mainArtists
-              authors
-              composers
               performers
-              productionDate
             }
+          }
+          ... on DiffusionStep {
+            start
+            end
+            __typename
+            diffusion {
+              title
+              standFirst
+            }
+          }
+          ... on BlankStep {
+            start
+            end
+            __typename
+            title
           }
         }
       }
@@ -128,36 +169,120 @@ export class RadioService {
    * GET observable of GRID
    *
    * @param {StationsEnum} station
-   * @return {*}  {Observable<Song[]>}
+   * @return {*}  {Observable<Grid>}
    * @memberof RadioService
    */
-  public subscribeGrid(station: StationsEnum): Observable<Song[]> {
-    return this.getGrid(station).valueChanges.pipe(
-      map((result: ApolloQueryResult<Grid>) => result.data.grid.slice().reverse())
-    );
+  public subscribeGrid(station: StationsEnum): Observable<Grid> {
+    return this.getGrid(station).valueChanges.pipe(map((result: ApolloQueryResult<Grid>) => result.data));
   }
 
   /**
    * GET observable of BRAND
    *
    * @param {StationsEnum} station
-   * @return {*}  {Observable<string>}
+   * @return {*}  {Observable<Brand>}
    * @memberof RadioService
    */
-  public subscribeBrand(station: StationsEnum): Observable<string> {
-    return this.getBrand(station).valueChanges.pipe(
-      map((result: ApolloQueryResult<Brand>) => result.data.brand.liveStream)
-    );
+  public subscribeBrand(station: StationsEnum): Observable<Brand> {
+    return this.getBrand(station).valueChanges.pipe(map((result: ApolloQueryResult<Brand>) => result.data));
   }
 
   /**
-   * GET observable of SONG
+   * GET observable of LIVE
    *
    * @param {StationsEnum} station
-   * @return {*}  {Observable<Song>}
+   * @return {*}  {Observable<Live>}
    * @memberof RadioService
    */
-  public subscribeLive(station: StationsEnum): Observable<Song> {
-    return this.getLive(station).valueChanges.pipe(map((result: ApolloQueryResult<Live>) => result.data.live.song));
+  public subscribeLive(station: StationsEnum): Observable<Live> {
+    return this.getLive(station).valueChanges.pipe(map((result: ApolloQueryResult<Live>) => result.data));
   }
 }
+
+
+/* 
+`
+      query GetLive($station: StationsEnum!) {
+        live(station: $station) {
+          show {
+            ... on DiffusionStep {
+              id
+              start
+              end
+              __typename
+              diffusion {
+                id
+                title
+                standFirst
+                url
+                published_date
+                podcastEpisode {
+                  id
+                  title
+                  url
+                  created
+                  duration
+                }
+              }
+            }
+            ... on BlankStep {
+              id
+              start
+              end
+              __typename
+              title
+            }
+          }
+          program {
+            ... on DiffusionStep {
+              id
+              start
+              end
+              __typename
+              diffusion {
+                id
+                title
+                standFirst
+                url
+                published_date
+                podcastEpisode {
+                  id
+                  title
+                  url
+                  created
+                  duration
+                }
+              }
+            }
+            ... on BlankStep {
+              id
+              start
+              end
+              __typename
+              title
+            }
+          }
+          song {
+            ... on TrackStep {
+              id
+              start
+              end
+              __typename
+              track {
+                id
+                title
+                albumTitle
+                label
+                mainArtists
+                authors
+                composers
+                performers
+                productionDate
+                discNumber
+                trackNumber
+              }
+            }
+          }
+        }
+      }
+    ` */

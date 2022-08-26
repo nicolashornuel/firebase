@@ -50,7 +50,7 @@ export class TableComponent implements OnInit {
 
   refreshTable() {
     this.loading = true
-    this.route.params.pipe(take(1)).subscribe(params => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if (params.categorie === 'all' || params.categorie === undefined) {
         this.videoService.findAll().pipe(takeUntil(this.destroy$)).subscribe((items: any) => {
           this.videos = items;

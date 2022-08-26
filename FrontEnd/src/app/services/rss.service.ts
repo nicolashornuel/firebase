@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import * as xml2js from "xml2js";
+import * as xml2js from 'xml2js';
 import { convertableToString, ParserOptions } from 'xml2js';
 import { NewsRss } from '../models/news-rss.interface';
 
@@ -21,11 +21,11 @@ export class RssService {
    * @return {*}  {Observable<any>}
    * @memberof RssService
    */
-  public getRSSFeedData(url: string) : Observable<any> {
-    const requestOptions: Object = {
-      responseType: "text"
+  public getRSSFeedData(url: string): Observable<any> {
+    const requestOptions: object = {
+      responseType: 'text'
     };
-    return this.http.get<any>(url, requestOptions)
+    return this.http.get<any>(url, requestOptions);
   }
 
   /**

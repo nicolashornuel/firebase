@@ -1,9 +1,8 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {forkJoin, interval} from 'rxjs';
-import {take, takeUntil} from 'rxjs/operators';
-import {IRssItem, NewsRss} from 'src/app/models/news-rss.interface';
-import {DestroyService} from 'src/app/services/destroy.service';
-import {RssService} from 'src/app/services/rss.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { NewsRss } from 'src/app/models/news-rss.interface';
+import { DestroyService } from 'src/app/services/destroy.service';
+import { RssService } from 'src/app/services/rss.service';
 
 @Component({
   selector: 'app-rss-flux',
@@ -19,7 +18,6 @@ export class RssFluxComponent implements OnInit {
     'http://www.ledauphine.com/actualite/a-la-une/rss'
   ];
   public rssThread: string = '';
-  public isLoading: boolean = false;
   private counter: number = 0;
   @ViewChild('child') child: ElementRef;
   private readingLoop: number = 1000;
@@ -37,11 +35,12 @@ export class RssFluxComponent implements OnInit {
    * @memberof RssFluxComponent
    */
   private fetchData(url: string): void {
-    this.isLoading = true;
     this.rss
       .getRSSFeedData(url)
       .pipe(take(1))
-      .subscribe(data => this.transformData(data));
+      .subscribe(async data =>{
+        await this.transformData(data);
+      });
   }
 
   /**
@@ -66,7 +65,6 @@ export class RssFluxComponent implements OnInit {
     this.child.nativeElement.style.animation = `defilement-rtl ${
       this.rssThread.length / 10
     }s infinite linear`;
-    this.isLoading = false;
     this.updateFeed();
   }
 
@@ -77,7 +75,6 @@ export class RssFluxComponent implements OnInit {
    * @memberof RssFluxComponent
    */
   private updateFeed(): void {
-    console.log(this.readingLoop);
     setTimeout(() => {
       this.counter++;
       this.fetchData(this.rssUrl[this.counter]);

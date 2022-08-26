@@ -1,155 +1,155 @@
-import {Component, ElementRef, HostBinding, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatTooltip} from '@angular/material/tooltip';
 import {Router} from '@angular/router';
-import {interval} from 'rxjs';
+import {interval, timer} from 'rxjs';
 import {take, takeUntil} from 'rxjs/operators';
 import {StationsEnum} from 'src/app/enums/radioFrance.enum';
 import {Preference} from 'src/app/models/preference.interface';
-import {Song} from 'src/app/models/radioFrance.interface';
+import {Brand, BrandDTO, Grid, SongDTO} from 'src/app/models/radioFrance.interface';
 import {DestroyService} from 'src/app/services/destroy.service';
 import {PreferenceService} from 'src/app/services/preference.service';
 import {RadioService} from 'src/app/services/radio.service';
-import {BreakpointState, Breakpoints, BreakpointObserver} from '@angular/cdk/layout';
-
-export interface Canal {
-  value: string;
-  viewValue: string;
-}
+import {Breakpoints, BreakpointObserver} from '@angular/cdk/layout';
+import {RadioTransformService} from 'src/app/services/radio-transform.service';
+import {RadioUtilService} from 'src/app/services/radio-util.service';
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-radio-player',
   templateUrl: './radio-player.component.html',
   styleUrls: ['./radio-player.component.scss']
 })
-export class RadioPlayerComponent implements OnInit {
-  // Permet Play/Pause par clic sur le bouton personnalisé
+export class RadioPlayerComponent implements OnInit, AfterViewInit {
   @ViewChild('audio') audio: ElementRef;
-
-  // Permet de gérer le défilement du titre audio par style CSS
-  @ViewChild('track') trackElt: ElementRef;
-
-  // Permet de gérer le défilement du titre audio par style CSS
-  @HostBinding('style.--target-performers') private targetPerformers: string;
-  @HostBinding('style.--target-title') private targetTitle: string;
-
+  @ViewChild('track') trackElt: ElementRef<HTMLElement>;
   @ViewChild('tooltip') tooltip: MatTooltip;
   @ViewChild('player') player: ElementRef;
 
-  public radioStream: Canal[] = [
-    {
-      value: 'https://chi.bassdrive.co:443/;stream/1',
-      viewValue: 'Bassdrive'
-    },
-    {
-      value: 'https://icecast.radiofrance.fr/fip-midfi.mp3?id=radiofrance',
-      viewValue: 'FIP'
-    }
-  ];
-  public streamSelected: string = this.radioStream[1].value;
-  public isPlaying: boolean = true;
-  public performers: string;
-  public title: string;
-  public secondsLeft: number = 0;
-  public minutesLeft: number = 0;
+  public brandDTO: BrandDTO = {
+    value: 'https://icecast.radiofrance.fr/fip-midfi.mp3?id=radiofrance',
+    viewValue: 'FIP'
+  };
+  private station: StationsEnum;
+  public song: SongDTO;
+  public grid: SongDTO[];
+  public isPlaying = true;
+  public secondsLeft = 0;
+  public minutesLeft = 0;
   private msPerSecond = 1000;
   private msPerMinute = 60 * 1000;
   private msPerHour = 60 * 60 * 1000;
-
-  private widthOfPlayer: number = 155; // fenêtre d'affichage du titre en pixel 155
-  public historyGrid: Song[];
-
   public isMobile: boolean;
-  public playerIsOpen: boolean = false;
-
+  public playerIsOpen = false;
 
   constructor(
     private radio: RadioService,
     private router: Router,
     private preferenceService: PreferenceService,
     private destroy$: DestroyService,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private transform: RadioTransformService,
+    private util: RadioUtilService,
+    private titleService:Title
   ) {}
 
+  /**
+   * SUBSCRIBE width of screen
+   *
+   * @memberof RadioPlayerComponent
+   */
   ngOnInit(): void {
-    this.initializeData();
     this.breakpointObserver
-      .observe([Breakpoints.Small, Breakpoints.XSmall])
+      .observe(Breakpoints.XSmall)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(result => {
-        this.isMobile = result.matches;
-      });
+      .subscribe(result => (this.isMobile = result.matches));
   }
 
+  /**
+   * SET volume & initialize data
+   *
+   * @memberof RadioPlayerComponent
+   */
   ngAfterViewInit(): void {
-    this.audio.nativeElement.volume = 0.1;
+    timer(500).subscribe(() => (this.audio.nativeElement.volume = 0.1));
+    this.initializeData();
   }
 
+  /**
+   * SUBSCRIBE preference.station to initialize & update data
+   *
+   * @private
+   * @memberof RadioPlayerComponent
+   */
   private initializeData(): void {
     this.preferenceService.getPreference$.pipe(takeUntil(this.destroy$)).subscribe((preference: Preference) => {
-      let station: StationsEnum =
-        preference !== null
-          ? Object.values(StationsEnum)
-              .filter(val => val === preference.stationRadioFrance)
-              .reduce(res => StationsEnum[res[0]])
-          : StationsEnum.FIP;
-      this.getBrand(station);
-      this.getCurrentTrack(station);
+      if (preference) {
+        this.station = this.transform.checkPref(preference);
+        this.getBrand();
+        this.getLive(0);
+      }
     });
   }
 
-  private getBrand(station: StationsEnum): void {
+  /**
+   * GET stream URL of station
+   *
+   * @private
+   * @memberof RadioPlayerComponent
+   */
+  private getBrand(): void {
     this.radio
-      .subscribeBrand(station)
+      .subscribeBrand(this.station)
       .pipe(take(1))
-      .subscribe((liveStream: string) => {
-        this.streamSelected = liveStream;
+      .subscribe((brand: Brand) => (this.brandDTO = this.transform.brandMapper(brand)));
+  }
+
+  /**
+   * GET history of station
+   *
+   * @private
+   * @memberof RadioPlayerComponent
+   */
+  private getGrid(): void {
+    this.radio
+      .subscribeGrid(this.station)
+      .pipe(take(1))
+      .subscribe((grid: Grid) => {
+        (this.grid = this.transform.gridMapper(grid.grid))
       });
   }
 
-  private getGrid(station: StationsEnum): void {
-    this.radio
-      .subscribeGrid(station)
-      .pipe(take(1))
-      .subscribe((songs: Song[]) => {
-        this.historyGrid = songs;
-      });
-  }
-
-  private async getCurrentTrack(station: StationsEnum): Promise<void> {
-    let result = await this.radio.getLive(station).refetch();
-    console.log(result.data);
-    if (result.data.live.song) {
-      this.title = result.data.live.song.track.title;
-      this.performers = result.data.live.song.track.performers.join(' & ');
-      let end: number = result.data.live.song.end * 1000;
-      let now: number = Math.floor(new Date().getTime());
-      let pollInterval = end - now + 1000;
-      this.setTicker(end);
-      setTimeout(() => {
-        this.setAnimation();
-      }, 50);
-      this.getGrid(station);
-      console.log(`Prochaine requête dans ${pollInterval / 1000} secondes`);
-      setTimeout(() => {
-        this.getCurrentTrack(station);
-      }, pollInterval);
-    } else {
-      console.log('Aucun résultat à la requête getLive, nouvelle tentative dans 2 secondes');
-      setTimeout(() => {
-        this.getCurrentTrack(station);
-      }, 2000);
-    }
-  }
-
-  /*   test(station, delay, interval) {
-    timer(delay, interval).subscribe(() => {
-      this.test(station, delay, interval);
+  /**
+   * GET current track of station
+   *
+   * @private
+   * @param {number} delay
+   * @memberof RadioPlayerComponent
+   */
+  private getLive(delay: number): void {
+    timer(delay).subscribe(async () => {
+      const result = await this.radio.getLive(this.station).refetch();
+      this.song = result.data.live ? this.transform.factory(result.data) : null;
+      if (this.song) {
+        this.titleService.setTitle([this.song.artist, this.song.title].join(' '));
+        this.setTicker(this.song);
+        this.setAnimation(this.song);
+        this.getGrid();
+        this.getLive(this.util.delay(this.song.end) + 1000);
+      } else {
+        this.getLive(2000);
+      }
     });
-  } */
+  }
 
-  private setTicker(end: number): void {
+  /**
+   * SET ticker of current track
+   *
+   * @private
+   * @memberof RadioPlayerComponent
+   */
+  private setTicker(song: SongDTO): void {
     interval(1000).subscribe(() => {
-      const timeDifference = end - new Date().getTime();
+      const timeDifference = song.end * 1000 - new Date().getTime();
       if (timeDifference > 0) {
         this.minutesLeft = Math.floor((timeDifference % this.msPerHour) / this.msPerMinute);
         this.secondsLeft = Math.floor((timeDifference % this.msPerMinute) / this.msPerSecond);
@@ -157,36 +157,17 @@ export class RadioPlayerComponent implements OnInit {
     });
   }
 
-  private setAnimation(): void {
-    const performersWidth = this.mesureTxt(this.performers);
-    const titleWidth = this.mesureTxt(this.title);
-    this.trackElt.nativeElement.children[0].style.width = `${performersWidth}px`;
-    this.trackElt.nativeElement.children[1].style.width = `${titleWidth}px`;
-    if (performersWidth > this.widthOfPlayer) {
-      this.trackElt.nativeElement.children[0].style.animation = `defilement-track ${this.performers.length / 2}s infinite linear`;
-    } else {
-      this.trackElt.nativeElement.children[0].style.animation = 'none';
-    }
-    if (titleWidth > this.widthOfPlayer) {
-      this.trackElt.nativeElement.children[1].style.animation = `defilement-track ${this.title.length / 2}s infinite linear`;
-    } else {
-      this.trackElt.nativeElement.children[1].style.animation = 'none';
-    }
-  }
-
   /**
-   * allow calculate lenght into pixel of string
+   * SET text animation 
    *
    * @private
-   * @param {string} str
-   * @return {*}  {number}
    * @memberof RadioPlayerComponent
    */
-  private mesureTxt(str: string): number {
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-    ctx.font = "16px 'Helvetica Neue'";
-    return ctx.measureText(str).width;
+  private setAnimation(song: SongDTO): void {
+    timer(500).subscribe(() => {
+      this.util.setAnimation(song.artist, this.trackElt.nativeElement.children[0]);
+      this.util.setAnimation(song.title, this.trackElt.nativeElement.children[1]);
+    });
   }
 
   /**
@@ -194,7 +175,7 @@ export class RadioPlayerComponent implements OnInit {
    *
    * @memberof RadioPlayerComponent
    */
-  public onTooglePlay() {
+  public onTooglePlay(): void {
     this.isPlaying ? this.audio.nativeElement.pause() : this.audio.nativeElement.play();
     this.isPlaying = !this.isPlaying;
   }
@@ -204,48 +185,45 @@ export class RadioPlayerComponent implements OnInit {
    *
    * @memberof RadioPlayerComponent
    */
-  public onSearch() {
-    this.router.navigateByUrl(`list/${this.performers}`);
+  public onSearch(): void {
+    this.router.navigateByUrl(`list/${this.song.artist}`);
   }
 
   /**
    * onClick one item into popover history so launch search request
    *
-   * @param {Song} song
+   * @param {SongDTO} song
    * @memberof RadioPlayerComponent
    */
-  public searchByHistory(song: Song) {
-    const q = song.track.performers.join(' & ');
-    this.router.navigateByUrl(`list/${q}`);
+  public searchByHistory(song: SongDTO): void {
+    this.router.navigateByUrl(`list/${song.artist}`);
   }
 
-  public onVolumeUp() {
+  /**
+   * onClick to change volume
+   *
+   * @param {string} choose
+   * @memberof RadioPlayerComponent
+   */
+  public onVolume(direction: string): void {
     const volume = this.audio.nativeElement.volume;
     if (volume <= 1 && volume >= 0) {
-      this.audio.nativeElement.volume += 0.1;
+      this.audio.nativeElement.volume += direction === 'up' ? 0.1 : -0.1;
     }
-    this.showTooltip();
-  }
-
-  public onVolumeDown() {
-    const volume = this.audio.nativeElement.volume;
-    if (volume <= 1 && volume >= 0) {
-      this.audio.nativeElement.volume -= 0.1;
-    }
-    this.showTooltip();
-  }
-
-  private showTooltip(): void {
     this.tooltip.show();
     setTimeout(() => this.tooltip.hide(), 1000);
   }
 
+  /**
+   * method shared with toolbar (when toggle input search, so player is hidden)
+   *
+   * @memberof RadioPlayerComponent
+   */
   public toggleWindowDesktop(): void {
-    const widthOfWindow = this.player.nativeElement.style.width;
-    this.player.nativeElement.style.width = widthOfWindow === '420px' ? '32px' : '420px';
+    if (!this.isMobile && this.song.title) {
+      const widthOfWindow = this.player.nativeElement.style.width;
+      this.player.nativeElement.style.width = widthOfWindow === '420px' ? '32px' : '420px';
+    }
   }
 
-  public toggleWindowMobile(): void {
-    this.playerIsOpen = !this.playerIsOpen;
-  }
 }

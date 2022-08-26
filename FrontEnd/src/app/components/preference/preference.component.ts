@@ -4,8 +4,7 @@ import {PreferenceService} from 'src/app/services/preference.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ToolbarComponent} from '../toolbar/toolbar.component';
 import {StationsEnum} from 'src/app/enums/radioFrance.enum';
-import {concatMap, switchMap, take, takeUntil} from 'rxjs/operators';
-import {EMPTY} from 'rxjs';
+import {take, takeUntil} from 'rxjs/operators';
 import {DestroyService} from 'src/app/services/destroy.service';
 
 @Component({
@@ -20,7 +19,7 @@ export class PreferenceComponent implements OnInit {
 
   constructor(
     private preferenceService: PreferenceService,
-    private _snackBar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private toolbar: ToolbarComponent,
     private destroy$: DestroyService
   ) {}
@@ -29,30 +28,31 @@ export class PreferenceComponent implements OnInit {
     this.loadPref();
   }
 
-  loadPref() {
-    this.preferenceService.getPreference$.pipe(takeUntil(this.destroy$))
-      .subscribe((preference: Preference) => this.preference = preference);
+  public loadPref(): void {
+    this.preferenceService.getPreference$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((preference: Preference) => (this.preference = preference));
   }
 
-  savePref() {
+  public savePref(): void {
     this.preferenceService
       .update(this.preference)
       .pipe(take(1))
       .subscribe(res => {
-        this._snackBar.open('Préférence id: ' + res, 'Enregistré', {duration: 2000});
+        this.snackBar.open('Préférence id: ' + res, 'Enregistré', {duration: 2000});
         this.toolbar.drawer.close();
       });
   }
 
-  switchDiscogs() {
+  public switchDiscogs(): void {
     this.preference.switchDiscogs = !this.preference.switchDiscogs;
   }
 
-  switchWikipedia() {
+  public switchWikipedia(): void {
     this.preference.switchWikipedia = !this.preference.switchWikipedia;
   }
-  
-  switchYoutube() {
+
+  public switchYoutube(): void {
     this.preference.switchYoutube = !this.preference.switchYoutube;
   }
 }

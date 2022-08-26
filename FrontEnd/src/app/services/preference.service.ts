@@ -11,9 +11,18 @@ import {concatMap, filter, map, tap} from 'rxjs/operators';
 export class PreferenceService {
   private URL_BACKEND: string = environment.urlBack;
   private preference$: BehaviorSubject<Preference> = new BehaviorSubject<Preference>(null);
-  private preference: Preference;
-  
+
   constructor(private http: HttpClient) {}
+
+  public async init(): Promise<Preference> {
+    return this.http
+      .get<Preference[]>(`${this.URL_BACKEND}pref`)
+      .toPromise()
+      .then((preferences: Preference[]) => {
+        this.setPreference(preferences[0])
+        return preferences[0]
+      })
+  }
 
   /**
    * READ preference FROM database

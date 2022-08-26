@@ -1,7 +1,7 @@
 import {Component, OnInit, AfterViewInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {DomSanitizer} from '@angular/platform-browser';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Params} from '@angular/router';
 // COMPONENT
 import {WatchComponent} from '../watch/watch.component';
 // SERVICE
@@ -16,7 +16,7 @@ import {VideoGAPI} from '../../models/videoGAPI.interface';
 import {QueryDiscogs} from 'src/app/models/queryDiscogs.interface';
 import {take, takeUntil} from 'rxjs/operators';
 import {DestroyService} from 'src/app/services/destroy.service';
-import {forkJoin} from 'rxjs';
+import {combineLatest, forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-search-list',
@@ -67,15 +67,13 @@ export class SearchListComponent implements OnInit, AfterViewInit {
   }
 
   checkParam() {
-    forkJoin([
-      this.route.params.pipe(take(1)),
-      this.preferenceService.getPreference$.pipe(takeUntil(this.destroy$))
-    ]).subscribe( ([params, preference]) => {
+    combineLatest([this.route.params, this.preferenceService.getPreference$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([params, preference]) => {
         this.keyword = params.q;
         this.preference = preference;
         this.factory();
-      }
-    );
+      });
   }
 
   factory() {

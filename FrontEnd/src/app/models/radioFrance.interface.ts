@@ -1,9 +1,73 @@
+export enum StepEnum {
+  DiffusionStep = 'DiffusionStep',
+  BlankStep = 'BlankStep',
+  TrackStep = 'TrackStep'
+}
 export interface Live {
   live: {
-    song: Song;
+    show: TrackStep | BlankStep | DiffusionStep;
+    program: TrackStep | BlankStep | DiffusionStep;
+    song: TrackStep;
   };
 }
-
+export interface Step {
+  id: string;
+  start: number;
+  end: number;
+  __typename: string;
+}
+export interface TrackStep extends Step  {
+  id: string;
+  start: number;
+  end: number;
+  __typename: string;
+  track: {
+    id: string;
+    title: string;
+    albumTitle: string;
+    label: string;
+    mainArtists: string[];
+    authors: string[];
+    composers: string[];
+    performers: string[];
+    productionDate: number;
+    discNumber: number;
+    trackNumber: number;
+  }
+}
+export interface BlankStep extends Step  {
+  id: string;
+  start: number;
+  end: number;
+  __typename: string;
+  title: string;
+  children: [TrackStep | BlankStep | DiffusionStep];
+}
+export interface DiffusionStep extends Step {
+  id: string;
+  start: number;
+  end: number;
+  __typename: string;
+  children: TrackStep[] | BlankStep[] | DiffusionStep[];
+  diffusion: {
+    id: string;
+    title: string;
+    standFirst: string;
+    url: string;
+    published_date: string;
+    isStreamable: Boolean;
+    show: {
+      id: string;
+      title: string;
+      url: string;
+      standFirst: string;
+      podcast: {
+        rss: string;
+        itunes: string;
+      };
+    };
+  };
+}
 export interface Brand {
   brand: {
     id: string;
@@ -28,24 +92,19 @@ export interface Brand {
         liveStream: string;
       }
     ];
-  } 
-}
-
-export interface Grid {
-  grid: Song[];
-}
-
-export interface Song {
-  start: number;
-  end: number;
-  track: {
-    title: string;
-    albumTitle: string;
-    label: string;
-    mainArtists: string[];
-    authors: string[];
-    composers: string[];
-    performers: string[];
-    productionDate: number;
   };
 }
+export interface Grid {
+  grid: TrackStep[] | BlankStep[] | DiffusionStep[];
+}
+export interface SongDTO {
+  title: string;
+  artist: string;
+  start: number;
+  end: number;
+}
+export interface BrandDTO {
+  value: string;
+  viewValue: string;
+}
+
