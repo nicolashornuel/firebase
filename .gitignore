@@ -4,7 +4,7 @@
 /FrontEnd/e2e
 /FrontEnd/node_modules
 /BackEnd
-/FrontEnd/src/environments/environment.prod.ts
+/FrontEnd/src/environments
 
 # Logs
 logs
