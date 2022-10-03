@@ -1,0 +1,895 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>angular documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">angular documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Injectables</li>
+  <li >RadioService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/services/radio.service.ts</code>
+        </p>
+
+
+
+
+
+            <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#getBrand" >getBrand</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#getGrid" >getGrid</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getLive" >getLive</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#subscribeBrand" >subscribeBrand</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#subscribeGrid" >subscribeGrid</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#subscribeLive" >subscribeLive</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(apollo: Apollo)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/app/services/radio.service.ts:14</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>apollo</td>
+                                                  
+                                                        <td>
+                                                                    <code>Apollo</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getBrand"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span ><b>getBrand</b></span>
+                        <a href="#getBrand"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getBrand(station: <a href="../undefineds/StationsEnum.html" target="_self">StationsEnum</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="90"
+                            class="link-to-prism">src/app/services/radio.service.ts:90</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>GET an object BRAND by StationsEnum</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>station</td>
+                                    <td>
+                                                <code><a href="../miscellaneous/enumerations.html#StationsEnum" target="_self" >StationsEnum</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/Brand.html" target="_self" >QueryRef&lt;Brand&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>{QueryRef<Brand>}</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getGrid"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span ><b>getGrid</b></span>
+                        <a href="#getGrid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getGrid(station: <a href="../undefineds/StationsEnum.html" target="_self">StationsEnum</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="129"
+                            class="link-to-prism">src/app/services/radio.service.ts:129</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>GET an object GRID by StationsEnum</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>station</td>
+                                    <td>
+                                                <code><a href="../miscellaneous/enumerations.html#StationsEnum" target="_self" >StationsEnum</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/Grid.html" target="_self" >QueryRef&lt;Grid&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>{QueryRef<Grid>}</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getLive"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>getLive</b></span>
+                        <a href="#getLive"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getLive(station: <a href="../undefineds/StationsEnum.html" target="_self">StationsEnum</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="24"
+                            class="link-to-prism">src/app/services/radio.service.ts:24</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>GET an object LIVE by StationsEnum</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>station</td>
+                                    <td>
+                                                <code><a href="../miscellaneous/enumerations.html#StationsEnum" target="_self" >StationsEnum</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/Live.html" target="_self" >QueryRef&lt;Live&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>{QueryRef<Live>}</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="subscribeBrand"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>subscribeBrand</b></span>
+                        <a href="#subscribeBrand"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>subscribeBrand(station: <a href="../undefineds/StationsEnum.html" target="_self">StationsEnum</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="186"
+                            class="link-to-prism">src/app/services/radio.service.ts:186</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>GET observable of BRAND</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>station</td>
+                                    <td>
+                                                <code><a href="../miscellaneous/enumerations.html#StationsEnum" target="_self" >StationsEnum</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/Brand.html" target="_self" >Observable&lt;Brand&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>{Observable<Brand>}</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="subscribeGrid"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>subscribeGrid</b></span>
+                        <a href="#subscribeGrid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>subscribeGrid(station: <a href="../undefineds/StationsEnum.html" target="_self">StationsEnum</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="175"
+                            class="link-to-prism">src/app/services/radio.service.ts:175</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>GET observable of GRID</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>station</td>
+                                    <td>
+                                                <code><a href="../miscellaneous/enumerations.html#StationsEnum" target="_self" >StationsEnum</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/Grid.html" target="_self" >Observable&lt;Grid&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>{Observable<Grid>}</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="subscribeLive"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>subscribeLive</b></span>
+                        <a href="#subscribeLive"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>subscribeLive(station: <a href="../undefineds/StationsEnum.html" target="_self">StationsEnum</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="197"
+                            class="link-to-prism">src/app/services/radio.service.ts:197</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>GET observable of LIVE</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>station</td>
+                                    <td>
+                                                <code><a href="../miscellaneous/enumerations.html#StationsEnum" target="_self" >StationsEnum</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/Live.html" target="_self" >Observable&lt;Live&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>{Observable<Live>}</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Injectable} from &#x27;@angular/core&#x27;;
+import {ApolloQueryResult} from &#x27;@apollo/client/core&#x27;;
+import {Apollo, gql, QueryRef} from &#x27;apollo-angular&#x27;;
+import {Observable} from &#x27;rxjs&#x27;;
+import {map} from &#x27;rxjs/operators&#x27;;
+import {StationsEnum} from &#x27;../enums/radioFrance.enum&#x27;;
+import {Brand, Grid, Live} from &#x27;../models/radioFrance.interface&#x27;;
+
+// see https://apollo-angular.com/docs/development-and-testing/testing
+
+@Injectable({
+  providedIn: &#x27;root&#x27;
+})
+export class RadioService {
+  constructor(private apollo: Apollo) {}
+
+  /**
+   * GET an object LIVE by StationsEnum
+   *
+   * @param {StationsEnum} station
+   * @return {*}  {QueryRef&lt;Live&gt;}
+   * @memberof RadioService
+   */
+  public getLive(station: StationsEnum): QueryRef&lt;Live&gt; {
+    const GET_LIVE &#x3D; gql&#x60;
+      query GetLive($station: StationsEnum!) {
+        live(station: $station) {
+          show {
+            ... on DiffusionStep {
+              start
+              end
+              __typename
+              diffusion {
+                title
+                standFirst
+              }
+            }
+            ... on BlankStep {
+              start
+              end
+              __typename
+              title
+            }
+          }
+          program {
+            ... on DiffusionStep {
+              start
+              end
+              __typename
+              diffusion {
+                title
+                standFirst
+              }
+            }
+            ... on BlankStep {
+              start
+              end
+              __typename
+              title
+            }
+          }
+          song {
+            ... on TrackStep {
+              start
+              end
+              __typename
+              track {
+                title
+                performers
+              }
+            }
+          }
+        }
+      }
+    &#x60;;
+
+    return this.apollo.watchQuery&lt;any&gt;({
+      query: GET_LIVE,
+      variables: {station}
+    });
+  }
+
+  /**
+   * GET an object BRAND by StationsEnum
+   *
+   * @param {StationsEnum} station
+   * @return {*}  {QueryRef&lt;Brand&gt;}
+   * @memberof RadioService
+   */
+  private getBrand(station: StationsEnum): QueryRef&lt;Brand&gt; {
+    const GET_BRAND &#x3D; gql&#x60;
+      query GetBrand($id: StationsEnum!) {
+        brand(id: $id) {
+          id
+          title
+          baseline
+          description
+          websiteUrl
+          liveStream
+          localRadios {
+            id
+            title
+            description
+            liveStream
+          }
+          webRadios {
+            id
+            title
+            description
+            liveStream
+          }
+        }
+      }
+    &#x60;;
+    return this.apollo.watchQuery&lt;any&gt;({
+      query: GET_BRAND,
+      variables: {id: station}
+    });
+  }
+
+  /**
+   * GET an object GRID by StationsEnum
+   *
+   * @private
+   * @param {StationsEnum} station
+   * @return {*}  {QueryRef&lt;Grid&gt;}
+   * @memberof RadioService
+   */
+  private getGrid(station: StationsEnum): QueryRef&lt;Grid&gt; {
+    const end &#x3D; Math.round(new Date().getTime() / 1000);
+    const start &#x3D; end - 3600; // il y a 1 heure
+    const GET_GRID &#x3D; gql&#x60;
+      query GetGrid($start: Int!, $end: Int!, $station: StationsEnum!) {
+        grid(start: $start, end: $end, station: $station) {
+          ... on TrackStep {
+            start
+            end
+            __typename
+            track {
+              title
+              performers
+            }
+          }
+          ... on DiffusionStep {
+            start
+            end
+            __typename
+            diffusion {
+              title
+              standFirst
+            }
+          }
+          ... on BlankStep {
+            start
+            end
+            __typename
+            title
+          }
+        }
+      }
+    &#x60;;
+    return this.apollo.watchQuery&lt;any&gt;({
+      query: GET_GRID,
+      variables: {start, end, station}
+    });
+  }
+
+  /**
+   * GET observable of GRID
+   *
+   * @param {StationsEnum} station
+   * @return {*}  {Observable&lt;Grid&gt;}
+   * @memberof RadioService
+   */
+  public subscribeGrid(station: StationsEnum): Observable&lt;Grid&gt; {
+    return this.getGrid(station).valueChanges.pipe(map((result: ApolloQueryResult&lt;Grid&gt;) &#x3D;&gt; result.data));
+  }
+
+  /**
+   * GET observable of BRAND
+   *
+   * @param {StationsEnum} station
+   * @return {*}  {Observable&lt;Brand&gt;}
+   * @memberof RadioService
+   */
+  public subscribeBrand(station: StationsEnum): Observable&lt;Brand&gt; {
+    return this.getBrand(station).valueChanges.pipe(map((result: ApolloQueryResult&lt;Brand&gt;) &#x3D;&gt; result.data));
+  }
+
+  /**
+   * GET observable of LIVE
+   *
+   * @param {StationsEnum} station
+   * @return {*}  {Observable&lt;Live&gt;}
+   * @memberof RadioService
+   */
+  public subscribeLive(station: StationsEnum): Observable&lt;Live&gt; {
+    return this.getLive(station).valueChanges.pipe(map((result: ApolloQueryResult&lt;Live&gt;) &#x3D;&gt; result.data));
+  }
+}</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'RadioService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
