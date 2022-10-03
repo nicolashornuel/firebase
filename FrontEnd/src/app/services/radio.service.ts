@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ApolloQueryResult} from '@apollo/client/core';
 import {Apollo, gql, QueryRef} from 'apollo-angular';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {StationsEnum} from '../enums/radioFrance.enum';
 import {Brand, Grid, Live} from '../models/radioFrance.interface';
 
@@ -131,7 +131,7 @@ export class RadioService {
     const start = end - 3600; // il y a 1 heure
     const GET_GRID = gql`
       query GetGrid($start: Int!, $end: Int!, $station: StationsEnum!) {
-        grid(start: $start, end: $end, station: $station) {
+        grid(start: $start, end: $end, station: $station, includeTracks: true) {
           ... on TrackStep {
             start
             end
@@ -173,7 +173,8 @@ export class RadioService {
    * @memberof RadioService
    */
   public subscribeGrid(station: StationsEnum): Observable<Grid> {
-    return this.getGrid(station).valueChanges.pipe(map((result: ApolloQueryResult<Grid>) => result.data));
+    return this.getGrid(station).valueChanges.pipe(
+      map((result: ApolloQueryResult<Grid>) => result.data));
   }
 
   /**
