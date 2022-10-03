@@ -37,7 +37,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   onEnter(value: string) {
-    this.router.navigateByUrl(`list/${value}`);
+    if (value) this.router.navigateByUrl(`list/${value}`);
   }
 
   toogleInput() {

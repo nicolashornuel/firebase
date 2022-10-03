@@ -7,6 +7,7 @@ $width-tab-icon-mobile: 24px + 2 * $padding-tab-icon;
 $padding-tab-content: 30px;
 $width-tab-content-mobile: 230px + 2 * $padding-tab-content;
 $width-tab-container-mobile: $width-tab-icon-mobile + $width-tab-content-mobile;
+$height-tab-content-mobile: 204px;
 
 // LASTEST
 $mobile-height-tab: 60px;
@@ -118,6 +119,7 @@ $bg-color: $blue;
   }
 
   .tab-content {
+    height: $height-tab-content-mobile;
     padding: $padding-tab-content;
     background-color: #3f51b5;
     display: flex;
@@ -129,7 +131,6 @@ $bg-color: $blue;
 
   .row-btn {
     display: flex;
-    justify-content: space-between;
     align-items: center;
   }
 

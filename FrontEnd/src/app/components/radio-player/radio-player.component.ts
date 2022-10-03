@@ -1,18 +1,18 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {MatTooltip} from '@angular/material/tooltip';
-import {Router} from '@angular/router';
-import {interval, timer} from 'rxjs';
-import {take, takeUntil} from 'rxjs/operators';
-import {StationsEnum} from 'src/app/enums/radioFrance.enum';
-import {Preference} from 'src/app/models/preference.interface';
-import {Brand, BrandDTO, Grid, SongDTO} from 'src/app/models/radioFrance.interface';
-import {DestroyService} from 'src/app/services/destroy.service';
-import {PreferenceService} from 'src/app/services/preference.service';
-import {RadioService} from 'src/app/services/radio.service';
-import {Breakpoints, BreakpointObserver} from '@angular/cdk/layout';
-import {RadioTransformService} from 'src/app/services/radio-transform.service';
-import {RadioUtilService} from 'src/app/services/radio-util.service';
-import {Title} from "@angular/platform-browser";
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { AfterViewInit, Component, ComponentFactoryResolver, ComponentRef, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Title } from "@angular/platform-browser";
+import { Router } from '@angular/router';
+import { interval, Observable, Subject, Subscription, timer } from 'rxjs';
+import { startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { StationsEnum } from 'src/app/enums/radioFrance.enum';
+import { Preference } from 'src/app/models/preference.interface';
+import { Brand, BrandDTO, Grid, SongDTO } from 'src/app/models/radioFrance.interface';
+import { DestroyService } from 'src/app/services/destroy.service';
+import { PreferenceService } from 'src/app/services/preference.service';
+import { RadioTransformService } from 'src/app/services/radio-transform.service';
+import { RadioUtilService } from 'src/app/services/radio-util.service';
+import { RadioService } from 'src/app/services/radio.service';
+import { AudioElementComponent } from '../audio-element/audio-element.component';
 
 @Component({
   selector: 'app-radio-player',
@@ -20,19 +20,17 @@ import {Title} from "@angular/platform-browser";
   styleUrls: ['./radio-player.component.scss']
 })
 export class RadioPlayerComponent implements OnInit, AfterViewInit {
-  @ViewChild('audio') audio: ElementRef;
-  @ViewChild('track') trackElt: ElementRef<HTMLElement>;
-  @ViewChild('tooltip') tooltip: MatTooltip;
-  @ViewChild('player') player: ElementRef;
 
+  @ViewChild('track') trackElt: ElementRef<HTMLElement>;
+  @ViewChild('player') player: ElementRef;
+  @ViewChild('audioSource', {read: ViewContainerRef}) audioSource!: ViewContainerRef;
   public brandDTO: BrandDTO = {
-    value: 'https://icecast.radiofrance.fr/fip-midfi.mp3?id=radiofrance',
+    value: 'https://icecast.radiofrance.fr/fip-midfi.mp3?id=radiofrance', //"https://icecast.radiofrance.fr/fip-midfi.mp3?id=openapi
     viewValue: 'FIP'
   };
   private station: StationsEnum;
   public song: SongDTO;
   public grid: SongDTO[];
-  public isPlaying = true;
   public secondsLeft = 0;
   public minutesLeft = 0;
   private msPerSecond = 1000;
@@ -40,6 +38,8 @@ export class RadioPlayerComponent implements OnInit, AfterViewInit {
   private msPerHour = 60 * 60 * 1000;
   public isMobile: boolean;
   public playerIsOpen = false;
+
+  private ticker$ = new Subscription;
 
   constructor(
     private radio: RadioService,
@@ -49,7 +49,8 @@ export class RadioPlayerComponent implements OnInit, AfterViewInit {
     private breakpointObserver: BreakpointObserver,
     private transform: RadioTransformService,
     private util: RadioUtilService,
-    private titleService:Title
+    private titleService:Title,
+    private resolver: ComponentFactoryResolver
   ) {}
 
   /**
@@ -65,12 +66,11 @@ export class RadioPlayerComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * SET volume & initialize data
+   * Initialize data
    *
    * @memberof RadioPlayerComponent
    */
   ngAfterViewInit(): void {
-    timer(500).subscribe(() => (this.audio.nativeElement.volume = 0.1));
     this.initializeData();
   }
 
@@ -100,7 +100,10 @@ export class RadioPlayerComponent implements OnInit, AfterViewInit {
     this.radio
       .subscribeBrand(this.station)
       .pipe(take(1))
-      .subscribe((brand: Brand) => (this.brandDTO = this.transform.brandMapper(brand)));
+      .subscribe((brand: Brand) => {
+        this.brandDTO = this.transform.brandMapper(brand);
+        this.setAudio();
+      });
   }
 
   /**
@@ -148,7 +151,8 @@ export class RadioPlayerComponent implements OnInit, AfterViewInit {
    * @memberof RadioPlayerComponent
    */
   private setTicker(song: SongDTO): void {
-    interval(1000).subscribe(() => {
+    this.ticker$.unsubscribe();
+    this.ticker$ = interval(1000).subscribe(() => {
       const timeDifference = song.end * 1000 - new Date().getTime();
       if (timeDifference > 0) {
         this.minutesLeft = Math.floor((timeDifference % this.msPerHour) / this.msPerMinute);
@@ -171,22 +175,12 @@ export class RadioPlayerComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * onClick on icon PLAY/PAUSE player
-   *
-   * @memberof RadioPlayerComponent
-   */
-  public onTooglePlay(): void {
-    this.isPlaying ? this.audio.nativeElement.pause() : this.audio.nativeElement.play();
-    this.isPlaying = !this.isPlaying;
-  }
-
-  /**
    * onClick icon SEARCH request
    *
    * @memberof RadioPlayerComponent
    */
   public onSearch(): void {
-    this.router.navigateByUrl(`list/${this.song.artist}`);
+    if (this.song.artist) this.router.navigateByUrl(`list/${this.song.artist}`);
   }
 
   /**
@@ -200,21 +194,6 @@ export class RadioPlayerComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * onClick to change volume
-   *
-   * @param {string} choose
-   * @memberof RadioPlayerComponent
-   */
-  public onVolume(direction: string): void {
-    const volume = this.audio.nativeElement.volume;
-    if (volume <= 1 && volume >= 0) {
-      this.audio.nativeElement.volume += direction === 'up' ? 0.1 : -0.1;
-    }
-    this.tooltip.show();
-    setTimeout(() => this.tooltip.hide(), 1000);
-  }
-
-  /**
    * method shared with toolbar (when toggle input search, so player is hidden)
    *
    * @memberof RadioPlayerComponent
@@ -222,8 +201,23 @@ export class RadioPlayerComponent implements OnInit, AfterViewInit {
   public toggleWindowDesktop(): void {
     if (!this.isMobile && this.song.title) {
       const widthOfWindow = this.player.nativeElement.style.width;
-      this.player.nativeElement.style.width = widthOfWindow === '420px' ? '32px' : '420px';
+      this.player.nativeElement.style.width = widthOfWindow === '420px' ? '102px' : '420px';
     }
+  }
+
+  /**
+   * createComponent audio HTMLElement to set src 
+   *
+   * @private
+   * @memberof RadioPlayerComponent
+   */
+  private setAudio(): void {
+    this.secondsLeft = 0;
+    this.minutesLeft = 0;
+    this.audioSource.clear();
+    const factory = this.resolver.resolveComponentFactory(AudioElementComponent);
+    const viewRef: ComponentRef<AudioElementComponent> = this.audioSource.createComponent<AudioElementComponent>(factory);
+    viewRef.instance.src = this.brandDTO.value;
   }
 
 }

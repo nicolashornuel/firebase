@@ -4,7 +4,7 @@ import {Apollo, gql, QueryRef} from 'apollo-angular';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {StationsEnum} from '../enums/radioFrance.enum';
-import {Brand, Grid, Live } from '../models/radioFrance.interface';
+import {Brand, Grid, Live} from '../models/radioFrance.interface';
 
 // see https://apollo-angular.com/docs/development-and-testing/testing
 
@@ -198,91 +198,3 @@ export class RadioService {
     return this.getLive(station).valueChanges.pipe(map((result: ApolloQueryResult<Live>) => result.data));
   }
 }
-
-
-/* 
-`
-      query GetLive($station: StationsEnum!) {
-        live(station: $station) {
-          show {
-            ... on DiffusionStep {
-              id
-              start
-              end
-              __typename
-              diffusion {
-                id
-                title
-                standFirst
-                url
-                published_date
-                podcastEpisode {
-                  id
-                  title
-                  url
-                  created
-                  duration
-                }
-              }
-            }
-            ... on BlankStep {
-              id
-              start
-              end
-              __typename
-              title
-            }
-          }
-          program {
-            ... on DiffusionStep {
-              id
-              start
-              end
-              __typename
-              diffusion {
-                id
-                title
-                standFirst
-                url
-                published_date
-                podcastEpisode {
-                  id
-                  title
-                  url
-                  created
-                  duration
-                }
-              }
-            }
-            ... on BlankStep {
-              id
-              start
-              end
-              __typename
-              title
-            }
-          }
-          song {
-            ... on TrackStep {
-              id
-              start
-              end
-              __typename
-              track {
-                id
-                title
-                albumTitle
-                label
-                mainArtists
-                authors
-                composers
-                performers
-                productionDate
-                discNumber
-                trackNumber
-              }
-            }
-          }
-        }
-      }
-    ` */

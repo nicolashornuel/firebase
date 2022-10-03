@@ -1,0 +1,31 @@
+<audio [src]="src" #audio controls autoplay preload="auto" style="display: none">
+  <source type="audio/mpeg" />
+</audio>
+
+<section class="row">
+  <button (click)="onTooglePlay()" mat-mini-fab color="accent" aria-label="Example icon button with a bookmark icon">
+    <mat-icon *ngIf="isPlaying">pause</mat-icon>
+    <mat-icon *ngIf="!isPlaying">play_arrow</mat-icon>
+  </button>
+
+  <div class="my-level" #tooltip="matTooltip" [matTooltip]="audio.volume | number: '1.1-1'"></div>
+
+  <button
+    [disabled]="audio.volume <= 0.1 ? true : false"
+    (click)="onVolume('down')"
+    mat-icon-button
+    color="accent"
+    aria-label="button volume_down"
+  >
+    <mat-icon>volume_down</mat-icon>
+  </button>
+  <button
+    [disabled]="audio.volume >= 0.9 ? true : false"
+    (click)="onVolume('up')"
+    mat-icon-button
+    color="accent"
+    aria-label="button volume_up"
+  >
+    <mat-icon>volume_up</mat-icon>
+  </button>
+</section>

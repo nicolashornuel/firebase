@@ -11,12 +11,12 @@ export class RadioTransformService {
   constructor() { }
 
   public factory(data: Live): SongDTO {
-    if (data.live.program) {
+    if (data.live.song) {
+      return this.checkInstance(data.live.song);
+    } else if (data.live.program) {
       return this.checkInstance(data.live.program);
     } else if (data.live.show) {
       return this.checkInstance(data.live.show);
-    } else if (data.live.song) {
-      return this.checkInstance(data.live.song);
     }
   }
 
@@ -64,8 +64,14 @@ export class RadioTransformService {
   }
 
   public brandMapper(brand: Brand): BrandDTO {
+    let stream: string = '';
+    if (brand.brand.id === 'FRANCEBLEU') {
+      stream = brand.brand.localRadios.find( localRadio => localRadio.id === "FRANCEBLEU_HERAULT").liveStream
+    } else {
+      stream = brand.brand.liveStream
+    }
     return {
-      value: brand.brand.liveStream,
+      value: stream,
       viewValue: brand.brand.title,
     }
   }
