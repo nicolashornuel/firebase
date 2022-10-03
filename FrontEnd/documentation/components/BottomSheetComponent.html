@@ -1,0 +1,958 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>angular documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">angular documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li>Components</li>
+  <li
+  >
+  BottomSheetComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li >
+            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li >
+            <a href="#styleData" role="tab" id="styleData-tab" data-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li >
+            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/components/bottom-sheet/bottom-sheet.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-bottom-sheet</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./bottom-sheet.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./bottom-sheet.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#categories" >categories</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#data" >data</a>
+                            </li>
+                            <li>
+                                <a href="#inputElement" >inputElement</a>
+                            </li>
+                            <li>
+                                <a href="#rating" >rating</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#addVideo" >addVideo</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#openLink" >openLink</a>
+                            </li>
+                            <li>
+                                <a href="#updateVideo" >updateVideo</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#video" >video</a>
+                            </li>
+                            <li>
+                                <a href="#videos" >videos</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, _snackBar: MatSnackBar, _bottomSheetRef: <a href="../components/BottomSheetComponent.html" target="_self">MatBottomSheetRef&lt;BottomSheetComponent&gt;</a>, videoService: <a href="../injectables/VideoService.html" target="_self">VideoService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:20</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>data</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_snackBar</td>
+                                                  
+                                                        <td>
+                                                                    <code>MatSnackBar</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_bottomSheetRef</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../components/BottomSheetComponent.html" target="_self" >MatBottomSheetRef&lt;BottomSheetComponent&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>videoService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/VideoService.html" target="_self" >VideoService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section>
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="video"></a>
+                        <b>video</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/VideoGAPI.html" target="_self" >VideoGAPI</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:17</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="videos"></a>
+                        <b>videos</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/VideoGAPI.html" target="_self" >VideoGAPI[]</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:16</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+    <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="addVideo"></a>
+                    <span class="name">
+                        <span ><b>addVideo</b></span>
+                        <a href="#addVideo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>addVideo(data)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="49"
+                            class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:49</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>data</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="29"
+                            class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:29</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openLink"></a>
+                    <span class="name">
+                        <span ><b>openLink</b></span>
+                        <a href="#openLink"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openLink(event: MouseEvent)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="36"
+                            class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:36</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>event</td>
+                                    <td>
+                                            <code>MouseEvent</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateVideo"></a>
+                    <span class="name">
+                        <span ><b>updateVideo</b></span>
+                        <a href="#updateVideo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>updateVideo($event)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="41"
+                            class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:41</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>$event</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section>
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="categories"></a>
+                    <span class="name">
+                        <span ><b>categories</b></span>
+                        <a href="#categories"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:19</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="data"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>data</b></span>
+                        <a href="#data"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @Inject(MAT_BOTTOM_SHEET_DATA)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:23</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="inputElement"></a>
+                    <span class="name">
+                        <span ><b>inputElement</b></span>
+                        <a href="#inputElement"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/ElementRef" target="_blank" >ElementRef</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ViewChild(&#x27;input&#x27;)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:18</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="rating"></a>
+                    <span class="name">
+                        <span ><b>rating</b></span>
+                        <a href="#rating"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/components/bottom-sheet/bottom-sheet.component.ts:20</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, Inject, Input, ViewChild, ElementRef, OnInit } from &#x27;@angular/core&#x27;;
+import { MatSnackBar } from &#x27;@angular/material/snack-bar&#x27;;
+import { VideoGAPI } from &#x27;../../models/videoGAPI.interface&#x27;;
+import { VideoService } from &#x27;../../services/video.service&#x27;;
+import { MatBottomSheetRef } from &#x27;@angular/material/bottom-sheet&#x27;;
+import { MAT_BOTTOM_SHEET_DATA } from &#x27;@angular/material/bottom-sheet&#x27;;
+
+
+@Component({
+  selector: &#x27;app-bottom-sheet&#x27;,
+  templateUrl: &#x27;./bottom-sheet.component.html&#x27;,
+  styleUrls: [&#x27;./bottom-sheet.component.scss&#x27;],
+})
+export class BottomSheetComponent implements OnInit {
+
+  @Input() videos: VideoGAPI[];
+  @Input() video: VideoGAPI;
+  @ViewChild(&#x27;input&#x27;) inputElement: ElementRef;
+  categories: any &#x3D; [];
+  rating: number;
+
+  constructor(
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+    private _snackBar: MatSnackBar,
+    private _bottomSheetRef: MatBottomSheetRef&lt;BottomSheetComponent&gt;,
+    private videoService: VideoService) { }
+
+
+  ngOnInit(): void {
+    this.rating &#x3D; this.data.video.rating;
+    this.videoService.findAll().subscribe(array &#x3D;&gt; {
+      this.categories &#x3D; new Set(array.map(item &#x3D;&gt; item.categorie));
+    })
+  }
+
+  openLink(event: MouseEvent): void {
+    this._bottomSheetRef.dismiss();
+    event.preventDefault();
+  }
+
+  updateVideo($event) {
+    this.data.video.rating &#x3D; $event;
+    this.videoService.updateVideo(this.data).subscribe(item &#x3D;&gt; {
+      this._snackBar.open(this.data.video.title + &quot; id:&quot; + item, &quot;Modifié&quot;, { duration: 5000, });
+      this._bottomSheetRef.dismiss();
+    })
+  }
+
+  addVideo(data) {
+    data.video.rating &#x3D; 1;
+    data.video.categorie &#x3D; this.inputElement.nativeElement.value;
+    this.videoService.createVideo(data).subscribe(item &#x3D;&gt; {
+      this._snackBar.open(data.video.title + &quot; id:&quot; + item, &quot;Ajouté&quot;, { duration: 5000, });
+      this._bottomSheetRef.dismiss();
+    })
+  }
+
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;mat-nav-list&gt;
+
+  &lt;p *ngIf&#x3D;&quot;!data.wiki &amp;&amp; rating&quot;&gt;Modifier le classement : 
+    &lt;app-star-rating [rating]&#x3D;&quot;rating&quot; (ratingUpdated)&#x3D;&#x27;updateVideo($event)&#x27;&gt;&lt;/app-star-rating&gt;
+  &lt;/p&gt;
+  &lt;mat-accordion&gt;
+    &lt;mat-expansion-panel *ngIf&#x3D;&quot;!data.wiki&quot; [expanded]&#x3D;&quot;data.categorie &#x3D;&#x3D;&#x3D; true&quot;&gt;
+      &lt;mat-expansion-panel-header&gt;
+        &lt;mat-panel-title&gt;{{rating ? &quot;Changer de categorie : &quot; + data.video.categorie : &quot;Ajouter à mes Favoris&quot;}}
+        &lt;/mat-panel-title&gt;
+      &lt;/mat-expansion-panel-header&gt;
+      &lt;div class&#x3D;&quot;item-container&quot;&gt;
+        &lt;mat-form-field class&#x3D;&quot;item&quot; appearance&#x3D;&quot;fill&quot;&gt;
+          &lt;mat-label&gt;Catégories favorites existantes&lt;/mat-label&gt;
+          &lt;input #input matInput list&#x3D;&quot;id-categorie&quot; [(ngModel)]&#x3D;&quot;data.video.categorie&quot;&gt;
+          &lt;datalist id&#x3D;&quot;id-categorie&quot;&gt;
+            &lt;option *ngFor&#x3D;&quot;let categorie of categories&quot; [value]&#x3D;&quot;categorie&quot;&gt;{{categorie}}&lt;/option&gt;
+          &lt;/datalist&gt;
+        &lt;/mat-form-field&gt;
+        &lt;button *ngIf&#x3D;&quot;!rating&quot; class&#x3D;&quot;item&quot; mat-raised-button color&#x3D;&quot;accent&quot; (click)&#x3D;&quot;addVideo(data)&quot;&gt;+&lt;/button&gt;
+        &lt;button *ngIf&#x3D;&quot;rating&quot; class&#x3D;&quot;item&quot; mat-raised-button color&#x3D;&quot;accent&quot; (click)&#x3D;&quot;updateVideo($event)&quot;&gt;&lt;mat-icon&gt;save&lt;/mat-icon&gt;&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/mat-expansion-panel&gt;
+
+  &lt;/mat-accordion&gt;
+
+  &lt;mat-accordion&gt;
+    &lt;mat-expansion-panel *ngIf&#x3D;&quot;!data.categorie &amp;&amp; data.video.extractWiki&quot; [expanded]&#x3D;&quot;data.wiki&quot;&gt;
+      &lt;mat-expansion-panel-header&gt;
+        &lt;img  src&#x3D;&quot;assets/Wikipedia.svg&quot; alt&#x3D;&quot;logo Wikipedia&quot; width&#x3D;&quot;100px&quot; /&gt;
+      &lt;/mat-expansion-panel-header&gt;
+      {{data.video.extractWiki}}
+    &lt;/mat-expansion-panel&gt;
+  &lt;/mat-accordion&gt;
+
+&lt;/mat-nav-list&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-styleData">
+                <p class="comment">
+                    <code>./bottom-sheet.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">// FORMAT inférieur à XS
+@media (max-width:599px) {
+    .item-container {
+        flex-direction: column;
+    }
+    .item {
+        display:block;
+        align-self:center;
+    }
+}
+
+// FORMAT supérieur à SM
+@media (min-width:600px) {
+    .item-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: center;
+    }
+    .item {
+        flex-grow: 0;
+        align-self:center;
+    }
+}
+
+p {
+    margin-left: 20px;
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><mat-nav-list>  <p *ngIf="!data.wiki && rating">Modifier le classement :     <app-star-rating [rating]="rating" (ratingUpdated)=\'updateVideo($event)\'></app-star-rating>  </p>  <mat-accordion>    <mat-expansion-panel *ngIf="!data.wiki" [expanded]="data.categorie === true">      <mat-expansion-panel-header>        <mat-panel-title>{{rating ? "Changer de categorie : " + data.video.categorie : "Ajouter à mes Favoris"}}        </mat-panel-title>      </mat-expansion-panel-header>      <div class="item-container">        <mat-form-field class="item" appearance="fill">          <mat-label>Catégories favorites existantes</mat-label>          <input #input matInput list="id-categorie" [(ngModel)]="data.video.categorie">          <datalist id="id-categorie">            <option *ngFor="let categorie of categories" [value]="categorie">{{categorie}}</option>          </datalist>        </mat-form-field>        <button *ngIf="!rating" class="item" mat-raised-button color="accent" (click)="addVideo(data)">+</button>        <button *ngIf="rating" class="item" mat-raised-button color="accent" (click)="updateVideo($event)"><mat-icon>save</mat-icon></button>      </div>    </mat-expansion-panel>  </mat-accordion>  <mat-accordion>    <mat-expansion-panel *ngIf="!data.categorie && data.video.extractWiki" [expanded]="data.wiki">      <mat-expansion-panel-header>        <img  src="assets/Wikipedia.svg" alt="logo Wikipedia" width="100px" />      </mat-expansion-panel-header>      {{data.video.extractWiki}}    </mat-expansion-panel>  </mat-accordion></mat-nav-list></div>'
+    var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AudioElementComponent', 'selector': 'app-audio-element'},{'name': 'BottomSheetComponent', 'selector': 'app-bottom-sheet'},{'name': 'PreferenceComponent', 'selector': 'app-preference'},{'name': 'RadioPlayerComponent', 'selector': 'app-radio-player'},{'name': 'RssFluxComponent', 'selector': 'app-rss-flux'},{'name': 'SearchListComponent', 'selector': 'app-search-list'},{'name': 'StarRatingComponent', 'selector': 'app-star-rating'},{'name': 'TableComponent', 'selector': 'app-table'},{'name': 'ToolbarComponent', 'selector': 'app-toolbar'},{'name': 'WatchComponent', 'selector': 'app-watch'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'BottomSheetComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'BottomSheetComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
