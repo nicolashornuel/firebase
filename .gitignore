@@ -5,6 +5,7 @@
 /FrontEnd/node_modules
 /BackEnd
 /FrontEnd/src/environments/environment.prod.ts
+/FrontEnd/dist
 
 # Logs
 logs
