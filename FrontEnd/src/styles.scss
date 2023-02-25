@@ -3,10 +3,32 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-body {
+.spinner-container-loading {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    .spinner-border {
+        width: 2rem;
+        height: 2rem;
+        border: 5px solid currentcolor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: 0.75s linear infinite spinner-border;
+    }
+}
+@keyframes spinner-border {
+    100% {
+        transform: rotate(360deg);
+    }  
+}
+
+.bg-img {
     background: url("/assets/fond-abstrait.svg");
     background-size: cover;
     background-position: initial;
+    height: 100%;
 }
 
 // FORMAT inférieur à XS

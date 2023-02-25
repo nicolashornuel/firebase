@@ -1,39 +1,46 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
 import { timer } from 'rxjs';
-
+import { takeUntil } from 'rxjs/operators';
+import { AudioService } from 'src/app/services/audio.service';
+import { DestroyService } from 'src/app/services/destroy.service';
 
 @Component({
   selector: 'app-audio-element',
   templateUrl: './audio-element.component.html',
   styleUrls: ['./audio-element.component.scss']
 })
-export class AudioElementComponent implements AfterViewInit  {
-
+export class AudioElementComponent implements AfterViewInit {
   @Input() src: String = 'https://icecast.radiofrance.fr/fip-midfi.mp3?id=radiofrance';
-  public isPlaying = true;
+  public isPlaying = false;
   @ViewChild('audio') audio: ElementRef;
   @ViewChild('tooltip') tooltip: MatTooltip;
 
-    /**
+  constructor(private audioService: AudioService, private destroy$: DestroyService) {}
+
+  /**
    * SET volume & initialize data
    *
    * @memberof AudioElementComponent
    */
-     ngAfterViewInit(): void {
-      timer(500).subscribe(() => (this.audio.nativeElement.volume = 0.1));
-    }
+  ngAfterViewInit(): void {
+    timer(500).subscribe(() => (this.audio.nativeElement.volume = 0.1));
+    this.audioService.getIsPlaying$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isPlaying: boolean) => {
+        this.isPlaying = isPlaying;
+        this.isPlaying ? this.audio.nativeElement.play() : this.audio.nativeElement.pause();
+      });
+  }
 
-    /**
+  /**
    * onClick on icon PLAY/PAUSE player
    *
    * @memberof AudioElementComponent
    */
-     public onTooglePlay(): void {
-      this.isPlaying ? this.audio.nativeElement.pause() : this.audio.nativeElement.play();
-      this.isPlaying = !this.isPlaying;
-    }
-
+  public onTooglePlay(): void {
+    this.isPlaying ? this.audioService.setIsPlaying(false) : this.audioService.setIsPlaying(true);
+  }
 
   /**
    * onClick to change volume
@@ -49,5 +56,4 @@ export class AudioElementComponent implements AfterViewInit  {
     this.tooltip.show();
     setTimeout(() => this.tooltip.hide(), 1000);
   }
-
 }

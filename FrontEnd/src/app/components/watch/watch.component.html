@@ -4,8 +4,8 @@
   <h2 matTooltip="Chaine Youtube" matTooltipPosition="left">{{ data.video.channelTitle }}</h2>
   <h3 matTooltip="Date de publication" matTooltipPosition="left">{{ data.video.publishedAt }}</h3>
   <p><span class="label"> Description : </span>{{ data.video.description }}</p>
-  <div #iframe class="container">
-    <iframe class="responsive-iframe" [src]="data.video.sanitized" allowfullscreen frameborder="0">
+  <div class="container">
+    <iframe appIframeTracker (iframeClick)="onIframeClick()" class="responsive-iframe" [src]="data.video.sanitized" allowfullscreen frameborder="0">
     </iframe>
   </div>
   <button mat-raised-button color="accent" (click)="openBottomSheet(data)">

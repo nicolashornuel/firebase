@@ -29,7 +29,6 @@ export class SearchService {
     this.params.maxResults = query.maxResults;
     let endPoint = `${this.url}/youtube/v3/search?`;
     Object.keys(this.params).forEach(key => endPoint += "&" + key + "=" + this.params[key]);
-   
     return this.http.get(endPoint)
       .pipe(
         map((response: any) => response.items)

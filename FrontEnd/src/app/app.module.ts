@@ -21,6 +21,7 @@ import { GraphQLModule } from './graphql.module';
 import { APP_INITIALIZER } from '@angular/core';
 import { PreferenceService } from './services/preference.service';
 import { AudioElementComponent } from './components/audio-element/audio-element.component';
+import { IframeTrackerDirective } from './directives/iframe-tracker.directive';
 
 export function initializeApp(pref: PreferenceService) {
   return (): Promise<any> => { 
@@ -40,7 +41,8 @@ export function initializeApp(pref: PreferenceService) {
     PreferenceComponent,
     RadioPlayerComponent,
     RssFluxComponent,
-    AudioElementComponent
+    AudioElementComponent,
+    IframeTrackerDirective
   ],
   imports: [
     BrowserModule,

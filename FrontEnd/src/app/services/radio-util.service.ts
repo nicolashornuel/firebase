@@ -1,5 +1,4 @@
-import {ElementRef, Injectable} from '@angular/core';
-import {SongDTO} from '../models/radioFrance.interface';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'

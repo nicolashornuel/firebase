@@ -111,7 +111,7 @@ export class RadioService {
           }
         }
       }
-    `;
+    `;   
     return this.apollo.watchQuery<any>({
       query: GET_BRAND,
       variables: {id: station}
@@ -173,8 +173,7 @@ export class RadioService {
    * @memberof RadioService
    */
   public subscribeGrid(station: StationsEnum): Observable<Grid> {
-    return this.getGrid(station).valueChanges.pipe(
-      map((result: ApolloQueryResult<Grid>) => result.data));
+    return this.getGrid(station).valueChanges.pipe(map((result: ApolloQueryResult<Grid>) => result.data));
   }
 
   /**
@@ -184,8 +183,9 @@ export class RadioService {
    * @return {*}  {Observable<Brand>}
    * @memberof RadioService
    */
-  public subscribeBrand(station: StationsEnum): Observable<Brand> {
-    return this.getBrand(station).valueChanges.pipe(map((result: ApolloQueryResult<Brand>) => result.data));
+  public subscribeBrand(station: StationsEnum): Observable<Brand> {   
+    return this.getBrand(station).valueChanges.pipe(
+      map((result: ApolloQueryResult<Brand>) => result.data));
   }
 
   /**
