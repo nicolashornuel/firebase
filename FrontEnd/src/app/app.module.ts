@@ -22,6 +22,7 @@ import { APP_INITIALIZER } from '@angular/core';
 import { PreferenceService } from './services/preference.service';
 import { AudioElementComponent } from './components/audio-element/audio-element.component';
 import { IframeTrackerDirective } from './directives/iframe-tracker.directive';
+import { AudioControllerComponent } from './components/audio-controller/audio-controller.component';
 
 export function initializeApp(pref: PreferenceService) {
   return (): Promise<any> => { 
@@ -42,7 +43,8 @@ export function initializeApp(pref: PreferenceService) {
     RadioPlayerComponent,
     RssFluxComponent,
     AudioElementComponent,
-    IframeTrackerDirective
+    IframeTrackerDirective,
+    AudioControllerComponent
   ],
   imports: [
     BrowserModule,
