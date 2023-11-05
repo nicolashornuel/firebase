@@ -14,7 +14,6 @@ export class RssFluxComponent implements OnInit {
     'https://www.developpez.com/index/rss',
     'https://www.leprogres.fr/rss',
     'https://www.leprogres.fr/france-monde/rss',
-    'http://www.dna.fr/une-region/rss',
     'http://www.ledauphine.com/actualite/a-la-une/rss'
   ];
   public rssThread: string = '';

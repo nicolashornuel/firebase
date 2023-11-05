@@ -23,6 +23,7 @@ import { PreferenceService } from './services/preference.service';
 import { AudioElementComponent } from './components/audio-element/audio-element.component';
 import { IframeTrackerDirective } from './directives/iframe-tracker.directive';
 import { AudioControllerComponent } from './components/audio-controller/audio-controller.component';
+import { EqualizerComponent } from './components/equalizer/equalizer.component';
 
 export function initializeApp(pref: PreferenceService) {
   return (): Promise<any> => { 
@@ -44,7 +45,8 @@ export function initializeApp(pref: PreferenceService) {
     RssFluxComponent,
     AudioElementComponent,
     IframeTrackerDirective,
-    AudioControllerComponent
+    AudioControllerComponent,
+    EqualizerComponent
   ],
   imports: [
     BrowserModule,

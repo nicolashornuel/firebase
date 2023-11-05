@@ -1,7 +1,5 @@
-
-
 <mat-toolbar color="primary" class="mat-toolbar-example">
-  <img/>
+  <img />
 
   <span class="example-spacer"></span>
 
@@ -10,39 +8,44 @@
   <span class="example-spacer"></span>
 
   <div *ngIf="showInputSearch" class="input">
-    <input #box (keyup.enter)="onEnter(box.value)" matInput name="q">
+    <input #box (keyup.enter)="onEnter(box.value)" matInput name="q" />
   </div>
 
   <button type="button" mat-icon-button (click)="toogleInput(); playerComponent.toggleWindowDesktop()">
     <mat-icon>search</mat-icon>
   </button>
 
-
   <button mat-icon-button [matMenuTriggerFor]="belowMenu">
     <mat-icon>list</mat-icon>
   </button>
-<!--   <mat-menu #menu="matMenu">
+  <!--   <mat-menu #menu="matMenu">
     <button mat-menu-item routerLink="table" (click)="drawer.close()" >Toute catégorie confondue</button>
     <button mat-menu-item *ngFor="let categorie of categories" [value]="categorie" (click)="showTable(categorie)" >{{categorie}}</button>
   </mat-menu> -->
 
   <mat-menu #belowMenu="matMenu" yPosition="below">
     <ng-container *ngIf="categories">
-    <mat-selection-list #list [multiple]="false" (selectionChange)="showTable(list.selectedOptions.selected[0]?.value)">
-      <mat-list-option routerLink="table/all" (click)="drawer.close()">Toute catégorie confondue</mat-list-option>
-      <mat-list-option *ngFor="let categorie of categories" [value]="categorie">
-        {{categorie}}
-      </mat-list-option>
-    </mat-selection-list>
-  </ng-container>
+      <mat-selection-list
+        #list
+        [multiple]="false"
+        (selectionChange)="showTable(list.selectedOptions.selected[0]?.value)"
+      >
+        <mat-list-option routerLink="table/all" (click)="drawer.close()">Toute catégorie confondue</mat-list-option>
+        <mat-list-option *ngFor="let categorie of categories" [value]="categorie">
+          {{ categorie }}
+        </mat-list-option>
+      </mat-selection-list>
+    </ng-container>
   </mat-menu>
 
   <button mat-icon-button (click)="drawer.toggle()">
     <mat-icon>settings</mat-icon>
   </button>
 
+  <a mat-icon-button routerLink="equalizer">
+    <mat-icon>equalizer</mat-icon>
+  </a>
 </mat-toolbar>
-
 
 <mat-drawer-container class="drawer-container">
   <mat-drawer #drawer class="drawer">
@@ -52,9 +55,3 @@
     <router-outlet></router-outlet>
   </mat-drawer-content>
 </mat-drawer-container>
-
-
-
-
-
-
