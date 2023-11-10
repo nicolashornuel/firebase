@@ -11,5 +11,6 @@ export class IconSvgRegistryService {
     this.iconRegistry.addSvgIcon('highpass', this.sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/highpass.svg'));
     this.iconRegistry.addSvgIcon('bandpass', this.sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/bandpass.svg'));
     this.iconRegistry.addSvgIcon('lowpass', this.sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/lowpass.svg'));
+    this.iconRegistry.addSvgIcon('none', this.sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/none.svg'));
   }
 }
