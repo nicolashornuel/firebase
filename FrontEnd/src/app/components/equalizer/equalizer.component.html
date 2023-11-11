@@ -1,11 +1,6 @@
-<section class="center">
+<mat-card class="center">
 
-
-
-  <mat-icon svgIcon="highpass"></mat-icon>
-  <mat-icon svgIcon="bandpass"></mat-icon>
-  <mat-icon svgIcon="lowpass"></mat-icon>
-
+  <app-audio-filter [source]="audioCtx"></app-audio-filter>
 
   <canvas #sineWave class="canvas"> </canvas>
   <canvas #freqBars class="canvas"> </canvas>
@@ -35,7 +30,7 @@
       ></ng-container>
     </ng-container>
   </div>
-</section>
+</mat-card>
 
 <ng-template #number let-control="control">
   <div class="row-between-center">

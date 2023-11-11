@@ -18,7 +18,7 @@ export class EqualizerComponent implements OnInit, AfterViewInit {
   private sineWaveCtx!: CanvasRenderingContext2D | null;
   private frequencyBarsCtx!: CanvasRenderingContext2D | null;
 
-  private audioCtx: AudioContext;
+  public audioCtx: AudioContext;
   private analyser: AnalyserNode;
   private distortion: WaveShaperNode; //curve OverSampleType = "2x" | "4x" | "none";
   private biquadFilter: BiquadFilterNode;
@@ -104,7 +104,9 @@ export class EqualizerComponent implements OnInit, AfterViewInit {
   //https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createBiquadFilter#examples
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.audioCtx = new AudioContext();
+  }
 
   ngAfterViewInit(): void {
     this.createNode();
@@ -113,7 +115,6 @@ export class EqualizerComponent implements OnInit, AfterViewInit {
   }
 
   private createNode(): void {
-    this.audioCtx = new AudioContext();
     this.analyser = this.audioCtx.createAnalyser();
     this.distortion = this.audioCtx.createWaveShaper();
     this.biquadFilter = this.audioCtx.createBiquadFilter();

@@ -1,15 +1,17 @@
-<mat-button-toggle-group #group="matButtonToggleGroup">
-    <mat-button-toggle value="left" aria-label="Text align left">
-      <mat-icon>format_align_left</mat-icon>
-    </mat-button-toggle>
-    <mat-button-toggle value="center" aria-label="Text align center">
-      <mat-icon>format_align_center</mat-icon>
-    </mat-button-toggle>
-    <mat-button-toggle value="right" aria-label="Text align right">
-      <mat-icon>format_align_right</mat-icon>
-    </mat-button-toggle>
-    <mat-button-toggle value="justify" disabled aria-label="Text align justify">
-      <mat-icon>format_align_justify</mat-icon>
-    </mat-button-toggle>
-  </mat-button-toggle-group>
-  <div class="example-selected-value">Selected value: {{group.value}}</div>
+<mat-button-toggle-group #group="matButtonToggleGroup" (change)="change(group.value)">
+  <mat-button-toggle checked value="allpass">
+    <mat-icon>close</mat-icon>
+  </mat-button-toggle>
+  <mat-button-toggle value="highpass">
+    <mat-icon svgIcon="highpass"></mat-icon>
+  </mat-button-toggle>
+  <mat-button-toggle value="bandpass">
+    <mat-icon svgIcon="bandpass"></mat-icon>
+  </mat-button-toggle>
+  <mat-button-toggle value="lowpass">
+    <mat-icon svgIcon="lowpass"></mat-icon>
+  </mat-button-toggle>
+</mat-button-toggle-group>
+
+<div>Selected value: {{ group.value }}</div>
+
