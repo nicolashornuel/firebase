@@ -1,4 +1,4 @@
-<mat-button-toggle-group #group="matButtonToggleGroup" (change)="change(group.value)">
+<mat-button-toggle-group #group="matButtonToggleGroup" (change)="onChangeType(group.value)">
   <mat-button-toggle checked value="allpass">
     <mat-icon>close</mat-icon>
   </mat-button-toggle>
@@ -13,5 +13,14 @@
   </mat-button-toggle>
 </mat-button-toggle-group>
 
-<div>Selected value: {{ group.value }}</div>
-
+<fieldset>
+  <legend>XY Pad : {{ group.value }}</legend>
+  <canvas
+    #canvasfilter
+    (mousedown)="onXYPad($event, 'start')"
+    (mousemove)="onXYPad($event, 'move')"
+    (touchstart)="onXYPad($event, 'start')"
+    (touchmove)="onXYPad($event, 'move')"
+  >
+  </canvas>
+</fieldset>

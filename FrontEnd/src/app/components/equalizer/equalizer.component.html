@@ -7,7 +7,7 @@
   <mat-icon svgIcon="lowpass"></mat-icon>
   <mat-icon svgIcon="none"></mat-icon>
 
-  <app-audio-filter [source]="audioCtx"></app-audio-filter>
+  <app-audio-filter [source]="gainNode" [context]="audioCtx"></app-audio-filter>
 
   <canvas #sineWave class="canvas"> </canvas>
   <canvas #freqBars class="canvas"> </canvas>
