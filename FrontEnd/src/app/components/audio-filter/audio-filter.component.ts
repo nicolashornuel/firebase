@@ -72,7 +72,17 @@ export class AudioFilterComponent implements AfterViewInit {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.strokeStyle = 'green';
       const { x, y } = this.getCursorPosition(event, this.canvasfilter);
-      ctx.fillRect(x, y, 10, 10);
+
+            //https://jsfiddle.net/razh/sA6Wc/  => dégradé
+      ctx.beginPath();
+      ctx.arc(x, y, 10, 0, 2 * Math.PI);
+      ctx.fillStyle = '#399447';
+      ctx.fill();
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#3994473b';
+      ctx.stroke();
+
+
       this.updateFilterFromPad(x, y);
     }
   }

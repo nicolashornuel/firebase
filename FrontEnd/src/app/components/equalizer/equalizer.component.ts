@@ -23,7 +23,7 @@ export class EqualizerComponent implements OnInit, AfterViewInit {
   private distortion: WaveShaperNode; //curve OverSampleType = "2x" | "4x" | "none";
   private biquadFilter: BiquadFilterNode;
   private convolver: ConvolverNode;
-  private gainNode: GainNode;
+  public gainNode: GainNode;
 
   public controls: Control[] = [
     {
