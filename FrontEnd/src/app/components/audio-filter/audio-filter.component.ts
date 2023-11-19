@@ -1,127 +1,98 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-
-export interface Position {
-  x: number;
-  y: number;
-}
+import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { AudioNodeElement } from 'src/app/interfaces/audio-node-element.interface';
+import { CanvasPadXY } from 'src/app/interfaces/canvas-pad-xy.interface';
+import { CanvasPadXYService } from 'src/app/interfaces/canvas-pad-xy.service';
 
 @Component({
   selector: 'app-audio-filter',
   templateUrl: './audio-filter.component.html',
   styleUrls: ['./audio-filter.component.scss'],
-  encapsulation: ViewEncapsulation.None
 })
-export class AudioFilterComponent implements AfterViewInit {
+export class AudioFilterComponent implements AfterViewInit, AudioNodeElement, CanvasPadXY {
 
-  @Input('source') gainNode: GainNode | undefined;
-  @Input('context') audioCtx: AudioContext | undefined;
-  private biquadFilter: BiquadFilterNode;
-  isMoving: boolean = false;
+  @Input('source') gainNode: GainNode;
+  @Input('context') audioCtx: AudioContext;
   @ViewChild('canvasfilter') canvasfilter: ElementRef<HTMLCanvasElement>;
-  private ctx: CanvasRenderingContext2D | null;
-  private FLOAT32_MAX = 3.4028234663852886e+38;
-  private MAX = 75;
-  public isPersist = false;
-  private isConnected = false;
+  isMoving = false;
+  isPersist = false;
+  private biquadFilter: BiquadFilterNode;
+  private Q_MAX = 75; // private FLOAT32_MAX = 3.4028234663852886e+38;
+  private Q_DEFAULT = 1;
+  private FREQUENCY_MAX = 24000;
+  private FREQUENCY_DEFAULT = 350;
 
   @HostListener('window:mouseup')
   @HostListener('window:touchend')
   onClick(): void {
     this.isMoving = false;
     if (!this.isPersist) {
-      this.clear();
-      this.deconnect();
+      this.canvasPadXYService.clearCanvas(this.canvasfilter);
+      this.disconnectNode();
     }
   }
+
+  constructor(private canvasPadXYService: CanvasPadXYService) { }
 
   ngAfterViewInit(): void {
     this.canvasfilter.nativeElement.width = 200;
     this.canvasfilter.nativeElement.height = 200;
-    this.ctx = this.canvasfilter.nativeElement.getContext('2d');
     this.biquadFilter = this.audioCtx.createBiquadFilter();
   }
 
-  onChangeType(filterTypeSelected: 'allpass' | 'bandpass' | 'highpass' | 'lowpass'): void {
+  isPersistChange(event: MatSlideToggleChange): void {
+    if (!event.checked) {
+      this.canvasPadXYService.clearCanvas(this.canvasfilter);
+      this.disconnectNode();
+    } else {
+      this.connectNode();
+    }
+  }
+
+  filterTypeChange(filterTypeSelected: 'allpass' | 'bandpass' | 'highpass' | 'lowpass'): void {
     this.biquadFilter.type = filterTypeSelected;
     if (filterTypeSelected == 'allpass') {
-      this.deconnect();
-      this.clear();
+      this.disconnectNode();
+      this.canvasPadXYService.clearCanvas(this.canvasfilter);
     } else {
-      this.connect();
+      this.connectNode();
     }
   }
 
-  onXYPad(event: MouseEvent, eventType: 'start' | 'move'): void {
-    switch (eventType) {
-      case 'start':
-        this.isMoving = true;
-        this.draw(event);
-        if (!this.isPersist) {
-          this.connect()
-        }
-        break;
-      case 'move':
-        this.draw(event);
-        break;
-      default:
-        break;
-    }
-  }
-
-  private connect() {
+  connectNode() {
     this.gainNode.connect(this.biquadFilter);
     this.biquadFilter.connect(this.gainNode.context.destination);
-    this.isConnected = true;
   }
 
-  private deconnect() {
+  disconnectNode(): void {
     this.biquadFilter.disconnect(0);
-    this.isConnected = false;
-    this.reset();
+    this.resetParam();
   }
 
-  private reset() {
-    this.biquadFilter.frequency.value = 350;
-    this.biquadFilter.Q.value = 1;
+  resetParam(): void {
+    this.biquadFilter.frequency.value = this.FREQUENCY_DEFAULT;
+    this.biquadFilter.Q.value = this.Q_DEFAULT;
   }
 
-  private clear() {
-    const { width, height } = this.canvasfilter.nativeElement;
-    this.ctx.clearRect(0, 0, width, height);
+  onEventStart(event: MouseEvent): void {
+    if (!this.isPersist) this.connectNode();
+    this.isMoving = true;
+    this.onEventMove(event);
   }
 
-  private getCursorPosition(event: MouseEvent): Position {
-    const rect = this.canvasfilter.nativeElement.getBoundingClientRect();
-    return {
-      x: event.x - rect.x,
-      y: event.y - rect.y
-    };
-  }
-
-  private draw(event: MouseEvent): void {
+  onEventMove(event: MouseEvent): void {
     if (this.isMoving) {
-      this.clear();
-      this.ctx.strokeStyle = 'green';
-      const { x, y } = this.getCursorPosition(event);
-      //https://jsfiddle.net/razh/sA6Wc/  => dégradé
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, 5, 0, 2 * Math.PI);
-      this.ctx.fillStyle = '#5dbb03';
-      this.ctx.fill();
-      this.ctx.lineWidth = 5;
-      this.ctx.strokeStyle = '#5dbb033b';
-      this.ctx.stroke();
-      this.updateFilterFromPad(x, y);
+      const { x, y } = this.canvasPadXYService.drawFromEvent(event, this.canvasfilter);
+      this.updateFromPosition(x, y);
     }
   }
 
-  private updateFilterFromPad(x: number, y: number): void {
+  updateFromPosition(x: number, y: number): void {
     const { width, height } = this.canvasfilter.nativeElement;
-    const frequency = x / width * 24000;
-    const q = this.MAX * (height - (2 * y)) / height;;
+    const frequency = x / width * this.FREQUENCY_MAX;
+    const q = this.Q_MAX * (height - (2 * y)) / height;;
     this.biquadFilter.frequency.value = frequency;
     this.biquadFilter.Q.value = q;
   }
-
 
 }

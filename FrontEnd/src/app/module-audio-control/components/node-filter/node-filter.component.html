@@ -1,0 +1,26 @@
+<div class="">
+  <mat-button-toggle-group #group="matButtonToggleGroup" (change)="filterTypeChange(group.value)">
+    <mat-button-toggle value="allpass">
+      <mat-icon svgIcon="none"></mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="highpass">
+      <mat-icon svgIcon="highpass"></mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle value="bandpass">
+      <mat-icon svgIcon="bandpass"></mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle checked value="lowpass">
+      <mat-icon svgIcon="lowpass"></mat-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+  <mat-slide-toggle [(ngModel)]="isPersist" (change)="isPersistChange($event)">Persist</mat-slide-toggle>
+</div>
+
+<canvas
+  #canvas
+  (mousedown)="onEventStart($event)"
+  (mousemove)="onEventMove($event)"
+  (touchstart)="onEventStart($event)"
+  (touchmove)="onEventMove($event)"
+>
+</canvas>

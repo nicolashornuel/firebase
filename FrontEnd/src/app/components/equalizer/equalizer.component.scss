@@ -8,20 +8,8 @@
     background-color: #FFF;
     margin: 100px 50px;
 }
-.col {
-    display:flex;
-    flex-direction: column;
-}
 .canvas {
     border: 2px solid;
     width: 400px;
     height: 100px;
-}
-.f-stretch {
-    align-self: stretch;
-}
-.row-between-center {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }

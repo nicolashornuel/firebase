@@ -26,6 +26,8 @@ import { AudioControllerComponent } from './components/audio-controller/audio-co
 import { EqualizerComponent } from './components/equalizer/equalizer.component';
 import { AudioFilterComponent } from './components/audio-filter/audio-filter.component';
 import { IconSvgRegistryService } from './services/icon-svg-registry.service';
+import { AudioEqComponent } from './components/audio-eq/audio-eq.component';
+import { AudioControlModule } from './module-audio-control/audio-control.module';
 
 export function initializeApp(pref: PreferenceService) {
   return (): Promise<any> => { 
@@ -49,7 +51,8 @@ export function initializeApp(pref: PreferenceService) {
     IframeTrackerDirective,
     AudioControllerComponent,
     EqualizerComponent,
-    AudioFilterComponent
+    AudioFilterComponent,
+    AudioEqComponent
   ],
   imports: [
     BrowserModule,
@@ -60,7 +63,8 @@ export function initializeApp(pref: PreferenceService) {
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    GraphQLModule
+    GraphQLModule,
+    AudioControlModule
   ],
   providers: [{
       provide: APP_INITIALIZER,

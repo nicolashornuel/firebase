@@ -1,0 +1,34 @@
+<div class="center col">
+  <section class="row">
+    <fieldset>
+      <legend>Analyzer SineWave</legend>
+      <app-node-sine-wave [source]="gainNode" [context]="audioCtx"></app-node-sine-wave>
+    </fieldset>
+    <fieldset>
+      <legend>Analyzer FreqBars</legend>
+      <app-node-freq-bars [source]="gainNode" [context]="audioCtx"></app-node-freq-bars>
+    </fieldset>
+  </section>
+
+  <section class="row">
+    <fieldset class="col-3" >
+      <legend>Filter</legend>
+    <app-node-filter [source]="gainNode" [context]="audioCtx"></app-node-filter>
+  </fieldset>
+
+    <fieldset class="col-8 col">
+      <legend>Eq</legend>
+      <app-node-eq class="h-100" [source]="gainNode" [context]="audioCtx"></app-node-eq>
+    </fieldset>
+  </section>
+
+  <audio
+    #audio
+    src="http://chi.bassdrive.co/;stream/1"
+    preload="auto"
+    controls="true"
+    autoplay="true"
+    style="width: 200px; height: 30px"
+    crossorigin="anonymous"
+  ></audio>
+</div>

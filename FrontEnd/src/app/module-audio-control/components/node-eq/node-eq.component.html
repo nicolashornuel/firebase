@@ -1,0 +1,9 @@
+<div class="row-between-stretch h-100">
+  <ng-container *ngFor="let eq of eqs">
+    <div class="col-1 range-slider col-between-center">
+      <span class="scope">{{ eq.gain.value }}</span>
+      <input class="vertical" type="range" max="30" min="-30" step="1" [(ngModel)]="eq.gain.value" />
+      <span class="scope scope-min">{{ eq.frequency.value | truncateFreq }}</span>
+    </div>
+  </ng-container>
+</div>
