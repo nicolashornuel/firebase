@@ -33,4 +33,9 @@ export class NodeEqComponent implements AfterViewInit {
     this.eqs[this.eqs.length - 1].connect(this.audioCtx.destination);
   }
 
+  public onChange(event:any): void {
+    console.log(event);
+    
+  }
+
 }

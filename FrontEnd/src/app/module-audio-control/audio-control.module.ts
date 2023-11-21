@@ -11,9 +11,10 @@ import { NodeSineWaveComponent } from './components/node-sine-wave/node-sine-wav
 import { NodeFreqBarsComponent } from './components/node-freq-bars/node-freq-bars.component';
 import { FormsModule } from '@angular/forms';
 import { TruncateFreqPipe } from './pipes/truncate-freq.pipe';
+import { ControlSlidingComponent } from './components/control-sliding/control-sliding.component';
 
 @NgModule({
-  declarations: [PageAudioControlComponent, NodeFilterComponent, NodeEqComponent, ControlPadComponent, NodeSineWaveComponent, NodeFreqBarsComponent, TruncateFreqPipe],
+  declarations: [PageAudioControlComponent, NodeFilterComponent, NodeEqComponent, ControlPadComponent, NodeSineWaveComponent, NodeFreqBarsComponent, TruncateFreqPipe, ControlSlidingComponent],
   imports: [
     CommonModule,
     AudioControlRoutingModule,

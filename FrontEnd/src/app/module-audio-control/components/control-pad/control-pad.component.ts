@@ -1,6 +1,5 @@
-import { Component, ElementRef, HostListener, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
 import { CanvasService, Position } from '../../services/canvas.service';
-import { EventEmitter } from 'stream';
 
 @Component({
   selector: 'app-control-pad',
@@ -9,7 +8,7 @@ import { EventEmitter } from 'stream';
 })
 export class ControlPadComponent implements OnInit {
 
-  @Output() change = new EventEmitter();
+  @Output() change = new EventEmitter<{ type: 'end' | 'start' | 'move', x?: number, y?: number }>();
   @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
   private canvasCtx: CanvasRenderingContext2D;
   isMoving = false;
@@ -20,17 +19,17 @@ export class ControlPadComponent implements OnInit {
     this.isMoving = false;
     if (!this.isPersist) {
       this.canvasService.clearCanvas(this.canvas);
-      this.change.emit('end');
+      this.change.emit({ type: 'end' });
     }
   }
-  
+
   constructor(private canvasService: CanvasService) { }
 
   ngOnInit(): void {
   }
 
   onEventStart(event: MouseEvent): void {
-    if (!this.isPersist) this.change.emit('start');
+    if (!this.isPersist) this.change.emit({ type: 'start' });
     this.isMoving = true;
     this.onEventMove(event);
   }
@@ -38,7 +37,7 @@ export class ControlPadComponent implements OnInit {
   onEventMove(event: MouseEvent): void {
     if (this.isMoving) {
       const { x, y } = this.draw(event, this.canvas);
-      this.change.emit('move', x, y);
+      this.change.emit({ type: 'move', x, y });
     }
   }
   draw(event: MouseEvent, canvas: ElementRef<HTMLCanvasElement>): Position {
