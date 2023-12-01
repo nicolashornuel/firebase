@@ -1,37 +1,31 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ControlValueAccessor } from '@angular/forms';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-control-sliding',
   templateUrl: './control-sliding.component.html',
   styleUrls: ['./control-sliding.component.scss']
 })
-export class ControlSlidingComponent implements OnInit, ControlValueAccessor {
+export class ControlSlidingComponent {
 
-  @Input('name') name: string;
-  @Input('value') value: number;
+  @Input() name?: string;
+  @Input() value: number;
   @Output() valueChange = new EventEmitter<number>();
-  //@Output() valueChange = new EventEmitter<{name: string, value: number}>();
+  @Input() max: number = 30;
+  @Input() min: number = -30;
+  @Input() step: number = 1;
+  @Input() format: string = '1.1';
 
-  constructor() { }
-  writeValue(obj: any): void {
-    throw new Error('Method not implemented.');
-  }
-  registerOnChange(fn: any): void {
-    throw new Error('Method not implemented.');
-  }
-  registerOnTouched(fn: any): void {
-    throw new Error('Method not implemented.');
-  }
-  setDisabledState?(isDisabled: boolean): void {
-    throw new Error('Method not implemented.');
+  onIncrease(): void {
+    if (Number(this.value) < Number(this.max)) {
+      this.value = Number(this.value) + Number(this.step);
+      this.valueChange.emit(this.value);
+    }
   }
 
-  ngOnInit(): void {
+  onDecreases(): void {
+    if (Number(this.value.toFixed(1)) > Number(this.min)) {
+      this.value = Number(this.value.toFixed(1)) - Number(this.step);
+      this.valueChange.emit(Number(this.value.toFixed(1)));
+    }
   }
-
-  onChange():void {
-    //this.change.emit({name: this.name, value: this.value})
-  }
-
 }

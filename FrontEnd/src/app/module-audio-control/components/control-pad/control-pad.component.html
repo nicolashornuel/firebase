@@ -1,4 +1,8 @@
-<canvas
+
+
+<div class="canvas-container">
+  <canvas #scalling id="scalling"> </canvas>
+  <canvas id="control"
   #canvas
   (mousedown)="onEventStart($event)"
   (mousemove)="onEventMove($event)"
@@ -6,3 +10,4 @@
   (touchmove)="onEventMove($event)"
 >
 </canvas>
+</div>

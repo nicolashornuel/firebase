@@ -1,17 +1,14 @@
-<div class="row-between-stretch h-100">
+<button mat-icon-button color="accent" (click)="resetParam()"><mat-icon>remove_circle</mat-icon></button>
+<div class="row-between-stretch">
   <ng-container *ngFor="let eq of eqs">
-
-    <app-control-sliding class="col-1" [(value)]="eq.gain.value" [name]="eq.frequency.value | truncateFreq" (change)="onChange(eq.gain.value)"></app-control-sliding>
-
+    <app-control-sliding
+      class="col-1"
+      min="-30"
+      max="30"
+      step="1"
+      [(value)]="eq.gain.value"
+      format="1.0-0"
+      [name]="eq.frequency.value | truncateFreq"
+    ></app-control-sliding>
   </ng-container>
 </div>
-
-<!-- <div class="row-between-stretch h-100">
-  <ng-container *ngFor="let eq of eqs">
-    <div class="col-1 range-slider col-between-center">
-      <span class="scope">{{ eq.gain.value }}</span>
-      <input class="vertical" type="range" max="30" min="-30" step="1" [(ngModel)]="eq.gain.value" />
-      <span class="scope scope-min">{{ eq.frequency.value | truncateFreq }}</span>
-    </div>
-  </ng-container>
-</div> -->

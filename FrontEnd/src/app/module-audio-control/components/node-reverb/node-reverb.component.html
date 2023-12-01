@@ -1,0 +1,3 @@
+<mat-slide-toggle [(ngModel)]="isPersist" (change)="isPersistChange($event)">Persist</mat-slide-toggle>
+
+<app-control-pad [controlObservable]="controlObservable" [isPersist]="isPersist" (change)="onEventChange($event)"></app-control-pad>

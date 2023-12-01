@@ -4,7 +4,8 @@ $color-primary: $green;
 $color-dark: $grey-40;
 $color-light: $grey-97;
 $box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.32);
-$min-height: 250px;
+$space-regular: 12px;
+$min-height: calc(250px - 2 * #{$space-regular});
 
 .container {
   background-color: $color-dark;
@@ -12,14 +13,17 @@ $min-height: 250px;
   .range-slider {
     min-height: $min-height;
     width: 0px;
-    padding: 12px 0;
+    padding-top: $space-regular;
+    padding-bottom: $space-regular;
     .scope {
       color: $color-light;
       font-size: 12px;
       line-height: 12px;
-      &-min {
-        margin-top: 35px;
-      }
+    }
+    .btn-control {
+      color: $color-primary;
+      height: 30px;
+      line-height: 30px;
     }
   }
 }
@@ -29,9 +33,9 @@ input[type='range'] {
   margin: 10px 0;
   background: transparent;
   &.vertical {
-    min-width: calc(#{$min-height} - 50px);
+    min-width: calc(#{$min-height} - 90px);
     transform: rotateZ(-90deg);
-    margin-top: 44px;
+    margin-top: 12px;
   }
   &::-webkit-slider-runnable-track {
     height: 6px;

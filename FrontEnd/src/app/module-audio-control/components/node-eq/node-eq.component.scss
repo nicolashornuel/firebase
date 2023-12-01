@@ -6,45 +6,6 @@ $color-light: $grey-97;
 $box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.32);
 $min-height: 250px;
 
-.range-slider {
-  min-height: $min-height;
-  width: 0px;
+.bg-dark {
   background-color: $color-dark;
-  padding: 12px 0;
-  margin: 0 4px;
-  border-radius: 4px;
-  .scope {
-    color: $color-light;
-    font-size: 12px;
-    line-height: 12px;
-    &-min {
-      margin-top: 35px;
-    }
-  }
-}
-
-input[type='range'] {
-  appearance: none;
-  margin: 10px 0;
-  background: transparent;
-  &.vertical {
-    min-width: calc(#{$min-height} - 50px);
-    transform: rotateZ(-90deg);
-    margin-top: 44px;
-  }
-  &::-webkit-slider-runnable-track {
-    height: 6px;
-    cursor: pointer;
-    background: $color-light;
-    border-radius: 3px;
-  }
-  &::-webkit-slider-thumb {
-    box-shadow: $box-shadow;
-    height: 20px;
-    width: 20px;
-    border-radius: 10px;
-    background: $color-primary;
-    -webkit-appearance: none;
-    margin-top: -7px;
-  }
 }

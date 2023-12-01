@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } 
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { AudioNodeElement } from 'src/app/interfaces/audio-node-element.interface';
 import { CanvasPadXY } from 'src/app/interfaces/canvas-pad-xy.interface';
-import { CanvasPadXYService } from 'src/app/interfaces/canvas-pad-xy.service';
+import { CanvasService } from 'src/app/module-audio-control/services/canvas.service';
 
 @Component({
   selector: 'app-audio-filter',
@@ -27,12 +27,12 @@ export class AudioFilterComponent implements AfterViewInit, AudioNodeElement, Ca
   onClick(): void {
     this.isMoving = false;
     if (!this.isPersist) {
-      this.canvasPadXYService.clearCanvas(this.canvasfilter);
+      this.canvasService.clearCanvas(this.canvasfilter);
       this.disconnectNode();
     }
   }
 
-  constructor(private canvasPadXYService: CanvasPadXYService) { }
+  constructor(private canvasService: CanvasService) { }
 
   ngAfterViewInit(): void {
     this.canvasfilter.nativeElement.width = 200;
@@ -42,7 +42,7 @@ export class AudioFilterComponent implements AfterViewInit, AudioNodeElement, Ca
 
   isPersistChange(event: MatSlideToggleChange): void {
     if (!event.checked) {
-      this.canvasPadXYService.clearCanvas(this.canvasfilter);
+      this.canvasService.clearCanvas(this.canvasfilter);
       this.disconnectNode();
     } else {
       this.connectNode();
@@ -53,7 +53,7 @@ export class AudioFilterComponent implements AfterViewInit, AudioNodeElement, Ca
     this.biquadFilter.type = filterTypeSelected;
     if (filterTypeSelected == 'allpass') {
       this.disconnectNode();
-      this.canvasPadXYService.clearCanvas(this.canvasfilter);
+      this.canvasService.clearCanvas(this.canvasfilter);
     } else {
       this.connectNode();
     }
@@ -82,8 +82,8 @@ export class AudioFilterComponent implements AfterViewInit, AudioNodeElement, Ca
 
   onEventMove(event: MouseEvent): void {
     if (this.isMoving) {
-      const { x, y } = this.canvasPadXYService.drawFromEvent(event, this.canvasfilter);
-      this.updateFromPosition(x, y);
+      /* const { x, y } = this.canvasService.drawFromEvent(event, this.canvasfilter);
+      this.updateFromPosition(x, y); */
     }
   }
 

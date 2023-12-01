@@ -1,7 +1,23 @@
 <div class="container row-center-center">
   <div class="range-slider col-between-center">
-    <span class="scope">{{ value }}</span>
-    <input class="vertical" type="range" max="30" min="-30" step="1" [(ngModel)]="value"/>
-    <span class="scope scope-min">{{ name }}</span>
+    <div class="col-center-center">
+      <span class="scope">{{ value | number : format }}</span>
+      <button mat-icon-button class="btn-control" (click)="onIncrease()"><mat-icon>add_circle_outline</mat-icon></button>
+    </div>
+
+    <input
+      class="vertical"
+      type="range"
+      [max]="max"
+      [min]="min"
+      [step]="step"
+      [(ngModel)]="value"
+      (ngModelChange)="valueChange.emit(value)"
+    />
+
+    <div class="col-center-center">
+      <button mat-icon-button class="btn-control" (click)="onDecreases()"><mat-icon>remove_circle_outline</mat-icon></button>
+      <span class="scope">{{ name }}</span>
+    </div>
   </div>
 </div>
