@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
-import { ControlObservable, PAD_MAX, PadEvent, Position } from '../../interfaces/padControlCanvas.interface';
+import { PAD_MAX, PadParam, Position } from '../../interfaces/padControlCanvas.interface';
 import { CanvasService } from '../../services/canvas.service';
 
 @Component({
@@ -11,21 +11,20 @@ import { CanvasService } from '../../services/canvas.service';
 })
 export class ControlPadComponent implements AfterViewInit, OnChanges {
 
-  @Output() change = new EventEmitter<PadEvent>();
   @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
   @ViewChild('scalling') scalling: ElementRef<HTMLCanvasElement>;
   private canvasCtx: CanvasRenderingContext2D;
   isMoving = false;
-  @Input('isPersist') isPersist;
-  @Input('controlObservable') controlObservable: ControlObservable;
-  
+  @Input('isPersist') isPersist: boolean;
+  @Input('padParam') padParam: PadParam;
+
   @HostListener('window:mouseup')
   @HostListener('window:touchend')
   onClick(): void {
     this.isMoving = false;
     if (!this.isPersist) {
       this.canvasService.clearCanvas(this.canvas);
-      this.change.emit({ type: 'end' });
+      this.padParam.onEventEnd();
     }
   }
   
@@ -35,7 +34,7 @@ export class ControlPadComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     this.initCanvas();
-    if (this.controlObservable) this.listen();
+    if (this.padParam.subValue$) this.listen();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -43,13 +42,14 @@ export class ControlPadComponent implements AfterViewInit, OnChanges {
   }
 
   private listen(): void {
-    this.controlObservable.supplier$.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
-      this.currentPosition = this.controlObservable.consumer(this.currentPosition, value);
+    this.padParam.subValue$.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {      
+      this.currentPosition = this.padParam.updatePosition(this.currentPosition, value);
       if (this.isPersist) this.draw(this.currentPosition);
-    })
+    });
   }
 
   private initCanvas(): void {
+    this.padParam.canvas = this.canvas
     this.canvas.nativeElement.width = PAD_MAX;
     this.canvas.nativeElement.height = PAD_MAX;
     this.canvasCtx = this.canvas.nativeElement.getContext('2d');
@@ -89,7 +89,7 @@ export class ControlPadComponent implements AfterViewInit, OnChanges {
   }
 
   onEventStart(event: MouseEvent): void {
-    if (!this.isPersist) this.change.emit({ type: 'start', canvas: this.canvas });
+    if (!this.isPersist) this.padParam.onEventStart();
     this.isMoving = true;
     this.onEventMove(event);
   }
@@ -98,7 +98,7 @@ export class ControlPadComponent implements AfterViewInit, OnChanges {
     if (this.isMoving) {
       this.currentPosition = this.canvasService.getPositionFromEvent(event, this.canvas);
       this.draw(this.currentPosition);
-      this.change.emit({ type: 'move', x: this.currentPosition.x, y: this.currentPosition.y, canvas: this.canvas });
+      this.padParam.onEventMove({x: this.currentPosition.x, y: this.currentPosition.y})
     }
   }
 

@@ -14,7 +14,7 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-  <mat-slide-toggle [(ngModel)]="isPersist" (change)="isPersistChange($event)">Persist</mat-slide-toggle>
+  <mat-slide-toggle [(ngModel)]="isPersist" (change)="onPersistChange($event)">Persist</mat-slide-toggle>
 </section>
 
-<app-control-pad [isPersist]="isPersist" (change)="onEventChange($event)"></app-control-pad>
+<app-control-pad [isPersist]="isPersist" [padParam]="padParam"></app-control-pad>

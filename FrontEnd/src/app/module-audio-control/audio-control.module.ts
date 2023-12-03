@@ -13,9 +13,11 @@ import { FormsModule } from '@angular/forms';
 import { TruncateFreqPipe } from './pipes/truncate-freq.pipe';
 import { ControlSlidingComponent } from './components/control-sliding/control-sliding.component';
 import { NodeReverbComponent } from './components/node-reverb/node-reverb.component';
+import { NodeDistortionComponent } from './components/node-distortion/node-distortion.component';
+import { ControlPotComponent } from './components/control-pot/control-pot.component';
 
 @NgModule({
-  declarations: [PageAudioControlComponent, NodeFilterComponent, NodeEqComponent, ControlPadComponent, NodeSineWaveComponent, NodeFreqBarsComponent, TruncateFreqPipe, ControlSlidingComponent, NodeReverbComponent],
+  declarations: [PageAudioControlComponent, NodeFilterComponent, NodeEqComponent, ControlPadComponent, NodeSineWaveComponent, NodeFreqBarsComponent, TruncateFreqPipe, ControlSlidingComponent, NodeReverbComponent, NodeDistortionComponent, ControlPotComponent],
   imports: [
     CommonModule,
     AudioControlRoutingModule,

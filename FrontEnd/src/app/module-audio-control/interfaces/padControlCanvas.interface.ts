@@ -3,16 +3,9 @@ import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { Observable } from "rxjs";
 
 export interface PadControlable {
-  onEventChange(event: PadEvent): void;
-  updateFromPosition(x: number, y: number): void;
-  isPersistChange(event: MatSlideToggleChange): void
-}
-
-export interface PadEvent {
-  type: 'end' | 'start' | 'move';
-  x?: number;
-  y?: number;
-  canvas?: ElementRef<HTMLCanvasElement>
+  isPersist: boolean;
+  padParam: PadParam;
+  onPersistChange(event: MatSlideToggleChange): void
 }
 
 export interface Position {
@@ -20,9 +13,16 @@ export interface Position {
   y: number;
 }
 
-export interface ControlObservable {
-  supplier$: Observable<number>,
-  consumer(position: Position, value: number): Position
-}
-
 export const PAD_MAX = 250;
+
+export interface PadParam {
+  canvas?: ElementRef<HTMLCanvasElement>;
+  libelleX: string;
+  libelleY: string;
+  subValue$?: Observable<number>;
+  currentPosition?: Position;
+  updatePosition?(position: Position, value: number): Position;
+  onEventStart?(): void;
+  onEventMove?(position: Position): void;
+  onEventEnd?(): void
+}

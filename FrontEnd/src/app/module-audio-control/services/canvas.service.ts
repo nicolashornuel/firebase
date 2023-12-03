@@ -1,5 +1,4 @@
 import { ElementRef, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { Position } from '../interfaces/padControlCanvas.interface';
 
 @Injectable({
@@ -7,17 +6,7 @@ import { Position } from '../interfaces/padControlCanvas.interface';
 })
 export class CanvasService {
 
-/*   private position$: BehaviorSubject<Position> = new BehaviorSubject<Position>({ x: 0, y: 0 });
- */
   constructor() { }
-/* 
-  public get getPosition$(): Observable<Position> {
-    return this.position$.asObservable();
-  }
-
-  public setPosition$(position: Position): void {
-    this.position$.next(position);
-  } */
 
   public clearCanvas(canvas: ElementRef<HTMLCanvasElement>): void {
     const { width, height } = canvas.nativeElement;

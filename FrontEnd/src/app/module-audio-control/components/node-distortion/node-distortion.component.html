@@ -1,0 +1,9 @@
+<section class="row-between-center mb-2">
+  <mat-button-toggle-group #group="matButtonToggleGroup" (change)="overSampleTypeChange(group.value)">
+    <mat-button-toggle value="2x"> 2x </mat-button-toggle>
+    <mat-button-toggle value="4x"> 4x </mat-button-toggle>
+    <mat-button-toggle checked value="none"> none </mat-button-toggle>
+  </mat-button-toggle-group>
+</section>
+
+<app-control-pot name="distortion" min="0" max="300" step="10" [value]="currentValue" (valueChange)="onChange($event)"></app-control-pot>

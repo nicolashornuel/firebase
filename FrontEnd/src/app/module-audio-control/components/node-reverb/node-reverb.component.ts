@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
-import { ControlObservable, PAD_MAX, PadControlable, PadEvent } from '../../interfaces/padControlCanvas.interface';
+import { PAD_MAX, PadControlable, PadParam, Position } from '../../interfaces/padControlCanvas.interface';
 import { MainGainService } from '../../services/mainGain.service';
+import { CanvasService } from '../../services/canvas.service';
 
 @Component({
   selector: 'app-node-reverb',
@@ -13,18 +14,33 @@ export class NodeReverbComponent implements AfterViewInit, AudioNodeElement, Pad
 
   @Input('context') audioCtx: AudioContext;
   @Input('source') gainNode: GainNode;
-  isPersist = false;
-  controlObservable: ControlObservable = {
-    supplier$: this.gainService.getMainGainValue$,
-    consumer: ({ x }, value: number) => ({ x, y: PAD_MAX - (Math.floor(value * 10) / 10) * PAD_MAX  })
-  };
 
+  isPersist = false;
+  padParam: PadParam = {
+    libelleX: "buffer",
+    libelleY: "gain",
+    subValue$: this.gainService.getMainGainValue$,
+    currentPosition: { x: 0, y: PAD_MAX },
+    updatePosition: ({ x }, value: number) => ({ x, y: PAD_MAX - (Math.floor(value * 10) / 10) * PAD_MAX }),
+    onEventStart: () => {
+      this.isStarting = true;
+      this.gainValueBkp = this.gainNode.gain.value;
+      this.connectNode();
+    },
+    onEventMove: (position: Position) => {
+      if (!this.isPersist) this.connectNode();
+      this.gainConvolver.gain.value = position.x / 20;
+      this.gainNode.gain.value = Math.ceil(((PAD_MAX - position.y) / PAD_MAX) * 10) / 10;
+    },
+    onEventEnd: () => { if (!this.isPersist) this.disconnectNode() }
+  }
+  
   private convolver: ConvolverNode;
   private gainConvolver: GainNode;
-  private gainValue: number;
+  private gainValueBkp: number;
   private isStarting = false;
 
-  constructor(private gainService: MainGainService) { }
+  constructor(private gainService: MainGainService, private canvasService: CanvasService) { }
 
   ngAfterViewInit(): void {
     this.initNode();
@@ -44,47 +60,26 @@ export class NodeReverbComponent implements AfterViewInit, AudioNodeElement, Pad
   }
 
   disconnectNode(): void {
+    this.canvasService.clearCanvas(this.padParam.canvas);
     this.convolver.disconnect(0);
     this.gainConvolver.disconnect(0);
     this.resetParam();
   }
 
   resetParam(): void {
-    if (this.gainValue && this.isStarting) {
+    if (this.gainValueBkp && this.isStarting) {
       this.gainConvolver.gain.value = 0;
-      this.gainNode.gain.value = this.gainValue;
+      this.gainNode.gain.value = this.gainValueBkp;
       this.isStarting = false;
     }
   }
 
-  onEventChange(event: PadEvent): void {
-    switch (event.type) {
-      case 'start':
-        this.isStarting = true;
-        this.gainValue = this.gainNode.gain.value;
-        this.connectNode();
-        break;
-      case 'move':
-        if (!this.isPersist) this.connectNode();
-        this.updateFromPosition(event.x, event.y);
-        break;
-      case 'end':
-        if (!this.isPersist) this.disconnectNode()
-        break;
-    }
-  }
-
-  isPersistChange(event: MatSlideToggleChange): void {
+  onPersistChange(event: MatSlideToggleChange): void {
     if (!event.checked) {
       this.disconnectNode();
     } else {
       this.connectNode();
     }
-  }
-
-  updateFromPosition(x: number, y: number): void {
-    this.gainConvolver.gain.value = x / 20;
-    this.gainNode.gain.value = Math.ceil(((PAD_MAX - y) / PAD_MAX) * 10) / 10;
   }
 
   getBufferFromCtx(): AudioBuffer {

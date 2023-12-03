@@ -17,4 +17,18 @@ $color-light: $grey-97;
     #control {
         position: relative;
     }
+    .scalling-legend {
+      position: absolute;
+      opacity: .7;
+      &.x {
+        right:0%;
+        bottom: 0;
+        margin-right: 4px;
+      }
+      &.y {
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        margin-top: 4px;
+      }
+    }
   }

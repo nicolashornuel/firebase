@@ -22,11 +22,7 @@ import { APP_INITIALIZER } from '@angular/core';
 import { PreferenceService } from './services/preference.service';
 import { AudioElementComponent } from './components/audio-element/audio-element.component';
 import { IframeTrackerDirective } from './directives/iframe-tracker.directive';
-import { AudioControllerComponent } from './components/audio-controller/audio-controller.component';
-import { EqualizerComponent } from './components/equalizer/equalizer.component';
-import { AudioFilterComponent } from './components/audio-filter/audio-filter.component';
 import { IconSvgRegistryService } from './services/icon-svg-registry.service';
-import { AudioEqComponent } from './components/audio-eq/audio-eq.component';
 import { AudioControlModule } from './module-audio-control/audio-control.module';
 
 export function initializeApp(pref: PreferenceService) {
@@ -48,11 +44,7 @@ export function initializeApp(pref: PreferenceService) {
     RadioPlayerComponent,
     RssFluxComponent,
     AudioElementComponent,
-    IframeTrackerDirective,
-    AudioControllerComponent,
-    EqualizerComponent,
-    AudioFilterComponent,
-    AudioEqComponent
+    IframeTrackerDirective
   ],
   imports: [
     BrowserModule,
