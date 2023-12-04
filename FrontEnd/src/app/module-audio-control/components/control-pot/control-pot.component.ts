@@ -42,8 +42,10 @@ export class ControlPotComponent implements AfterViewInit {
   }
 
   setPositionFromInput(): void {
-    console.log(this.value);
-    //this.valueChange.emit(this.value)
+    this.valueChange.emit(this.value)
+    const deltaRotation = this.MAX_ROTATION - this.MIN_ROTATION;
+    const rotation = (this.value * deltaRotation) / this.max;
+    this.setPosition(rotation + this.MIN_ROTATION);
   }
 
   private setPositionFromEvent(e: MouseEvent): void {
@@ -62,7 +64,7 @@ export class ControlPotComponent implements AfterViewInit {
     const hypotenuse = this.getHypotenuse(positionFromCenter);
     const angle = this.getAngle(positionFromCenter.x, hypotenuse);
     const angleFromZero = this.getAngleFromZero(angle, positionFromCenter);
-    return this.normaliseAngle(angleFromZero);
+    return this.normalize(angleFromZero);
   }
 
   private getCenter(): Position {
@@ -89,7 +91,7 @@ export class ControlPotComponent implements AfterViewInit {
     }
   }
 
-  private normaliseAngle(angle: number): number {
+  private normalize(angle: number): number {
     if (angle <= this.MIN_ROTATION) return this.MIN_ROTATION
     else if (angle >= this.MAX_ROTATION) return this.MAX_ROTATION
     else return angle

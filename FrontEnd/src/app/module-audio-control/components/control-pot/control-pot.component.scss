@@ -44,15 +44,23 @@ $grey-light: $grey-70;
     font-weight: 500;
     user-select: none;
   }
-  .knob {
+
+  .box-shadow {
     width: 70%;
     padding-bottom: 70%;
     border-radius: 50%;
+    display: inline-block;
+    position: absolute;
     background: $grey-dark;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.32);
+  }
+  .knob {
+    width: 70%;
+    padding-bottom: 70%;
+    //border-radius: 50%;
     display: inline-block;
     cursor: -webkit-grab;
     cursor: -moz-grab;
-    position: relative;
     &:after {
       content: '';
       width: 2px;
