@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Position } from '../../interfaces/padControlCanvas.interface';
 
 @Component({
@@ -6,7 +6,7 @@ import { Position } from '../../interfaces/padControlCanvas.interface';
   templateUrl: './control-pot.component.html',
   styleUrls: ['./control-pot.component.scss']
 })
-export class ControlPotComponent implements AfterViewInit {
+export class ControlPotComponent implements AfterViewInit, OnChanges {
 
   //https://mattbridgeman.github.io/drum-machine/#/
   //https://github.com/MattBridgeman/drum-machine/blob/master/src/less/components/rotator/rotator.less
@@ -31,6 +31,10 @@ export class ControlPotComponent implements AfterViewInit {
   private readonly MAX_ROTATION = 331;
 
   constructor() { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['value'].currentValue && this.knob) this.setPositionFromInput();
+  }
 
   ngAfterViewInit(): void {
     this.setPosition(this.MIN_ROTATION);

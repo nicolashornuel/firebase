@@ -11,21 +11,17 @@
 
     <fieldset>
       <legend>Main</legend>
+    
       <button (click)="onTooglePlay()" mat-mini-fab color="accent">
         <mat-icon *ngIf="isPlaying">pause</mat-icon>
         <mat-icon *ngIf="!isPlaying">play_arrow</mat-icon>
       </button>
-      <app-control-pot
-        name="volume"
-        min="0"
-        max="1"
-        step="0.03"
-        [(value)]="gainNode.gain.value"
-        (valueChange)="mainGainValueChange($event)"
-      ></app-control-pot>
+
+      <app-node-gain [source]="gainNode"></app-node-gain>
 
       <app-node-distortion [source]="gainNode" [context]="audioCtx"></app-node-distortion>
     </fieldset>
+
   </section>
 
   <section class="row">
@@ -38,18 +34,6 @@
     <fieldset class="col-7 col">
       <legend>Eq</legend>
       <app-node-eq [source]="gainNode" [context]="audioCtx"></app-node-eq>
-    </fieldset>
-
-    <fieldset class="col-1 col">
-      <legend>Gain</legend>
-      <app-control-sliding
-        min="0"
-        max="1"
-        step="0.1"
-        format="1.1"
-        [(value)]="gainNode.gain.value"
-        (valueChange)="mainGainValueChange($event)"
-      ></app-control-sliding>
     </fieldset>
 
     <fieldset class="col-1 col">

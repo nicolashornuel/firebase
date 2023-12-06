@@ -21,8 +21,12 @@ export class PageAudioControlComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.audioCtx = new AudioContext();
     this.gainNode = this.audioCtx.createGain();
-    this.gainService.getMainGainValue$.pipe(takeUntil(this.destroy$)).subscribe(mainGainValue =>
-      this.gainNode.gain.value = mainGainValue);
+    this.gainService.getMainGainValue$.pipe(takeUntil(this.destroy$)).subscribe(mainGainValue => {
+      this.gainNode.gain.value = mainGainValue;
+      console.log(mainGainValue);
+      
+    }
+      );
   }
 
   ngAfterViewInit(): void {

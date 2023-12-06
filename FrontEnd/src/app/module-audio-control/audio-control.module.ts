@@ -15,9 +15,10 @@ import { ControlSlidingComponent } from './components/control-sliding/control-sl
 import { NodeReverbComponent } from './components/node-reverb/node-reverb.component';
 import { NodeDistortionComponent } from './components/node-distortion/node-distortion.component';
 import { ControlPotComponent } from './components/control-pot/control-pot.component';
+import { NodeGainComponent } from './components/node-gain/node-gain.component';
 
 @NgModule({
-  declarations: [PageAudioControlComponent, NodeFilterComponent, NodeEqComponent, ControlPadComponent, NodeSineWaveComponent, NodeFreqBarsComponent, TruncateFreqPipe, ControlSlidingComponent, NodeReverbComponent, NodeDistortionComponent, ControlPotComponent],
+  declarations: [PageAudioControlComponent, NodeFilterComponent, NodeEqComponent, ControlPadComponent, NodeSineWaveComponent, NodeFreqBarsComponent, TruncateFreqPipe, ControlSlidingComponent, NodeReverbComponent, NodeDistortionComponent, ControlPotComponent, NodeGainComponent],
   imports: [
     CommonModule,
     AudioControlRoutingModule,

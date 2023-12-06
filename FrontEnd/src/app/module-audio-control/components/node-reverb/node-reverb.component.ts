@@ -21,7 +21,7 @@ export class NodeReverbComponent implements AfterViewInit, AudioNodeElement, Pad
     libelleY: "gain",
     subValue$: this.gainService.getMainGainValue$,
     currentPosition: { x: 0, y: PAD_MAX },
-    updatePosition: ({ x }, value: number) => ({ x, y: PAD_MAX - (Math.floor(value * 10) / 10) * PAD_MAX }),
+    updatePosition: ({ x }, value: number) => ({ x, y: PAD_MAX - (Math.floor(value * 100) / 100) * PAD_MAX }),
     onEventStart: () => {
       this.isStarting = true;
       this.gainValueBkp = this.gainNode.gain.value;
@@ -30,7 +30,7 @@ export class NodeReverbComponent implements AfterViewInit, AudioNodeElement, Pad
     onEventMove: (position: Position) => {
       if (!this.isPersist) this.connectNode();
       this.gainConvolver.gain.value = position.x / 20;
-      this.gainNode.gain.value = Math.ceil(((PAD_MAX - position.y) / PAD_MAX) * 10) / 10;
+      this.gainNode.gain.value = Math.ceil(((PAD_MAX - position.y) / PAD_MAX) * 100) / 100;
     },
     onEventEnd: () => { if (!this.isPersist) this.disconnectNode() }
   }

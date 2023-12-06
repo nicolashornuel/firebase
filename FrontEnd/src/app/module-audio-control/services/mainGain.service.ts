@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class MainGainService {
 
-  private mainGainValue$: BehaviorSubject<number> = new BehaviorSubject<number>(0.1);
+  private mainGainValue$: BehaviorSubject<number> = new BehaviorSubject<number>(0.03);
 
   constructor() { }
 
