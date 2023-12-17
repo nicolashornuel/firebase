@@ -1,9 +1,12 @@
 <div class="center col">
+
   <section class="row">
+
     <fieldset>
       <legend>Analyzer SineWave</legend>
       <app-node-sine-wave [source]="gainNode" [context]="audioCtx"></app-node-sine-wave>
     </fieldset>
+
     <fieldset>
       <legend>Analyzer FreqBars</legend>
       <app-node-freq-bars [source]="gainNode" [context]="audioCtx"></app-node-freq-bars>
@@ -11,32 +14,30 @@
 
     <fieldset>
       <legend>Main</legend>
-    
       <button (click)="onTooglePlay()" mat-mini-fab color="accent">
         <mat-icon *ngIf="isPlaying">pause</mat-icon>
         <mat-icon *ngIf="!isPlaying">play_arrow</mat-icon>
       </button>
-
       <app-node-gain [source]="gainNode"></app-node-gain>
-
       <app-node-distortion [source]="gainNode" [context]="audioCtx"></app-node-distortion>
     </fieldset>
 
-  </section>
+    <fieldset>
+      <legend>Oscillator</legend>
+      <app-node-oscillator [source]="gainNode" [context]="audioCtx"></app-node-oscillator>
+    </fieldset>
 
-  <section class="row">
-    
-    <fieldset class="col-3">
+    <fieldset>
       <legend>Filter</legend>
       <app-node-filter [source]="gainNode" [context]="audioCtx"></app-node-filter>
     </fieldset>
 
-    <fieldset class="col-7 col">
+    <fieldset>
       <legend>Eq</legend>
       <app-node-eq [source]="gainNode" [context]="audioCtx"></app-node-eq>
     </fieldset>
 
-    <fieldset class="col-1 col">
+    <fieldset>
       <legend>Reverb</legend>
       <app-node-reverb [source]="gainNode" [context]="audioCtx"></app-node-reverb>
     </fieldset>

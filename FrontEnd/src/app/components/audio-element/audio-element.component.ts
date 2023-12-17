@@ -29,6 +29,7 @@ export class AudioElementComponent implements AfterViewInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((isPlaying: boolean) => {
         this.isPlaying = isPlaying;
+        if (this.isPlaying) this.audioService.setSource$(this.audio.nativeElement);
         this.isPlaying ? this.audio.nativeElement.play() : this.audio.nativeElement.pause();
       });
   }

@@ -33,11 +33,11 @@ export class ControlPotComponent implements AfterViewInit, OnChanges {
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['value'].currentValue && this.knob) this.setPositionFromInput();
+    if (changes['value'] && this.knob) this.setPositionFromInput();
   }
 
   ngAfterViewInit(): void {
-    this.setPosition(this.MIN_ROTATION);
+    this.setPositionFromValue();
   }
 
   onEventStart(event: MouseEvent): void {
@@ -45,16 +45,30 @@ export class ControlPotComponent implements AfterViewInit, OnChanges {
     this.setPositionFromEvent(event);
   }
 
+  setPositionFromValue(): void {
+     const deltaRotation = this.MAX_ROTATION - this.MIN_ROTATION;
+     const deltaValue = this.max - this.min;
+     const normalizeValue = this.value - this.min;
+     const rotation = (normalizeValue * deltaRotation) / deltaValue ;
+     this.setPosition(rotation + this.MIN_ROTATION);
+   }
+
+   getValueFromRotation(rotation: number): number {
+    const deltaRotation = this.MAX_ROTATION - this.MIN_ROTATION;
+    const deltaValue = this.max - this.min;
+    const normalizeValue = ((rotation - this.MIN_ROTATION) * deltaValue) / deltaRotation;
+    const value = this.step < 1 ? normalizeValue : Math.trunc(normalizeValue);
+    return this.min < 0 ? value - Math.abs(this.min) : value + Math.abs(this.min);
+   }
+
   setPositionFromInput(): void {
     this.valueChange.emit(this.value)
-    const deltaRotation = this.MAX_ROTATION - this.MIN_ROTATION;
-    const rotation = (this.value * deltaRotation) / this.max;
-    this.setPosition(rotation + this.MIN_ROTATION);
+    this.setPositionFromValue();
   }
 
   private setPositionFromEvent(e: MouseEvent): void {
     const rotation = this.getRotationFromTouch({ x: e.pageX, y: e.pageY });
-    this.valueChange.emit(rotation);
+    this.valueChange.emit(this.getValueFromRotation(rotation));
     this.setPosition(rotation);
   }
 

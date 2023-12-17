@@ -1,0 +1,15 @@
+<div class="canvas-container">
+    <span class="scalling-legend x">{{ envParam.libelleX }}</span>
+    <span class="scalling-legend y">{{ envParam.libelleY }}</span>
+    <canvas #scalling id="scalling"> </canvas>
+    <canvas
+      id="control"
+      #canvas
+      (mousedown)="onEventStart($event)"
+      (mousemove)="onEventMove($event)"
+      (touchstart)="onEventStart($event)"
+      (touchmove)="onEventMove($event)"
+    >
+    </canvas>
+  </div>
+  

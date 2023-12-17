@@ -24,6 +24,7 @@ import { AudioElementComponent } from './components/audio-element/audio-element.
 import { IframeTrackerDirective } from './directives/iframe-tracker.directive';
 import { IconSvgRegistryService } from './services/icon-svg-registry.service';
 import { AudioControlModule } from './module-audio-control/audio-control.module';
+import { PageAudioControlComponent } from './module-audio-control/page/page-audio-control.component';
 
 export function initializeApp(pref: PreferenceService) {
   return (): Promise<any> => { 

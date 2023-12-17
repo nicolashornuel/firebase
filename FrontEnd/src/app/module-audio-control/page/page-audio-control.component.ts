@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
 import { MainGainService } from '../services/mainGain.service';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-page-audio-control',
@@ -21,18 +21,24 @@ export class PageAudioControlComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.audioCtx = new AudioContext();
     this.gainNode = this.audioCtx.createGain();
-    this.gainService.getMainGainValue$.pipe(takeUntil(this.destroy$)).subscribe(mainGainValue => {
-      this.gainNode.gain.value = mainGainValue;
-      console.log(mainGainValue);
-      
-    }
-      );
+    this.gainService.getMainGainValue$.pipe(takeUntil(this.destroy$)).subscribe(mainGainValue => this.gainNode.gain.value = mainGainValue);
   }
 
   ngAfterViewInit(): void {
     this.source = this.audioCtx.createMediaElementSource(this.audio.nativeElement);
     this.source.connect(this.gainNode);
     this.gainNode.connect(this.audioCtx.destination);
+/*     this.audioService.getIsPlaying$.pipe(
+      mergeMap(isPlaying => 
+        iif(() => isPlaying, this.audioService.getSource$, of(this.audio.nativeElement))),
+      takeUntil(this.destroy$)
+      )
+    .subscribe(source => {
+      if (this.source) this.source.disconnect();
+      this.source = this.audioCtx.createMediaElementSource(source);
+      this.source.connect(this.gainNode);
+      this.gainNode.connect(this.audioCtx.destination);
+    }); */
   }
 
   onTooglePlay(): void {
