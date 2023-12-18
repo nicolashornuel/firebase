@@ -21,10 +21,9 @@ export class ControlEnvComponent implements AfterViewInit {
   @HostListener('window:touchend')
   onClick(): void {
     this.isMoving = false;
-    //this.envParam.onEventEnd();
   }
 
-  private currentPositions: { attackPosition: Position, releasePosition: Position };
+  private currentPosition: { attackPosition: Position, releasePosition: Position };
   private readonly PAD_MAX = 100;
 
   constructor(private canvasService: CanvasService, private destroy$: DestroyService) { }
@@ -36,8 +35,8 @@ export class ControlEnvComponent implements AfterViewInit {
 
   private listen(): void {
     this.envParam.subValue$.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
-      this.currentPositions = this.envParam.updatePosition(value, this.PAD_MAX);
-      this.draw(this.currentPositions);
+      this.currentPosition = this.envParam.updatePosition(value, this.PAD_MAX);
+      this.draw(this.currentPosition);
     });
   }
 
@@ -82,7 +81,6 @@ export class ControlEnvComponent implements AfterViewInit {
   }
 
   onEventStart(event: MouseEvent): void {
-    //this.envParam.onEventStart();
     this.isMoving = true;
     this.onEventMove(event);
   }
@@ -90,18 +88,20 @@ export class ControlEnvComponent implements AfterViewInit {
   onEventMove(event: MouseEvent): void {
     if (this.isMoving) {
       const { x, y } = this.canvasService.getPositionFromEvent(event, this.canvas);
-      if (y > this.currentPositions.attackPosition.y - 5 && y < this.currentPositions.attackPosition.y + 5
-        && x > this.currentPositions.attackPosition.x - 5 && x < this.currentPositions.attackPosition.x + 5) {
-        this.currentPositions.attackPosition = { x, y };
-        this.currentPositions.releasePosition.y = y;
-        this.draw({ attackPosition: this.currentPositions.attackPosition, releasePosition: this.currentPositions.releasePosition });
-      } else if (y > this.currentPositions.releasePosition.y - 5 && y < this.currentPositions.releasePosition.y + 5
-        && x > this.currentPositions.releasePosition.x - 5 && x < this.currentPositions.releasePosition.x + 5) {
-        this.currentPositions.attackPosition.y = y;
-        this.currentPositions.releasePosition = { x, y };
-        this.draw({ attackPosition: this.currentPositions.attackPosition, releasePosition: this.currentPositions.releasePosition });
+      if (y > this.currentPosition.attackPosition.y - 5 && y < this.currentPosition.attackPosition.y + 5
+        && x > this.currentPosition.attackPosition.x - 5 && x < this.currentPosition.attackPosition.x + 5) {
+        this.currentPosition.attackPosition = { x, y };
+        this.currentPosition.releasePosition.y = y;
+        this.draw({ attackPosition: this.currentPosition.attackPosition, releasePosition: this.currentPosition.releasePosition });
+        this.envParam.onEventMove(this.currentPosition.attackPosition.x, this.currentPosition.releasePosition.x, y, this.PAD_MAX);
+      } else if (y > this.currentPosition.releasePosition.y - 5 && y < this.currentPosition.releasePosition.y + 5
+        && x > this.currentPosition.releasePosition.x - 5 && x < this.currentPosition.releasePosition.x + 5) {
+        this.currentPosition.attackPosition.y = y;
+        this.currentPosition.releasePosition = { x, y };
+        this.draw({ attackPosition: this.currentPosition.attackPosition, releasePosition: this.currentPosition.releasePosition });
+        this.envParam.onEventMove(this.currentPosition.attackPosition.x, this.currentPosition.releasePosition.x, y, this.PAD_MAX);
       }
-      this.envParam.onEventMove(this.currentPositions.attackPosition.x, this.currentPositions.releasePosition.x, y, this.PAD_MAX);
+
     }
   }
 

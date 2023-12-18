@@ -1,9 +1,15 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
-import { BehaviorSubject, Subject, interval, of } from 'rxjs';
-import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Subject, interval, of } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
-import { PAD_MAX, PadParam, Position } from '../../interfaces/padControlCanvas.interface';
+import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
+
+interface OscParam {
+  frequency: number,
+  detune: number,
+  typeSelected: OscillatorType,
+  types: OscillatorType[]
+}
 
 @Component({
   selector: 'app-node-oscillator',
@@ -14,18 +20,19 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
 
   @Input('context') audioCtx: AudioContext;
   @Input('source') gainNode: GainNode;
-  frequency: number = 0;
-  detune: number = 0;
-  attackTime: number = 0.1;
-  releaseTime: number = 0.1;
-  bpm: number = 128;
-  typeSelected: OscillatorType = 'sine';
-  types: OscillatorType[] = ['sine', 'square', 'sawtooth', 'triangle'];
   oscillator: OscillatorNode;
-  duration: number;
   envNode: GainNode;
 
+  bpm: number = 128;
+  duration: number;
   private duration$ = new Subject<number>();
+
+  oscParam: OscParam  = {
+    frequency: 0,
+    detune: 0,
+    typeSelected: 'sine',
+    types: ['sine', 'square', 'sawtooth', 'triangle']
+  }
 
   envParam = {
     libelleX: "time",
@@ -46,11 +53,9 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
       }
     },
     onEventMove: (xAttack: number, xRelease: number, y: number, PAD_MAX: number) => {
-      this.attackTime = xAttack / PAD_MAX;
-      this.releaseTime = xRelease / PAD_MAX;
-      this.envNode.gain.value = y;
-      //this.envNode.gain.value = Math.ceil(((PAD_MAX - attackPosition.y) / PAD_MAX) * 100) / 100;
-      //Math.ceil(((PAD_MAX - position.y) / PAD_MAX) * 100) / 100;
+      this.envParam.attackTime = xAttack / PAD_MAX;
+      this.envParam.releaseTime = xRelease / PAD_MAX;
+      this.envNode.gain.value = Math.ceil(((PAD_MAX - y) / PAD_MAX) * 100) / 100;
     }
   }
 
@@ -64,11 +69,7 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
 
   initNode(): void {
     this.envNode = new GainNode(this.audioCtx);
-    this.oscillator = new OscillatorNode(this.audioCtx, {
-      detune: this.detune,
-      frequency: this.frequency,
-      type: this.typeSelected,
-    });
+    this.oscillator = new OscillatorNode(this.audioCtx, this.oscParam);
   }
 
   onBpmChange(): void {
@@ -81,20 +82,20 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
   }
 
   connectNode() {
-    this.oscillator.connect(this.envNode).connect(this.audioCtx.destination);
+    this.oscillator.connect(this.envNode).connect(this.gainNode);
     this.oscillator.start();
     this.duration$.pipe(
       switchMap(duration => interval(duration)),
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.oscillator.type = this.typeSelected;
-      this.oscillator.frequency.value = this.frequency;
-      this.oscillator.detune.value = this.detune;
+      this.oscillator.type = this.oscParam.typeSelected;
+      this.oscillator.frequency.value = this.oscParam.frequency;
+      this.oscillator.detune.value = this.oscParam.detune;
       const time = this.audioCtx.currentTime;
       this.envNode.gain.cancelScheduledValues(time);
       this.envNode.gain.setValueAtTime(0, time);
-      this.envNode.gain.linearRampToValueAtTime(1, time + this.attackTime);
-      this.envNode.gain.linearRampToValueAtTime(0, time + (this.duration / 1000) - this.releaseTime);
+      this.envNode.gain.linearRampToValueAtTime(this.envNode.gain.value, time + this.envParam.attackTime);
+      this.envNode.gain.linearRampToValueAtTime(0, time + (this.duration / 1000) - this.envParam.releaseTime);
     });
   }
 
@@ -105,7 +106,7 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
   }
 
   onTypeChange(typeSelected: OscillatorType): void {
-    this.typeSelected = typeSelected;
+    this.oscParam.typeSelected = typeSelected;
   }
 
 }
