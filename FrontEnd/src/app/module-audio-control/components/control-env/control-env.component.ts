@@ -90,13 +90,11 @@ export class ControlEnvComponent implements AfterViewInit {
       const { x, y } = this.canvasService.getPositionFromEvent(event, this.canvas);
       if (y > this.currentPosition.attackPosition.y - 5 && y < this.currentPosition.attackPosition.y + 5
         && x > this.currentPosition.attackPosition.x - 5 && x < this.currentPosition.attackPosition.x + 5) {
-        this.currentPosition.attackPosition = { x, y };
-        this.currentPosition.releasePosition.y = y;
+        this.currentPosition.attackPosition = { x, y: 0 };
         this.draw({ attackPosition: this.currentPosition.attackPosition, releasePosition: this.currentPosition.releasePosition });
-        this.envParam.onEventMove(this.currentPosition.attackPosition.x, this.currentPosition.releasePosition.x, y, this.PAD_MAX);
+        this.envParam.onEventMove(this.currentPosition.attackPosition.x, this.currentPosition.releasePosition.x, this.currentPosition.releasePosition.y, this.PAD_MAX);
       } else if (y > this.currentPosition.releasePosition.y - 5 && y < this.currentPosition.releasePosition.y + 5
         && x > this.currentPosition.releasePosition.x - 5 && x < this.currentPosition.releasePosition.x + 5) {
-        this.currentPosition.attackPosition.y = y;
         this.currentPosition.releasePosition = { x, y };
         this.draw({ attackPosition: this.currentPosition.attackPosition, releasePosition: this.currentPosition.releasePosition });
         this.envParam.onEventMove(this.currentPosition.attackPosition.x, this.currentPosition.releasePosition.x, y, this.PAD_MAX);
@@ -106,7 +104,7 @@ export class ControlEnvComponent implements AfterViewInit {
   }
 
   draw({ attackPosition, releasePosition }: { attackPosition: Position, releasePosition: Position }): void {
-    this.canvasService.clearCanvas(this.canvas);
+    this.canvasService.clearCanvas(this.canvas);    
     // line
     this.canvasCtx.beginPath();
     this.canvasCtx.lineWidth = 2;
@@ -116,7 +114,7 @@ export class ControlEnvComponent implements AfterViewInit {
     this.canvasCtx.stroke();
     // arc
     this.canvasCtx.beginPath();
-    this.canvasCtx.arc(attackPosition.x, attackPosition.y, 5, 0, 2 * Math.PI);
+    this.canvasCtx.arc(attackPosition.x, attackPosition.y, 3, 0, 2 * Math.PI);
     this.canvasCtx.fill();
     this.canvasCtx.stroke();
     // line
@@ -128,7 +126,7 @@ export class ControlEnvComponent implements AfterViewInit {
     this.canvasCtx.stroke();
     // arc
     this.canvasCtx.beginPath();
-    this.canvasCtx.arc(releasePosition.x, releasePosition.y, 5, 0, 2 * Math.PI);
+    this.canvasCtx.arc(releasePosition.x, releasePosition.y, 3, 0, 2 * Math.PI);
     this.canvasCtx.fill();
     this.canvasCtx.stroke();
     // line

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { Subject, interval, of } from 'rxjs';
+import { Observable, Subject, interval, of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
 import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
@@ -8,7 +8,11 @@ interface OscParam {
   frequency: number,
   detune: number,
   typeSelected: OscillatorType,
-  types: OscillatorType[]
+  types: OscillatorType[],
+/*   attack: number,
+  release: number,
+  time: number,
+  sustain: number */
 }
 
 @Component({
@@ -26,6 +30,15 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
   bpm: number = 128;
   duration: number;
   private duration$ = new Subject<number>();
+  private envParam$ = new Subject<any>();
+
+  public get getEnvParam$(): Observable<any> {
+    return this.envParam$.asObservable();
+  }
+
+  public setEnvParam$(value: any): void {
+    this.envParam$.next(value);
+  }
 
   oscParam: OscParam  = {
     frequency: 0,
@@ -37,25 +50,24 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
   envParam = {
     libelleX: "time",
     libelleY: "gain",
-    attackTime: 0.1,
-    releaseTime: 0.3,
-    duration: 0.5,
-    gainMax: 1,
-    gainMin: 0,
-    subValue$: of({ attackTime: 0.1, releaseTime: 0.3, gainMax: 0.9 }),
-    updatePosition: ({ attackTime, releaseTime, gainMax }, PAD_MAX: number) => {
-      const y = PAD_MAX - (Math.floor(gainMax * 100) / 100) * PAD_MAX;
-      const xAttack = (Math.floor(attackTime * 100) / 100) * PAD_MAX;
-      const xRelease = PAD_MAX - (Math.floor(releaseTime * 100) / 100) * PAD_MAX;
+    attack: 0.1,
+    release: 0.3,
+    time: 0.5,
+    sustain: 0.9,
+    subValue$: this.getEnvParam$,
+    updatePosition: (envParam: any, PAD_MAX: number) => {
+      const y = PAD_MAX - (Math.floor(envParam.sustain * 100) / 100) * PAD_MAX;
+      const xAttack = (Math.floor(envParam.attack * 100) / 100) * PAD_MAX;
+      const xRelease = PAD_MAX - (Math.floor(envParam.release * 100) / 100) * PAD_MAX;
       return {
-        attackPosition: { x: xAttack, y },
+        attackPosition: { x: xAttack, y: 0 },
         releasePosition: { x: xRelease, y }
       }
     },
     onEventMove: (xAttack: number, xRelease: number, y: number, PAD_MAX: number) => {
-      this.envParam.attackTime = xAttack / PAD_MAX;
-      this.envParam.releaseTime = xRelease / PAD_MAX;
-      this.envNode.gain.value = Math.ceil(((PAD_MAX - y) / PAD_MAX) * 100) / 100;
+      this.envParam.attack = xAttack / PAD_MAX;
+      this.envParam.release = (1 - xRelease / PAD_MAX);
+      this.envParam.sustain = Math.ceil(((PAD_MAX - y) / PAD_MAX) * 100) / 100;
     }
   }
 
@@ -65,6 +77,7 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
     this.initNode();
     this.connectNode();
     this.setInterval$(this.bpm);
+    this.setEnvParam$(this.envParam);
   }
 
   initNode(): void {
@@ -94,8 +107,8 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
       const time = this.audioCtx.currentTime;
       this.envNode.gain.cancelScheduledValues(time);
       this.envNode.gain.setValueAtTime(0, time);
-      this.envNode.gain.linearRampToValueAtTime(this.envNode.gain.value, time + this.envParam.attackTime);
-      this.envNode.gain.linearRampToValueAtTime(0, time + (this.duration / 1000) - this.envParam.releaseTime);
+      this.envNode.gain.linearRampToValueAtTime(this.envParam.sustain, time + this.envParam.attack);
+      this.envNode.gain.linearRampToValueAtTime(0, time + (this.duration / 1000) - this.envParam.release);
     });
   }
 
