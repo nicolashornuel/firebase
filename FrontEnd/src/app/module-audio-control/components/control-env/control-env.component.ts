@@ -23,8 +23,17 @@ export class ControlEnvComponent implements AfterViewInit {
     this.isMoving = false;
   }
 
-  private currentPosition: { attackPosition: Position, releasePosition: Position };
+  private positions: { attack: Position, release: Position };
   private readonly PAD_MAX = 100;
+  private readonly PAD_PADDING = 10;
+  private readonly CONTENT = this.PAD_MAX - this.PAD_PADDING;
+  private readonly GEOMETRY = {
+    container: 100,
+    content: 80,
+    max: 90,
+    min: 10,
+    diameter: 3
+  }
 
   constructor(private canvasService: CanvasService, private destroy$: DestroyService) { }
 
@@ -35,8 +44,8 @@ export class ControlEnvComponent implements AfterViewInit {
 
   private listen(): void {
     this.envParam.subValue$.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
-      this.currentPosition = this.envParam.updatePosition(value, this.PAD_MAX);
-      this.draw(this.currentPosition);
+      this.positions = this.envParam.updatePosition(value, this.GEOMETRY);
+      this.draw(this.positions);
     });
   }
 
@@ -88,52 +97,53 @@ export class ControlEnvComponent implements AfterViewInit {
   onEventMove(event: MouseEvent): void {
     if (this.isMoving) {
       const { x, y } = this.canvasService.getPositionFromEvent(event, this.canvas);
-      if (y > this.currentPosition.attackPosition.y - 5 && y < this.currentPosition.attackPosition.y + 5
-        && x > this.currentPosition.attackPosition.x - 5 && x < this.currentPosition.attackPosition.x + 5) {
-        this.currentPosition.attackPosition = { x, y: 0 };
-        this.draw({ attackPosition: this.currentPosition.attackPosition, releasePosition: this.currentPosition.releasePosition });
-        this.envParam.onEventMove(this.currentPosition.attackPosition.x, this.currentPosition.releasePosition.x, this.currentPosition.releasePosition.y, this.PAD_MAX);
-      } else if (y > this.currentPosition.releasePosition.y - 5 && y < this.currentPosition.releasePosition.y + 5
-        && x > this.currentPosition.releasePosition.x - 5 && x < this.currentPosition.releasePosition.x + 5) {
-        this.currentPosition.releasePosition = { x, y };
-        this.draw({ attackPosition: this.currentPosition.attackPosition, releasePosition: this.currentPosition.releasePosition });
-        this.envParam.onEventMove(this.currentPosition.attackPosition.x, this.currentPosition.releasePosition.x, y, this.PAD_MAX);
+      if (x <= this.GEOMETRY.max && x >= this.GEOMETRY.min && y <= this.GEOMETRY.max && y >= this.GEOMETRY.min) {
+        if (y > this.positions.attack.y - this.GEOMETRY.diameter && y < this.positions.attack.y + this.GEOMETRY.diameter
+          && x > this.positions.attack.x - this.GEOMETRY.diameter && x < this.positions.attack.x + this.GEOMETRY.diameter) {
+          this.positions.attack = { x, y: this.GEOMETRY.min };
+          this.draw({ attack: this.positions.attack, release: this.positions.release });
+          this.envParam.onEventMove(this.positions.attack.x, this.positions.release.x, this.positions.release.y, this.GEOMETRY);
+        } else if (y > this.positions.release.y - this.GEOMETRY.diameter && y < this.positions.release.y + this.GEOMETRY.diameter
+          && x > this.positions.release.x - this.GEOMETRY.diameter && x < this.positions.release.x + this.GEOMETRY.diameter) {
+          this.positions.release = { x, y };
+          this.draw({ attack: this.positions.attack, release: this.positions.release });
+         this.envParam.onEventMove(this.positions.attack.x, this.positions.release.x, this.positions.release.y, this.GEOMETRY);
+        }
       }
-
     }
   }
 
-  draw({ attackPosition, releasePosition }: { attackPosition: Position, releasePosition: Position }): void {
-    this.canvasService.clearCanvas(this.canvas);    
+  draw({ attack, release }: { attack: Position, release: Position }): void {
+    this.canvasService.clearCanvas(this.canvas);
     // line
     this.canvasCtx.beginPath();
     this.canvasCtx.lineWidth = 2;
-    this.canvasCtx.moveTo(0, this.PAD_MAX);
-    this.canvasCtx.lineTo(attackPosition.x, attackPosition.y);
+    this.canvasCtx.moveTo(this.GEOMETRY.min, this.GEOMETRY.max);
+    this.canvasCtx.lineTo(attack.x, attack.y);
     this.canvasCtx.stroke();
     this.canvasCtx.stroke();
     // arc
     this.canvasCtx.beginPath();
-    this.canvasCtx.arc(attackPosition.x, attackPosition.y, 3, 0, 2 * Math.PI);
+    this.canvasCtx.arc(attack.x, attack.y, this.GEOMETRY.diameter, 0, 2 * Math.PI);
     this.canvasCtx.fill();
     this.canvasCtx.stroke();
     // line
     this.canvasCtx.beginPath();
     this.canvasCtx.lineWidth = 2;
-    this.canvasCtx.moveTo(attackPosition.x, attackPosition.y);
-    this.canvasCtx.lineTo(releasePosition.x, releasePosition.y);
+    this.canvasCtx.moveTo(attack.x, attack.y);
+    this.canvasCtx.lineTo(release.x, release.y);
     this.canvasCtx.stroke();
     this.canvasCtx.stroke();
     // arc
     this.canvasCtx.beginPath();
-    this.canvasCtx.arc(releasePosition.x, releasePosition.y, 3, 0, 2 * Math.PI);
+    this.canvasCtx.arc(release.x, release.y, this.GEOMETRY.diameter, 0, 2 * Math.PI);
     this.canvasCtx.fill();
     this.canvasCtx.stroke();
     // line
     this.canvasCtx.beginPath();
     this.canvasCtx.lineWidth = 2;
-    this.canvasCtx.moveTo(releasePosition.x, releasePosition.y);
-    this.canvasCtx.lineTo(this.PAD_MAX, this.PAD_MAX);
+    this.canvasCtx.moveTo(release.x, release.y);
+    this.canvasCtx.lineTo(this.GEOMETRY.max, this.GEOMETRY.max);
     this.canvasCtx.stroke();
     this.canvasCtx.stroke();
   }

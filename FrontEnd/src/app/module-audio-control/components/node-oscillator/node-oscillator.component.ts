@@ -55,19 +55,22 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
     time: 0.5,
     sustain: 0.9,
     subValue$: this.getEnvParam$,
-    updatePosition: (envParam: any, PAD_MAX: number) => {
-      const y = PAD_MAX - (Math.floor(envParam.sustain * 100) / 100) * PAD_MAX;
-      const xAttack = (Math.floor(envParam.attack * 100) / 100) * PAD_MAX;
-      const xRelease = PAD_MAX - (Math.floor(envParam.release * 100) / 100) * PAD_MAX;
+    updatePosition: (envParam: any, GEOMETRY: any) => {
+      const y = GEOMETRY.content - (Math.floor(envParam.sustain * 100) / 100) * GEOMETRY.content;
+      const xAttack = (Math.floor(envParam.attack * 100) / 100) * GEOMETRY.content;
+      console.log(xAttack);
+      const xRelease = GEOMETRY.content - (Math.floor(envParam.release * 100) / 100) * GEOMETRY.content;
       return {
-        attackPosition: { x: xAttack, y: 0 },
-        releasePosition: { x: xRelease, y }
+        attack: { x: xAttack + GEOMETRY.min , y: GEOMETRY.min },
+        release: { x: xRelease + GEOMETRY.min, y: y + GEOMETRY.min }
       }
     },
-    onEventMove: (xAttack: number, xRelease: number, y: number, PAD_MAX: number) => {
-      this.envParam.attack = xAttack / PAD_MAX;
-      this.envParam.release = (1 - xRelease / PAD_MAX);
-      this.envParam.sustain = Math.ceil(((PAD_MAX - y) / PAD_MAX) * 100) / 100;
+    onEventMove: (xAttack: number, xRelease: number, y: number, GEOMETRY: any) => {
+      console.log(xAttack);
+      
+      this.envParam.attack = xAttack / GEOMETRY.container;
+      this.envParam.release = (1 - xRelease / GEOMETRY.container);
+      this.envParam.sustain = Math.ceil(((GEOMETRY.container - y) / GEOMETRY.container) * 100) / 100;
     }
   }
 
