@@ -3,16 +3,15 @@ import { Observable, Subject, interval, of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
 import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
+import { BpmService } from '../../services/bpm.service';
 
 interface OscParam {
   frequency: number,
   detune: number,
   typeSelected: OscillatorType,
   types: OscillatorType[],
-/*   attack: number,
-  release: number,
-  time: number,
-  sustain: number */
+  ampSelected: number,
+  amps: { label: string, value: number }[]
 }
 
 @Component({
@@ -27,9 +26,8 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
   oscillator: OscillatorNode;
   envNode: GainNode;
 
-  bpm: number = 128;
-  duration: number;
-  private duration$ = new Subject<number>();
+  private beatDuration: number;
+  private interval$ = new Subject<number>();
   private envParam$ = new Subject<any>();
 
   public get getEnvParam$(): Observable<any> {
@@ -40,11 +38,13 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
     this.envParam$.next(value);
   }
 
-  oscParam: OscParam  = {
+  oscParam: OscParam = {
     frequency: 0,
     detune: 0,
     typeSelected: 'sine',
-    types: ['sine', 'square', 'sawtooth', 'triangle']
+    types: ['sine', 'square', 'sawtooth', 'triangle'],
+    ampSelected: 2,
+    amps: [{ label: '1/4', value: 0.25 }, { label: '1/2', value: 0.5 }, { label: 'x1', value: 1 }, { label: 'x2', value: 2 }, { label: 'x4', value: 4 }, { label: 'x8', value: 8 }]
   }
 
   envParam = {
@@ -52,34 +52,30 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
     libelleY: "gain",
     attack: 0.1,
     release: 0.3,
-    time: 0.5,
     sustain: 0.9,
     subValue$: this.getEnvParam$,
-    updatePosition: (envParam: any, GEOMETRY: any) => {
-      const y = GEOMETRY.content - (Math.floor(envParam.sustain * 100) / 100) * GEOMETRY.content;
-      const xAttack = (Math.floor(envParam.attack * 100) / 100) * GEOMETRY.content;
-      console.log(xAttack);
-      const xRelease = GEOMETRY.content - (Math.floor(envParam.release * 100) / 100) * GEOMETRY.content;
+    updatePosition: (envParam: any, GEO: any) => {
+      const y = GEO.vh - (Math.floor(envParam.sustain * 100) / 100) * GEO.vh;
+      const xAttack = (Math.floor(envParam.attack * 100) / 100) * GEO.vw;
+      const xRelease = GEO.vw - (Math.floor(envParam.release * 100) / 100) * GEO.vw;
       return {
-        attack: { x: xAttack + GEOMETRY.min , y: GEOMETRY.min },
-        release: { x: xRelease + GEOMETRY.min, y: y + GEOMETRY.min }
+        attack: { x: xAttack + GEO.min, y: GEO.min },
+        release: { x: xRelease + GEO.min, y: y + GEO.min }
       }
     },
-    onEventMove: (xAttack: number, xRelease: number, y: number, GEOMETRY: any) => {
-      console.log(xAttack);
-      
-      this.envParam.attack = xAttack / GEOMETRY.container;
-      this.envParam.release = (1 - xRelease / GEOMETRY.container);
-      this.envParam.sustain = Math.ceil(((GEOMETRY.container - y) / GEOMETRY.container) * 100) / 100;
+    onEventMove: (attack: number, release: number, sustain: number, GEO: any) => {
+      this.envParam.attack = (attack - GEO.min) / GEO.vw;
+      this.envParam.release = (1 - (release - GEO.min) / GEO.vw);
+      this.envParam.sustain = (1 - (sustain - GEO.min) / GEO.vh);
     }
   }
 
-  constructor(private destroy$: DestroyService) { }
+  constructor(private destroy$: DestroyService, private bpmService: BpmService) { }
 
   ngAfterViewInit(): void {
     this.initNode();
     this.connectNode();
-    this.setInterval$(this.bpm);
+    this.subBpm();
     this.setEnvParam$(this.envParam);
   }
 
@@ -88,19 +84,10 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
     this.oscillator = new OscillatorNode(this.audioCtx, this.oscParam);
   }
 
-  onBpmChange(): void {
-    this.setInterval$(this.bpm);
-  }
-
-  setInterval$(bpm: number): void {
-    this.duration = Math.trunc(60000 / bpm);
-    this.duration$.next(this.duration);
-  }
-
   connectNode() {
     this.oscillator.connect(this.envNode).connect(this.gainNode);
     this.oscillator.start();
-    this.duration$.pipe(
+    this.interval$.pipe(
       switchMap(duration => interval(duration)),
       takeUntil(this.destroy$)
     ).subscribe(() => {
@@ -110,19 +97,31 @@ export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement 
       const time = this.audioCtx.currentTime;
       this.envNode.gain.cancelScheduledValues(time);
       this.envNode.gain.setValueAtTime(0, time);
-      this.envNode.gain.linearRampToValueAtTime(this.envParam.sustain, time + this.envParam.attack);
-      this.envNode.gain.linearRampToValueAtTime(0, time + (this.duration / 1000) - this.envParam.release);
+      this.envNode.gain.linearRampToValueAtTime(1, time + this.envParam.attack);
+      this.envNode.gain.linearRampToValueAtTime(this.envParam.sustain, time + (this.beatDuration / 1000) - this.envParam.release);
+      this.envNode.gain.linearRampToValueAtTime(0, time + (this.beatDuration / 1000));
     });
-  }
-
-  disconnectNode(): void {
-  }
-
-  resetParam(): void {
   }
 
   onTypeChange(typeSelected: OscillatorType): void {
     this.oscParam.typeSelected = typeSelected;
+  }
+
+  onAmpChange(amp: number): void {
+    this.oscParam.ampSelected = amp;
+    this.setInterval$();
+  }
+
+  subBpm(): void {
+    this.bpmService.getBeatDuration$.pipe(takeUntil(this.destroy$)).subscribe(beatDuration => {
+      this.beatDuration = beatDuration;
+      this.setInterval$();
+    })
+  }
+
+  setInterval$(): void {
+    const interval = this.oscParam.ampSelected * this.beatDuration;
+    this.interval$.next(interval);
   }
 
 }

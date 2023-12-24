@@ -1,7 +1,5 @@
 <div class="center col">
-
   <section class="row">
-
     <fieldset>
       <legend>Analyzer SineWave</legend>
       <app-node-sine-wave [source]="gainNode" [context]="audioCtx"></app-node-sine-wave>
@@ -23,8 +21,20 @@
     </fieldset>
 
     <fieldset>
+      <legend>BPM</legend>
+      <app-control-bpm></app-control-bpm>
+    </fieldset>
+
+    <fieldset>
       <legend>Oscillator</legend>
       <app-node-oscillator [source]="gainNode" [context]="audioCtx"></app-node-oscillator>
+    </fieldset>
+    
+    <fieldset>
+      <legend>Sample</legend>
+      <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
+      <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
+      <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
     </fieldset>
 
     <fieldset>
@@ -41,7 +51,6 @@
       <legend>Reverb</legend>
       <app-node-reverb [source]="gainNode" [context]="audioCtx"></app-node-reverb>
     </fieldset>
-
   </section>
 
   <audio

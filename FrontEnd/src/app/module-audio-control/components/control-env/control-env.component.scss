@@ -8,8 +8,8 @@ $color-light: $grey-97;
     position: relative;
     background-color: $color-dark;
     color: $color-primary;
-    width: 100px;
-    height: 100px;
+    width: var(--width);
+    height: var(--height);
     #scalling {
       position: absolute;
       opacity: .3;

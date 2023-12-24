@@ -7,7 +7,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class MainGainService {
 
   private mainGainValue$: BehaviorSubject<number> = new BehaviorSubject<number>(0.03);
-  private bpmValue$: BehaviorSubject<number> = new BehaviorSubject<number>(128);
 
   constructor() { }
 
@@ -17,14 +16,6 @@ export class MainGainService {
 
   public setMainGainValue$(value: number): void {
     this.mainGainValue$.next(value);
-  }
-
-  public get getBpmValue$(): Observable<number> {
-    return this.bpmValue$.asObservable();
-  }
-
-  public setBpmValue$(value: number): void {
-    this.bpmValue$.next(value);
   }
 
 }

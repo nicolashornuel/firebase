@@ -1,4 +1,4 @@
-<div class="canvas-container">
+<div #container class="canvas-container" [style.--height]="GEO.h + 'px'" [style.--width]="GEO.w + 'px'">
     <span class="scalling-legend x">{{ envParam.libelleX }}</span>
     <span class="scalling-legend y">{{ envParam.libelleY }}</span>
     <canvas #scalling id="scalling"> </canvas>

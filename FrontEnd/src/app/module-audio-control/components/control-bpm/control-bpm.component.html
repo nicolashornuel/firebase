@@ -1,0 +1,11 @@
+<div class="row-evenly-center pb-1 bpm">
+    <app-control-pot
+      name="bpm"
+      min="0"
+      max="200"
+      step="1"
+      [(value)]="bpm"
+      (valueChange)="onBpmChange()"
+    ></app-control-pot>
+    <input type="number" min="0" max="200" step="1" [(ngModel)]="bpm" />
+  </div>

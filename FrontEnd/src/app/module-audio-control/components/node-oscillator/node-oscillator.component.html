@@ -1,15 +1,44 @@
 <mat-button-toggle-group #group="matButtonToggleGroup" (change)="onTypeChange(group.value)">
-    <mat-button-toggle *ngFor="let type of oscParam.types" [checked]="oscParam.typeSelected == type" [value]="type">
-        <mat-icon [svgIcon]="type"></mat-icon>
-    </mat-button-toggle>
-  </mat-button-toggle-group>
+  <mat-button-toggle *ngFor="let type of oscParam.types" [checked]="oscParam.typeSelected == type" [value]="type">
+    <mat-icon [svgIcon]="type"></mat-icon>
+  </mat-button-toggle>
+</mat-button-toggle-group>
 
-<app-control-pot name="frequency" min="0" max="500" step="1" [(value)]="oscParam.frequency"></app-control-pot>
-<app-control-pot name="detune" min="0" max="500" step="10" [(value)]="oscParam.detune"></app-control-pot>
-<app-control-pot name="attack" min="0" max="1" step="0.1" [(value)]="envParam.attack" (valueChange)="setEnvParam$(envParam)"></app-control-pot>
-<app-control-pot name="release" min="0" max="1" step="0.1" [(value)]="envParam.release" (valueChange)="setEnvParam$(envParam)"></app-control-pot>
-<app-control-pot name="sustain" min="0" max="1" step="0.1" [(value)]="envParam.sustain" (valueChange)="setEnvParam$(envParam)"></app-control-pot>
-<app-control-pot name="bpm" min="0" max="200" step="1" [(value)]="bpm" (valueChange)="onBpmChange()"></app-control-pot>
-<input type="number"  min="0" max="200" step="1" [(ngModel)]="bpm">
+<div class="row-evenly-center pb-1">
+  <app-control-pot name="frequency" min="0" max="500" step="1" [(value)]="oscParam.frequency"></app-control-pot>
+  <app-control-pot name="detune" min="0" max="500" step="10" [(value)]="oscParam.detune"></app-control-pot>
+</div>
 
+<mat-button-toggle-group #amp="matButtonToggleGroup" (change)="onAmpChange(amp.value)">
+  <mat-button-toggle *ngFor="let amp of oscParam.amps" [checked]="oscParam.ampSelected == amp.value" [value]="amp.value">
+    {{ amp.label }}
+  </mat-button-toggle>
+</mat-button-toggle-group>
+
+<div class="row-evenly-center pb-1">
+  <app-control-pot
+    name="attack"
+    min="0"
+    max="1"
+    step="0.05"
+    [(value)]="envParam.attack"
+    (valueChange)="setEnvParam$(envParam)"
+  ></app-control-pot>
+  <app-control-pot
+    name="release"
+    min="0"
+    max="1"
+    step="0.05"
+    [(value)]="envParam.release"
+    (valueChange)="setEnvParam$(envParam)"
+  ></app-control-pot>
+  <app-control-pot
+    name="sustain"
+    min="0"
+    max="1"
+    step="0.1"
+    [(value)]="envParam.sustain"
+    (valueChange)="setEnvParam$(envParam)"
+  ></app-control-pot>
+</div>
 <app-control-env [envParam]="envParam"></app-control-env>

@@ -18,9 +18,11 @@ import { ControlPotComponent } from './components/control-pot/control-pot.compon
 import { NodeGainComponent } from './components/node-gain/node-gain.component';
 import { NodeOscillatorComponent } from './components/node-oscillator/node-oscillator.component';
 import { ControlEnvComponent } from './components/control-env/control-env.component';
+import { ControlBpmComponent } from './components/control-bpm/control-bpm.component';
+import { NodeSampleComponent } from './components/node-sample/node-sample.component';
 
 @NgModule({
-  declarations: [PageAudioControlComponent, NodeFilterComponent, NodeEqComponent, ControlPadComponent, NodeSineWaveComponent, NodeFreqBarsComponent, TruncateFreqPipe, ControlSlidingComponent, NodeReverbComponent, NodeDistortionComponent, ControlPotComponent, NodeGainComponent, NodeOscillatorComponent, ControlEnvComponent],
+  declarations: [PageAudioControlComponent, NodeFilterComponent, NodeEqComponent, ControlPadComponent, NodeSineWaveComponent, NodeFreqBarsComponent, TruncateFreqPipe, ControlSlidingComponent, NodeReverbComponent, NodeDistortionComponent, ControlPotComponent, NodeGainComponent, NodeOscillatorComponent, ControlEnvComponent, ControlBpmComponent, NodeSampleComponent],
   imports: [
     CommonModule,
     AudioControlRoutingModule,

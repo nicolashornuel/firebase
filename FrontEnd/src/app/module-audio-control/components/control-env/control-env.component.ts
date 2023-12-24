@@ -13,6 +13,7 @@ export class ControlEnvComponent implements AfterViewInit {
 
   @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
   @ViewChild('scalling') scalling: ElementRef<HTMLCanvasElement>;
+  @ViewChild('container') container: ElementRef<HTMLElement>;
   private canvasCtx: CanvasRenderingContext2D;
   isMoving = false;
   @Input('envParam') envParam;
@@ -24,15 +25,15 @@ export class ControlEnvComponent implements AfterViewInit {
   }
 
   private positions: { attack: Position, release: Position };
-  private readonly PAD_MAX = 100;
-  private readonly PAD_PADDING = 10;
-  private readonly CONTENT = this.PAD_MAX - this.PAD_PADDING;
-  private readonly GEOMETRY = {
-    container: 100,
-    content: 80,
-    max: 90,
+  public readonly GEO = {
+    w: 200,
+    h: 100,
+    vw: 180,
+    vh: 80,
+    mw: 190,
+    mh: 90,
     min: 10,
-    diameter: 3
+    dia: 5
   }
 
   constructor(private canvasService: CanvasService, private destroy$: DestroyService) { }
@@ -44,15 +45,15 @@ export class ControlEnvComponent implements AfterViewInit {
 
   private listen(): void {
     this.envParam.subValue$.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
-      this.positions = this.envParam.updatePosition(value, this.GEOMETRY);
+      this.positions = this.envParam.updatePosition(value, this.GEO);
       this.draw(this.positions);
     });
   }
 
   private initCanvas(): void {
     this.envParam.canvas = this.canvas
-    this.canvas.nativeElement.width = this.PAD_MAX;
-    this.canvas.nativeElement.height = this.PAD_MAX;
+    this.canvas.nativeElement.width = this.GEO.w;
+    this.canvas.nativeElement.height = this.GEO.h;
     this.canvasCtx = this.canvas.nativeElement.getContext('2d');
     let css: CSSStyleDeclaration = getComputedStyle(this.canvas.nativeElement);
     const colorCss = css.getPropertyValue('color');
@@ -62,16 +63,16 @@ export class ControlEnvComponent implements AfterViewInit {
   }
 
   private initScalling(colorCss: string): void {
-    this.scalling.nativeElement.width = this.PAD_MAX;
-    this.scalling.nativeElement.height = this.PAD_MAX;
+    this.scalling.nativeElement.width = this.GEO.w;
+    this.scalling.nativeElement.height = this.GEO.h;
     const scallingCtx = this.scalling.nativeElement.getContext('2d');
     // axe vertical
     scallingCtx.beginPath();
     scallingCtx.strokeStyle = colorCss;
     scallingCtx.lineWidth = 1;
-    for (let i = 0; i < this.PAD_MAX; i++) {
+    for (let i = 0; i < this.GEO.h; i++) {
       if (i % 10 == 0)
-        scallingCtx.moveTo(this.PAD_MAX, i);
+        scallingCtx.moveTo(this.GEO.w, i);
       else
         scallingCtx.lineTo(0, i);
     }
@@ -80,11 +81,11 @@ export class ControlEnvComponent implements AfterViewInit {
     scallingCtx.beginPath();
     scallingCtx.strokeStyle = colorCss;
     scallingCtx.lineWidth = 1;
-    for (let i = 0; i < this.PAD_MAX; i++) {
+    for (let i = 0; i < this.GEO.w; i++) {
       if (i % 10 == 0)
         scallingCtx.moveTo(i, 0);
       else
-        scallingCtx.lineTo(i, this.PAD_MAX);
+        scallingCtx.lineTo(i, this.GEO.h);
     }
     scallingCtx.stroke();
   }
@@ -97,19 +98,22 @@ export class ControlEnvComponent implements AfterViewInit {
   onEventMove(event: MouseEvent): void {
     if (this.isMoving) {
       const { x, y } = this.canvasService.getPositionFromEvent(event, this.canvas);
-      if (x <= this.GEOMETRY.max && x >= this.GEOMETRY.min && y <= this.GEOMETRY.max && y >= this.GEOMETRY.min) {
-        if (y > this.positions.attack.y - this.GEOMETRY.diameter && y < this.positions.attack.y + this.GEOMETRY.diameter
-          && x > this.positions.attack.x - this.GEOMETRY.diameter && x < this.positions.attack.x + this.GEOMETRY.diameter) {
-          this.positions.attack = { x, y: this.GEOMETRY.min };
-          this.draw({ attack: this.positions.attack, release: this.positions.release });
-          this.envParam.onEventMove(this.positions.attack.x, this.positions.release.x, this.positions.release.y, this.GEOMETRY);
-        } else if (y > this.positions.release.y - this.GEOMETRY.diameter && y < this.positions.release.y + this.GEOMETRY.diameter
-          && x > this.positions.release.x - this.GEOMETRY.diameter && x < this.positions.release.x + this.GEOMETRY.diameter) {
-          this.positions.release = { x, y };
-          this.draw({ attack: this.positions.attack, release: this.positions.release });
-         this.envParam.onEventMove(this.positions.attack.x, this.positions.release.x, this.positions.release.y, this.GEOMETRY);
-        }
+      if (y > this.positions.attack.y - this.GEO.dia && y < this.positions.attack.y + this.GEO.dia
+        && x > this.positions.attack.x - this.GEO.dia && x < this.positions.attack.x + this.GEO.dia) {
+        this.positions.attack.x = x;
+        this.normalizeMove({ x, y });
+      } else if (y > this.positions.release.y - this.GEO.dia && y < this.positions.release.y + this.GEO.dia
+        && x > this.positions.release.x - this.GEO.dia && x < this.positions.release.x + this.GEO.dia) {
+        this.positions.release = { x, y };
+        this.normalizeMove({ x, y });
       }
+    }
+  }
+
+  normalizeMove({ x, y }: Position): void {
+    if (x <= this.GEO.mw && x >= this.GEO.min && y <= this.GEO.mh && y >= this.GEO.min) {
+      this.draw({ attack: this.positions.attack, release: this.positions.release });
+      this.envParam.onEventMove(this.positions.attack.x, this.positions.release.x, this.positions.release.y, this.GEO);
     }
   }
 
@@ -118,32 +122,32 @@ export class ControlEnvComponent implements AfterViewInit {
     // line
     this.canvasCtx.beginPath();
     this.canvasCtx.lineWidth = 2;
-    this.canvasCtx.moveTo(this.GEOMETRY.min, this.GEOMETRY.max);
-    this.canvasCtx.lineTo(attack.x, attack.y);
+    this.canvasCtx.moveTo(this.GEO.min, this.GEO.mh);
+    this.canvasCtx.lineTo(attack.x, this.GEO.min);
     this.canvasCtx.stroke();
     this.canvasCtx.stroke();
     // arc
     this.canvasCtx.beginPath();
-    this.canvasCtx.arc(attack.x, attack.y, this.GEOMETRY.diameter, 0, 2 * Math.PI);
+    this.canvasCtx.arc(attack.x, this.GEO.min, 3, 0, 2 * Math.PI);
     this.canvasCtx.fill();
     this.canvasCtx.stroke();
     // line
     this.canvasCtx.beginPath();
     this.canvasCtx.lineWidth = 2;
-    this.canvasCtx.moveTo(attack.x, attack.y);
+    this.canvasCtx.moveTo(attack.x, this.GEO.min);
     this.canvasCtx.lineTo(release.x, release.y);
     this.canvasCtx.stroke();
     this.canvasCtx.stroke();
     // arc
     this.canvasCtx.beginPath();
-    this.canvasCtx.arc(release.x, release.y, this.GEOMETRY.diameter, 0, 2 * Math.PI);
+    this.canvasCtx.arc(release.x, release.y, 3, 0, 2 * Math.PI);
     this.canvasCtx.fill();
     this.canvasCtx.stroke();
     // line
     this.canvasCtx.beginPath();
     this.canvasCtx.lineWidth = 2;
     this.canvasCtx.moveTo(release.x, release.y);
-    this.canvasCtx.lineTo(this.GEOMETRY.max, this.GEOMETRY.max);
+    this.canvasCtx.lineTo(this.GEO.mw, this.GEO.mh);
     this.canvasCtx.stroke();
     this.canvasCtx.stroke();
   }

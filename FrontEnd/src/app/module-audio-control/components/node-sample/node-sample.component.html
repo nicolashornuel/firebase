@@ -1,0 +1,25 @@
+<input
+  #inputFile
+  type="file"
+  class="custom-file-input"
+  id="validatedCustomFile"
+  ngModel
+  name="file"
+  (change)="handleFileInput($event)"
+/>
+
+<mat-button-toggle-group #amp="matButtonToggleGroup" (change)="onAmpChange(amp.value)">
+    <mat-button-toggle *ngFor="let amp of ampParam.amps" [checked]="ampParam.ampSelected == amp.value" [value]="amp.value">
+      {{ amp.label }}
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+<div class="row-evenly-center pb-1">
+  <app-control-pot name="playbackRate" min="0" max="10" step="0.05" [(value)]="playbackRate"></app-control-pot>
+  <app-control-pot name="delay" min="0" max="1" step="0.1" [(value)]="delay"></app-control-pot>
+  <app-control-pot name="threshold" min="-99" max="-1" step="1" [(value)]="compParam.threshold"></app-control-pot>
+  <app-control-pot name="knee" min="1" max="39" step="1" [(value)]="compParam.knee"></app-control-pot>
+  <app-control-pot name="ratio" min="1" max="20" step="1" [(value)]="compParam.ratio"></app-control-pot>
+  <app-control-pot name="attack" min="0" max="1" step="0.05" [(value)]="compParam.attack"></app-control-pot>
+  <app-control-pot name="release" min="0" max="1" step="0.05" [(value)]="compParam.release"></app-control-pot>
+</div>
