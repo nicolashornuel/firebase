@@ -13,8 +13,6 @@
       <mat-icon svgIcon="lowpass"></mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
-
-  <mat-slide-toggle [(ngModel)]="isPersist" (change)="onPersistChange($event)">Persist</mat-slide-toggle>
 </section>
 
-<app-control-pad [isPersist]="isPersist" [padParam]="padParam"></app-control-pad>
+<app-control-pad [padParam]="padParam" (isPersistChange)="onPersistChange($event)"></app-control-pad>

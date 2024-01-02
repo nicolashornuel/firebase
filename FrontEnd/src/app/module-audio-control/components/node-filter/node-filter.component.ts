@@ -12,22 +12,21 @@ import { CanvasService } from '../../services/canvas.service';
 export class NodeFilterComponent implements AfterViewInit, AudioNodeElement, PadControlable {
 
   @Input('context') audioCtx: AudioContext;
-  @Input('source') gainNode: GainNode;
+  @Input('source') audioNode: GainNode;
 
-  isPersist = false;
   padParam: PadParam = {
     libelleX: "frequency",
     libelleY: "Q factor",
+    isPersist: false,
     currentPosition: { x: 0, y: PAD_MAX },
     onEventStart: () => this.connectNode(),
     onEventMove: (position: Position) => {
-      if (!this.isPersist) this.connectNode();
       const frequency = position.x / PAD_MAX * this.FREQUENCY_MAX;
       const q = this.Q_MAX * (PAD_MAX - (2 * position.y)) / PAD_MAX;;
       this.filterNode.frequency.value = frequency;
       this.filterNode.Q.value = q;
     },
-    onEventEnd: () => {if (!this.isPersist) this.disconnectNode()}
+    onEventEnd: () => this.disconnectNode()
   }
   
   private filterNode: BiquadFilterNode;
@@ -47,8 +46,8 @@ export class NodeFilterComponent implements AfterViewInit, AudioNodeElement, Pad
   }
 
   connectNode() {
-    this.gainNode.connect(this.filterNode);
-    this.filterNode.connect(this.gainNode.context.destination);
+    this.audioNode.connect(this.filterNode);
+    this.filterNode.connect(this.audioNode.context.destination);
   }
 
   disconnectNode(): void {

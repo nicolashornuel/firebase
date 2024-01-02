@@ -16,6 +16,7 @@ export class ControlPotComponent implements AfterViewInit, OnChanges {
   @Input() min: number;
   @Input() max: number;
   @Input() step: number;
+  @Input() disabled?: boolean;
   @Output() valueChange = new EventEmitter<number>();
   @ViewChild('knob') knob: ElementRef;
   

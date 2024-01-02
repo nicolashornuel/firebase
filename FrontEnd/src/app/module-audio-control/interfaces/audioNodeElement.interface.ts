@@ -1,6 +1,6 @@
 export interface AudioNodeElement {
     audioCtx: AudioContext;
-    gainNode: GainNode;
+    audioNode: AudioNode;
     initNode(): void;
     connectNode(): void;
     disconnectNode?(): void;

@@ -92,4 +92,8 @@ $grey-light: $grey-70;
 			display: block;
 		}
 	}
+  &.disabled {
+    opacity: .4;
+    pointer-events: none;
+  }
 }

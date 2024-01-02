@@ -1,0 +1,7 @@
+@import 'variables.scss';
+.divider {
+    background-color: $grey-70;
+    width: 2px;
+    align-self: stretch;
+    margin: 6px;
+}

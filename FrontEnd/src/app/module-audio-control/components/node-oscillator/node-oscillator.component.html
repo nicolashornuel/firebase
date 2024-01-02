@@ -1,44 +1,45 @@
-<mat-button-toggle-group #group="matButtonToggleGroup" (change)="onTypeChange(group.value)">
-  <mat-button-toggle *ngFor="let type of oscParam.types" [checked]="oscParam.typeSelected == type" [value]="type">
-    <mat-icon [svgIcon]="type"></mat-icon>
-  </mat-button-toggle>
-</mat-button-toggle-group>
+<section class="col">
+  <div class="row-between-center">
+    <div class="row gap-2">
+      <app-ui-button-grp [items]="oscillatorTypes" [icon]="true" [(selected)]="oscParam.type"></app-ui-button-grp>
+      <app-ui-button-grp [items]="octaves" [icon]="false" [(selected)]="oscParam.octave"></app-ui-button-grp>
+      <app-control-mute [(muted)]="oscParam.muted"></app-control-mute>
+      <button class="btn-outline" (click)="oscParam.opened = !oscParam.opened">
+        <mat-icon [svgIcon]="oscParam.opened ? 'view-off' : 'view-on'"></mat-icon>
+      </button>
+      <button class="btn-outline" [ngClass]="oscParam.eg ? 'active' : ''" (click)="oscParam.eg = !oscParam.eg">
+        {{ oscParam.eg ? 'EG' : 'Amp' }}
+      </button>
+    </div>
+    <div class="row-between-center gap-2">
+      <app-control-pot name="detune" min="0" max="500" step="10" [(value)]="oscParam.detune"></app-control-pot>
+      <span class="divider"></span>
+      <app-control-pot
+        *ngIf="oscillatorGain"
+        name="volume"
+        min="0"
+        max="1"
+        step="0.1"
+        [(value)]="oscillatorGain.gain.value"
+      ></app-control-pot>
+    </div>
+  </div>
 
-<div class="row-evenly-center pb-1">
-  <app-control-pot name="frequency" min="0" max="500" step="1" [(value)]="oscParam.frequency"></app-control-pot>
-  <app-control-pot name="detune" min="0" max="500" step="10" [(value)]="oscParam.detune"></app-control-pot>
-</div>
+  <div class="accordeon row-between-start gap-2" [ngClass]="oscParam.opened ? 'opened' : 'closed'">
+    <app-control-gamme [sequence]="oscParam.sequence"></app-control-gamme>
 
-<mat-button-toggle-group #amp="matButtonToggleGroup" (change)="onAmpChange(amp.value)">
-  <mat-button-toggle *ngFor="let amp of oscParam.amps" [checked]="oscParam.ampSelected == amp.value" [value]="amp.value">
-    {{ amp.label }}
-  </mat-button-toggle>
-</mat-button-toggle-group>
+    <div class="col">
+      <app-control-pot name="amp" min="0.1" max="16" step="0.1" [(value)]="oscParam.amp"></app-control-pot>
+    </div>
 
-<div class="row-evenly-center pb-1">
-  <app-control-pot
-    name="attack"
-    min="0"
-    max="1"
-    step="0.05"
-    [(value)]="envParam.attack"
-    (valueChange)="setEnvParam$(envParam)"
-  ></app-control-pot>
-  <app-control-pot
-    name="release"
-    min="0"
-    max="1"
-    step="0.05"
-    [(value)]="envParam.release"
-    (valueChange)="setEnvParam$(envParam)"
-  ></app-control-pot>
-  <app-control-pot
-    name="sustain"
-    min="0"
-    max="1"
-    step="0.1"
-    [(value)]="envParam.sustain"
-    (valueChange)="setEnvParam$(envParam)"
-  ></app-control-pot>
-</div>
-<app-control-env [envParam]="envParam"></app-control-env>
+    <app-control-env [(envParam)]="oscParam.envParam"></app-control-env>
+      <fieldset>
+        <legend>filter</legend>
+        <div class="row-evenly-center gap-2 pb-1">
+          <app-control-pot name="modulation" min="1" max="1000" step="10" [(value)]="oscParam.modulation" (valueChange)="setModulation$()"></app-control-pot>
+          <app-control-pot name="frequency" min="1" max="1000" step="10" [(value)]="oscParam.filter.frequency"></app-control-pot>
+          <app-control-pot name="resonance" min="1" max="80" step="1" [(value)]="oscParam.filter.q"></app-control-pot>
+        </div>
+      </fieldset>
+  </div>
+</section>

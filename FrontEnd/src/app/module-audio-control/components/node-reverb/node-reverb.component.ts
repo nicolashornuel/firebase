@@ -13,26 +13,26 @@ import { CanvasService } from '../../services/canvas.service';
 export class NodeReverbComponent implements AfterViewInit, AudioNodeElement, PadControlable {
 
   @Input('context') audioCtx: AudioContext;
-  @Input('source') gainNode: GainNode;
+  @Input('source') audioNode: GainNode;
 
-  isPersist = false;
   padParam: PadParam = {
     libelleX: "buffer",
     libelleY: "gain",
+    isPersist: false,
     subValue$: this.gainService.getMainGainValue$,
     currentPosition: { x: 0, y: PAD_MAX },
     updatePosition: ({ x }, value: number) => ({ x, y: PAD_MAX - (Math.floor(value * 100) / 100) * PAD_MAX }),
     onEventStart: () => {
       this.isStarting = true;
-      this.gainValueBkp = this.gainNode.gain.value;
+      this.gainValueBkp = this.audioNode.gain.value;
       this.connectNode();
     },
     onEventMove: (position: Position) => {
-      if (!this.isPersist) this.connectNode();
+      if (!this.padParam.isPersist) this.connectNode();
       this.gainConvolver.gain.value = position.x / 20;
-      this.gainNode.gain.value = Math.ceil(((PAD_MAX - position.y) / PAD_MAX) * 100) / 100;
+      this.audioNode.gain.value = Math.ceil(((PAD_MAX - position.y) / PAD_MAX) * 100) / 100;
     },
-    onEventEnd: () => { if (!this.isPersist) this.disconnectNode() }
+    onEventEnd: () => { if (!this.padParam.isPersist) this.disconnectNode() }
   }
   
   private convolver: ConvolverNode;
@@ -54,7 +54,7 @@ export class NodeReverbComponent implements AfterViewInit, AudioNodeElement, Pad
   }
 
   connectNode(): void {
-    this.gainNode.connect(this.convolver);
+    this.audioNode.connect(this.convolver);
     this.convolver.connect(this.gainConvolver);
     this.gainConvolver.connect(this.audioCtx.destination);
   }
@@ -69,7 +69,7 @@ export class NodeReverbComponent implements AfterViewInit, AudioNodeElement, Pad
   resetParam(): void {
     if (this.gainValueBkp && this.isStarting) {
       this.gainConvolver.gain.value = 0;
-      this.gainNode.gain.value = this.gainValueBkp;
+      this.audioNode.gain.value = this.gainValueBkp;
       this.isStarting = false;
     }
   }

@@ -1,25 +1,47 @@
-<input
-  #inputFile
-  type="file"
-  class="custom-file-input"
-  id="validatedCustomFile"
-  ngModel
-  name="file"
-  (change)="handleFileInput($event)"
-/>
+<section class="col">
+  <div class="row-between-center">
 
-<mat-button-toggle-group #amp="matButtonToggleGroup" (change)="onAmpChange(amp.value)">
-    <mat-button-toggle *ngFor="let amp of ampParam.amps" [checked]="ampParam.ampSelected == amp.value" [value]="amp.value">
-      {{ amp.label }}
-    </mat-button-toggle>
-  </mat-button-toggle-group>
+    <div class="row gap-2 mt-4 position-relative">
+      <input #inputFile type="file" (change)="handleFileInput($event)" />
+      <span class="nameFile" *ngIf="nameFile" >{{ nameFile }}</span>
+      <div class="accordeon row-between-start gap-2" [ngClass]="sampleParam.opened ? 'opened' : 'closed'">
+        <app-control-part [sequence]="sampleParam.sequence"></app-control-part>
+      </div>
+    </div>
 
-<div class="row-evenly-center pb-1">
-  <app-control-pot name="playbackRate" min="0" max="10" step="0.05" [(value)]="playbackRate"></app-control-pot>
-  <app-control-pot name="delay" min="0" max="1" step="0.1" [(value)]="delay"></app-control-pot>
-  <app-control-pot name="threshold" min="-99" max="-1" step="1" [(value)]="compParam.threshold"></app-control-pot>
-  <app-control-pot name="knee" min="1" max="39" step="1" [(value)]="compParam.knee"></app-control-pot>
-  <app-control-pot name="ratio" min="1" max="20" step="1" [(value)]="compParam.ratio"></app-control-pot>
-  <app-control-pot name="attack" min="0" max="1" step="0.05" [(value)]="compParam.attack"></app-control-pot>
-  <app-control-pot name="release" min="0" max="1" step="0.05" [(value)]="compParam.release"></app-control-pot>
-</div>
+    <div class="row-between-center gap-2">
+
+      <div class="row-between-center gap-2 mt-4">
+        <button class="btn-outline" (click)="sampleParam.opened = !sampleParam.opened">
+          <mat-icon [svgIcon]="sampleParam.opened ? 'view-off' : 'view-on'"></mat-icon>
+        </button>
+        <button class="btn-outline" (click)="inputFile.click()">File</button>
+        <app-control-mute [(muted)]="sampleParam.muted"></app-control-mute>
+        <div>
+          <button class="btn-outline" [appPopover]="templateRef" [disabled]="!sampleParam.eg">EG</button>
+        </div>
+        <app-toggle [(value)]="sampleParam.eg" [rotate]="180"></app-toggle>
+      </div>
+
+      <app-control-pot name="amp" min="0.1" max="16" step="0.1" [(value)]="sampleParam.amp" [disabled]="sampleParam.eg"></app-control-pot>
+      <span class="divider"></span>
+      <app-control-pot name="pitch" min="0" max="2" step="0.1" [(value)]="sampleParam.playbackRate"></app-control-pot>
+      <app-control-pot name="comp" min="-99" max="-1" step="1" [(value)]="sampleParam.compressor"></app-control-pot>
+      <span class="divider"></span>
+      <app-control-pot
+        *ngIf="sampleGain"
+        name="volume"
+        min="0"
+        max="1"
+        step="0.1"
+        [(value)]="sampleGain.gain.value"
+      ></app-control-pot>
+    </div>
+  </div>
+
+
+</section>
+
+<ng-template #templateRef>
+  <app-control-env [(envParam)]="sampleParam.envParam"></app-control-env>
+</ng-template>

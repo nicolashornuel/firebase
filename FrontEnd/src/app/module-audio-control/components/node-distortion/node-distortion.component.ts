@@ -9,7 +9,7 @@ import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
 export class NodeDistortionComponent implements AfterViewInit, AudioNodeElement {
 
   @Input('context') audioCtx: AudioContext;
-  @Input('source') gainNode: GainNode;
+  @Input('source') audioNode: GainNode;
 
   currentValue: number = 0;
   private distortion: WaveShaperNode; //curve OverSampleType = "2x" | "4x" | "none";
@@ -26,8 +26,8 @@ export class NodeDistortionComponent implements AfterViewInit, AudioNodeElement 
   }
 
   connectNode() {
-    this.gainNode.connect(this.distortion);
-    this.distortion.connect(this.gainNode.context.destination);
+    this.audioNode.connect(this.distortion);
+    this.distortion.connect(this.audioNode.context.destination);
   }
 
   disconnectNode(): void {

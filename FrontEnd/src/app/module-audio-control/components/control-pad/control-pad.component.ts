@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
 import { PAD_MAX, PadParam, Position } from '../../interfaces/padControlCanvas.interface';
@@ -9,20 +9,20 @@ import { CanvasService } from '../../services/canvas.service';
   templateUrl: './control-pad.component.html',
   styleUrls: ['./control-pad.component.scss']
 })
-export class ControlPadComponent implements AfterViewInit, OnChanges {
+export class ControlPadComponent implements AfterViewInit {
 
   @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
   @ViewChild('scalling') scalling: ElementRef<HTMLCanvasElement>;
+  @Input('padParam') padParam: PadParam;
+  @Output() isPersistChange = new EventEmitter<boolean>();
   private canvasCtx: CanvasRenderingContext2D;
   isMoving = false;
-  @Input('isPersist') isPersist: boolean;
-  @Input('padParam') padParam: PadParam;
 
   @HostListener('window:mouseup')
   @HostListener('window:touchend')
   onClick(): void {
     this.isMoving = false;
-    if (!this.isPersist) {
+    if (!this.padParam.isPersist) {
       this.canvasService.clearCanvas(this.canvas);
       this.padParam.onEventEnd();
     }
@@ -37,14 +37,10 @@ export class ControlPadComponent implements AfterViewInit, OnChanges {
     if (this.padParam.subValue$) this.listen();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!changes['isPersist'].currentValue && this.canvas) this.canvasService.clearCanvas(this.canvas);
-  }
-
   private listen(): void {
     this.padParam.subValue$.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {      
       this.currentPosition = this.padParam.updatePosition(this.currentPosition, value);
-      if (this.isPersist) this.draw(this.currentPosition);
+      if (this.padParam.isPersist) this.draw(this.currentPosition);
     });
   }
 
@@ -89,7 +85,7 @@ export class ControlPadComponent implements AfterViewInit, OnChanges {
   }
 
   onEventStart(event: MouseEvent): void {
-    if (!this.isPersist) this.padParam.onEventStart();
+    this.padParam.onEventStart();
     this.isMoving = true;
     this.onEventMove(event);
   }
@@ -101,13 +97,18 @@ export class ControlPadComponent implements AfterViewInit, OnChanges {
       this.padParam.onEventMove({x: this.currentPosition.x, y: this.currentPosition.y})
     }
   }
-
+  
   draw({ x, y }: Position): void {
     this.canvasService.clearCanvas(this.canvas);
     this.canvasCtx.beginPath();
     this.canvasCtx.arc(x, y, 10, 0, 2 * Math.PI);
     this.canvasCtx.fill();
     this.canvasCtx.stroke();
+  }
+  
+  onPersistChange(): void {
+    this.isPersistChange.emit(this.padParam.isPersist);
+    if (this.padParam.isPersist && this.canvas) this.canvasService.clearCanvas(this.canvas)
   }
 
 }

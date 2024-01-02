@@ -1,65 +1,53 @@
-<div class="center col">
-  <section class="row">
+<section class="page-container">
+  <div class="center row">
     <fieldset>
       <legend>Analyzer SineWave</legend>
       <app-node-sine-wave [source]="gainNode" [context]="audioCtx"></app-node-sine-wave>
     </fieldset>
-
     <fieldset>
       <legend>Analyzer FreqBars</legend>
       <app-node-freq-bars [source]="gainNode" [context]="audioCtx"></app-node-freq-bars>
     </fieldset>
-
-    <fieldset>
-      <legend>Main</legend>
-      <button (click)="onTooglePlay()" mat-mini-fab color="accent">
-        <mat-icon *ngIf="isPlaying">pause</mat-icon>
-        <mat-icon *ngIf="!isPlaying">play_arrow</mat-icon>
-      </button>
-      <app-node-gain [source]="gainNode"></app-node-gain>
-      <app-node-distortion [source]="gainNode" [context]="audioCtx"></app-node-distortion>
-    </fieldset>
-
-    <fieldset>
-      <legend>BPM</legend>
-      <app-control-bpm></app-control-bpm>
-    </fieldset>
-
-    <fieldset>
-      <legend>Oscillator</legend>
-      <app-node-oscillator [source]="gainNode" [context]="audioCtx"></app-node-oscillator>
-    </fieldset>
-    
-    <fieldset>
-      <legend>Sample</legend>
-      <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
-      <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
-      <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
-    </fieldset>
-
-    <fieldset>
-      <legend>Filter</legend>
-      <app-node-filter [source]="gainNode" [context]="audioCtx"></app-node-filter>
-    </fieldset>
-
     <fieldset>
       <legend>Eq</legend>
       <app-node-eq [source]="gainNode" [context]="audioCtx"></app-node-eq>
     </fieldset>
-
     <fieldset>
-      <legend>Reverb</legend>
-      <app-node-reverb [source]="gainNode" [context]="audioCtx"></app-node-reverb>
+      <legend>Main</legend>
+      <app-node-gain [source]="gainNode"></app-node-gain>
+      <app-node-distortion [source]="gainNode" [context]="audioCtx"></app-node-distortion>
+      <app-control-bpm></app-control-bpm>
     </fieldset>
-  </section>
-
-  <audio
-    #audio
-    src="http://chi.bassdrive.co/;stream/1"
-    preload="auto"
-    controls="true"
-    autoplay="true"
-    style="width: 200px; height: 30px"
-    crossorigin="anonymous"
-  ></audio>
-</div>
+    <div class="row">
+      <div class="col">
+        <fieldset>
+          <legend>Filter</legend>
+          <app-node-filter [source]="gainNode" [context]="audioCtx"></app-node-filter>
+        </fieldset>
+        <fieldset>
+          <legend>Reverb</legend>
+          <app-node-reverb [source]="gainNode" [context]="audioCtx"></app-node-reverb>
+        </fieldset>
+        <fieldset>
+          <legend>Delay</legend>
+          <app-node-delay [source]="gainNode" [context]="audioCtx"></app-node-delay>
+        </fieldset>
+      </div>
+      <div class="col">
+        <fieldset>
+          <legend>Radio</legend>
+          <app-node-radio [source]="gainNode" [context]="audioCtx"></app-node-radio>
+        </fieldset>
+        <fieldset>
+          <legend>Oscillator</legend>
+          <app-node-oscillator [source]="gainNode" [context]="audioCtx"></app-node-oscillator>
+        </fieldset>
+        <fieldset>
+          <legend>Sample</legend>
+          <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
+          <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</section>

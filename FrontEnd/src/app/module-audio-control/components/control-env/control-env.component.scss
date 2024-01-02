@@ -4,6 +4,10 @@ $color-primary: $green;
 $color-dark: $grey-40;
 $color-light: $grey-97;
 
+fieldset {
+  width: max-content;
+}
+
 .canvas-container {
     position: relative;
     background-color: $color-dark;
@@ -20,15 +24,20 @@ $color-light: $grey-97;
     .scalling-legend {
       position: absolute;
       opacity: .7;
-      &.x {
-        right:0%;
+      font-size: 10px;
+      &.attack {
         bottom: 0;
-        margin-right: 4px;
+        left: 1.5rem;
       }
-      &.y {
+      &.release {
+        bottom: 0;
+        right: 1.5rem;
+      }
+      &.sustain {
         writing-mode: vertical-lr;
         transform: rotate(180deg);
-        margin-top: 4px;
+        top: 1.5rem;
+        right:0;
       }
     }
   }

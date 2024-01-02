@@ -1,117 +1,108 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
+import { AbstractBpmComponent } from '../../abstracts/abstract-bpm.component';
 import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
-import { Subject, interval } from 'rxjs';
-import { BpmService } from '../../services/bpm.service';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { DestroyService } from 'src/app/services/destroy.service';
 
 @Component({
   selector: 'app-node-sample',
   templateUrl: './node-sample.component.html',
   styleUrls: ['./node-sample.component.scss']
 })
-export class NodeSampleComponent implements AfterViewInit, AudioNodeElement {
-
+export class NodeSampleComponent extends AbstractBpmComponent implements AfterViewInit, AudioNodeElement {
   @Input('context') audioCtx: AudioContext;
-  @Input('source') gainNode: GainNode;
-  public delay: number = 0.1;
-  public playbackRate: number = 1;
-  private templateFile?: File;
+  @Input('source') audioNode: GainNode;
+
+  public nameFile?: string;
   private bufferSource: AudioBufferSourceNode;
   private compressor: DynamicsCompressorNode;
-  private delayNode: DelayNode;
-  private envNode: GainNode;
-  private beatDuration: number;
-  private interval: number;
-  private interval$ = new Subject<number>();
+  private enveloppe: GainNode;
+  public sampleGain: GainNode;
   private backup: AudioBuffer;
 
-  compParam = {
-    threshold: -20,
-    knee: 30,
-    ratio: 5,
-    attack: .05,
-    release: .25
-  }
-
-  ampParam = {
-    ampSelected: 2,
-    amps: [{ label: '1/4', value: 0.25 }, { label: '1/2', value: 0.5 }, { label: 'x1', value: 1 }, { label: 'x2', value: 2 }, { label: 'x4', value: 4 }, { label: 'x8', value: 8 }]
-  }
-
-  constructor(private destroy$: DestroyService, private bpmService: BpmService) { }
+  sampleParam = {
+    file: "",
+    opened: true,
+    muted: false,
+    gain: 1,
+    sequence: [0, 4, 8, 12],
+    eg: false,
+    amp: 4,
+    envParam: {
+      attack: 0.1,
+      release: 0.3,
+      sustain: 0.9
+    },
+    compressor: -24,    // threshold: [0 -100] -24 par défaut
+    playbackRate: 1,     // (pitch) [0 10]
+  };
 
   ngAfterViewInit(): void {
-    this.subBpm();
+    this.initNode();
+    this.loadSample('assets/sample/BL_Kick14.wav');
   }
 
   initNode(): void {
-    this.bufferSource = this.audioCtx.createBufferSource();
-    this.compressor = this.audioCtx.createDynamicsCompressor();
-    this.envNode = new GainNode(this.audioCtx);
-    this.delayNode = this.audioCtx.createDelay();
+    this.sampleGain = new GainNode(this.audioCtx, { gain: this.sampleParam.gain });
+    this.compressor = new DynamicsCompressorNode(this.audioCtx);
   }
 
   connectNode(): void {
-    this.bufferSource.connect(this.compressor).connect(this.delayNode).connect(this.envNode).connect(this.gainNode);
+    this.bufferSource = new AudioBufferSourceNode(this.audioCtx);
+    this.enveloppe = new GainNode(this.audioCtx);
+    this.bufferSource.connect(this.compressor).connect(this.enveloppe).connect(this.sampleGain).connect(this.audioNode);
   }
-  
-  public onAmpChange(amp: number): void {
-    this.ampParam.ampSelected = amp;
-    this.setInterval$();
+
+  async loadSample(url: string) {
+    this.nameFile = url;
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+    const sample = await this.audioCtx.decodeAudioData(buffer);
+    return this.loop(sample);
   }
 
   public handleFileInput(event: any): void {
-    if (event.target.value) this.templateFile = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (evt) => this.bufferize(evt.target.result as ArrayBuffer);
-    reader.readAsArrayBuffer(this.templateFile);
-  }
-
-  private subBpm(): void {
-    this.bpmService.getBeatDuration$.pipe(takeUntil(this.destroy$)).subscribe(beatDuration => {
-      this.beatDuration = beatDuration;
-      this.interval$.next();
-    })
-  }
-
-  private setInterval$(): void {
-    this.interval = this.ampParam.ampSelected * this.beatDuration;
-    this.interval$.next();
+    if (event.target.value) {
+       const file: File = event.target.files[0];
+       this.nameFile = file.name;
+       const reader = new FileReader();
+       reader.onload = evt => this.bufferize(evt.target.result as ArrayBuffer);
+       reader.readAsArrayBuffer(file);
+    }
   }
 
   private bufferize(arrayBuffer: ArrayBuffer): void {
     this.audioCtx.decodeAudioData(arrayBuffer, (buffer: AudioBuffer) => this.loop(buffer));
   }
 
-
   private loop(buffer: AudioBuffer): void {
     this.backup = buffer;
-    this.interval$.pipe(
-      switchMap(() => interval(this.interval)),
-      takeUntil(this.destroy$)
-    ).subscribe(() => this.makeAmp(this.backup));
-    this.setInterval$();
+    this.getInterval$.subscribe(() => {
+      const index = this.sampleParam.sequence.findIndex(number => number === this.current);
+      if (index != -1 && !this.sampleParam.muted) this.playNote();
+    });
   }
 
-  private makeAmp(buffer: AudioBuffer): void {
-    this.initNode();
+  private playNote(): void {
     this.connectNode();
     this.bufferSource.start();
-    this.bufferSource.buffer = buffer;
+    this.bufferSource.buffer = this.backup;
     const time = this.audioCtx.currentTime;
-    this.delayNode.delayTime.value = this.delay;
-    this.bufferSource.playbackRate.value = this.playbackRate;
-    this.compressor.threshold.setValueAtTime(this.compParam.threshold, time);
-    this.compressor.knee.setValueAtTime(this.compParam.knee, time);
-    this.compressor.ratio.setValueAtTime(this.compParam.ratio, time);
-    this.compressor.attack.setValueAtTime(this.compParam.attack, time);
-    this.compressor.release.setValueAtTime(this.compParam.release, time);
-    this.envNode.gain.cancelScheduledValues(time);
-    this.envNode.gain.setValueAtTime(0, time);
-    this.envNode.gain.linearRampToValueAtTime(1, time);
-    this.envNode.gain.linearRampToValueAtTime(0, time + (this.interval / 1000));
+    this.bufferSource.playbackRate.value = this.sampleParam.playbackRate;
+    this.compressor.threshold.value = this.sampleParam.compressor;
+    
+    if (this.sampleParam.eg) {
+      this.enveloppe.gain.setValueAtTime(0, time);
+      this.enveloppe.gain.linearRampToValueAtTime(1, time + this.sampleParam.envParam.attack);
+      this.enveloppe.gain.linearRampToValueAtTime(
+        this.sampleParam.envParam.sustain,
+        time + this.beatDuration - this.sampleParam.envParam.release
+      );
+      this.enveloppe.gain.linearRampToValueAtTime(0, time + this.beatDuration);
+      this.bufferSource.stop(time + this.beatDuration);
+    } else {
+      this.enveloppe.gain.linearRampToValueAtTime(1, time);
+        this.enveloppe.gain.linearRampToValueAtTime(0, time + this.sampleParam.amp * this.beatDuration);
+      this.bufferSource.stop(time + this.sampleParam.amp * this.beatDuration);
+    }
   }
-
 
 }

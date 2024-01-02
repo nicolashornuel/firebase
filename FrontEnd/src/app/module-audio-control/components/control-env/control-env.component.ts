@@ -1,8 +1,10 @@
-import { AfterViewInit, Component, ElementRef, HostBinding, HostListener, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
-import { PadParam, PAD_MAX, Position } from '../../interfaces/padControlCanvas.interface';
+import { Position } from '../../interfaces/padControlCanvas.interface';
 import { CanvasService } from '../../services/canvas.service';
+import { Observable, Subject } from 'rxjs';
+import { EnvParam } from '../../models/enveloppe.interface';
 
 @Component({
   selector: 'app-control-env',
@@ -13,10 +15,20 @@ export class ControlEnvComponent implements AfterViewInit {
 
   @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
   @ViewChild('scalling') scalling: ElementRef<HTMLCanvasElement>;
-  @ViewChild('container') container: ElementRef<HTMLElement>;
   private canvasCtx: CanvasRenderingContext2D;
-  isMoving = false;
-  @Input('envParam') envParam;
+  private isMoving = false;
+
+  // ENVELOPPE
+  @Input('envParam') envParam: EnvParam;
+  @Output() envParamChange = new EventEmitter<EnvParam>();
+
+  private envParam$ = new Subject<any>();
+  public get getEnvParam$(): Observable<any> {
+    return this.envParam$.asObservable();
+  }
+  public setEnvParam$(value: any): void {
+    this.envParam$.next(value);
+  }
 
   @HostListener('window:mouseup')
   @HostListener('window:touchend')
@@ -40,18 +52,29 @@ export class ControlEnvComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initCanvas();
-    if (this.envParam.subValue$) this.listen();
+    this.listen();
+    this.setEnvParam$(this.envParam);
   }
 
   private listen(): void {
-    this.envParam.subValue$.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
-      this.positions = this.envParam.updatePosition(value, this.GEO);
+    this.getEnvParam$.pipe(takeUntil(this.destroy$)).subscribe((value: EnvParam) => {
+      this.positions = this.updatePosition(value, this.GEO);
       this.draw(this.positions);
     });
   }
 
+  private updatePosition(envParam: EnvParam, GEO: any): any {
+    const y = GEO.vh - (Math.floor(envParam.sustain * 100) / 100) * GEO.vh;
+    const xAttack = (Math.floor(envParam.attack * 100) / 100) * GEO.vw;
+    const xRelease = GEO.vw - (Math.floor(envParam.release * 100) / 100) * GEO.vw;
+    return {
+      attack: { x: xAttack + GEO.min, y: GEO.min },
+      release: { x: xRelease + GEO.min, y: y + GEO.min }
+    }
+  }
+
   private initCanvas(): void {
-    this.envParam.canvas = this.canvas
+    //this.envParam.canvas = this.canvas
     this.canvas.nativeElement.width = this.GEO.w;
     this.canvas.nativeElement.height = this.GEO.h;
     this.canvasCtx = this.canvas.nativeElement.getContext('2d');
@@ -101,23 +124,32 @@ export class ControlEnvComponent implements AfterViewInit {
       if (y > this.positions.attack.y - this.GEO.dia && y < this.positions.attack.y + this.GEO.dia
         && x > this.positions.attack.x - this.GEO.dia && x < this.positions.attack.x + this.GEO.dia) {
         this.positions.attack.x = x;
-        this.normalizeMove({ x, y });
+        this.normalize({ x, y });
       } else if (y > this.positions.release.y - this.GEO.dia && y < this.positions.release.y + this.GEO.dia
         && x > this.positions.release.x - this.GEO.dia && x < this.positions.release.x + this.GEO.dia) {
         this.positions.release = { x, y };
-        this.normalizeMove({ x, y });
+        this.normalize({ x, y });
       }
     }
   }
 
-  normalizeMove({ x, y }: Position): void {
+  private normalize({ x, y }: Position): void {
     if (x <= this.GEO.mw && x >= this.GEO.min && y <= this.GEO.mh && y >= this.GEO.min) {
       this.draw({ attack: this.positions.attack, release: this.positions.release });
-      this.envParam.onEventMove(this.positions.attack.x, this.positions.release.x, this.positions.release.y, this.GEO);
+      this.updateEnvParam();
     }
   }
 
-  draw({ attack, release }: { attack: Position, release: Position }): void {
+  private updateEnvParam(): void {
+    this.envParam = {
+      attack: (this.positions.attack.x - this.GEO.min) / this.GEO.vw,
+      release: 1 - (this.positions.release.x - this.GEO.min) / this.GEO.vw,
+      sustain: 1 - (this.positions.release.y - this.GEO.min) / this.GEO.vh
+    }
+    this.envParamChange.emit(this.envParam);
+  }
+
+  private draw({ attack, release }: { attack: Position, release: Position }): void {
     this.canvasService.clearCanvas(this.canvas);
     // line
     this.canvasCtx.beginPath();

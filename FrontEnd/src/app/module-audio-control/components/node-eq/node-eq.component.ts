@@ -9,7 +9,7 @@ import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
 export class NodeEqComponent implements AfterViewInit, AudioNodeElement {
 
   @Input('context') audioCtx: AudioContext;
-  @Input('source') gainNode: GainNode;
+  @Input('source') audioNode: GainNode;
   public eqs: BiquadFilterNode[] = [];
   private freqs = [32, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
 
@@ -30,7 +30,7 @@ export class NodeEqComponent implements AfterViewInit, AudioNodeElement {
   }
 
   connectNode() {
-    this.gainNode.connect(this.eqs[0]);
+    this.audioNode.connect(this.eqs[0]);
     for (let i = 1; i < this.eqs.length; i++) {
       this.eqs[i - 1].connect(this.eqs[i]);
     }

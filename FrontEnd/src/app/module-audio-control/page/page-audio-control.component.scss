@@ -1,7 +1,8 @@
-.center {
-    height: 70%;
-    overflow: scroll;
-    padding: 50px;
+.page-container {
     background-color: #FFF;
-    margin: 100px 50px;
+    .center {
+        height: 70%;
+        overflow: scroll;
+        padding: 100px;
+    }
 }

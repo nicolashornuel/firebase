@@ -16,5 +16,7 @@ export class IconSvgRegistryService {
     this.iconRegistry.addSvgIcon('square', this.sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/square.svg'));
     this.iconRegistry.addSvgIcon('triangle', this.sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/triangle.svg'));
     this.iconRegistry.addSvgIcon('sawtooth', this.sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/saw.svg'));
+    this.iconRegistry.addSvgIcon('view-off', this.sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/view-off.svg'));
+    this.iconRegistry.addSvgIcon('view-on', this.sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/view-on.svg'));
   }
 }

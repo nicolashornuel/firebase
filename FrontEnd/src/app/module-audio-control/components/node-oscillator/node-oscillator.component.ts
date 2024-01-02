@@ -1,127 +1,115 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { Observable, Subject, interval, of } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { DestroyService } from 'src/app/services/destroy.service';
+import { AbstractBpmComponent } from '../../abstracts/abstract-bpm.component';
 import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
-import { BpmService } from '../../services/bpm.service';
-
-interface OscParam {
-  frequency: number,
-  detune: number,
-  typeSelected: OscillatorType,
-  types: OscillatorType[],
-  ampSelected: number,
-  amps: { label: string, value: number }[]
-}
+import { gamme } from '../../models/gamme.constant';
+import { OscParam } from '../../models/oscillator.interface';
+import { BehaviorSubject, Observable, interval } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-node-oscillator',
   templateUrl: './node-oscillator.component.html',
   styleUrls: ['./node-oscillator.component.scss']
 })
-export class NodeOscillatorComponent implements AfterViewInit, AudioNodeElement {
-
+export class NodeOscillatorComponent extends AbstractBpmComponent implements AfterViewInit, AudioNodeElement {
   @Input('context') audioCtx: AudioContext;
-  @Input('source') gainNode: GainNode;
-  oscillator: OscillatorNode;
-  envNode: GainNode;
-
-  private beatDuration: number;
-  private interval$ = new Subject<number>();
-  private envParam$ = new Subject<any>();
-
-  public get getEnvParam$(): Observable<any> {
-    return this.envParam$.asObservable();
-  }
-
-  public setEnvParam$(value: any): void {
-    this.envParam$.next(value);
-  }
+  @Input('source') audioNode: GainNode;
+  oscillatorGain: GainNode;
+  oscillatorTypes: OscillatorType[] = ['sine', 'square', 'sawtooth', 'triangle'];
+  octaves: number[] = [...Array(9).keys()];
 
   oscParam: OscParam = {
-    frequency: 0,
+    opened: true,
+    muted: true,
+    gain: 0.1,
     detune: 0,
-    typeSelected: 'sine',
-    types: ['sine', 'square', 'sawtooth', 'triangle'],
-    ampSelected: 2,
-    amps: [{ label: '1/4', value: 0.25 }, { label: '1/2', value: 0.5 }, { label: 'x1', value: 1 }, { label: 'x2', value: 2 }, { label: 'x4', value: 4 }, { label: 'x8', value: 8 }]
-  }
-
-  envParam = {
-    libelleX: "time",
-    libelleY: "gain",
-    attack: 0.1,
-    release: 0.3,
-    sustain: 0.9,
-    subValue$: this.getEnvParam$,
-    updatePosition: (envParam: any, GEO: any) => {
-      const y = GEO.vh - (Math.floor(envParam.sustain * 100) / 100) * GEO.vh;
-      const xAttack = (Math.floor(envParam.attack * 100) / 100) * GEO.vw;
-      const xRelease = GEO.vw - (Math.floor(envParam.release * 100) / 100) * GEO.vw;
-      return {
-        attack: { x: xAttack + GEO.min, y: GEO.min },
-        release: { x: xRelease + GEO.min, y: y + GEO.min }
-      }
+    type: 'sine',
+    octave: 1,
+    sequence: {
+      0: ['do'],
+      4: ['do'],
+      8: ['do'],
+      12: ['re']
     },
-    onEventMove: (attack: number, release: number, sustain: number, GEO: any) => {
-      this.envParam.attack = (attack - GEO.min) / GEO.vw;
-      this.envParam.release = (1 - (release - GEO.min) / GEO.vw);
-      this.envParam.sustain = (1 - (sustain - GEO.min) / GEO.vh);
+    eg: false,
+    amp: 4,
+    envParam: {
+      attack: 0.1,
+      release: 0.3,
+      sustain: 0.9
+    },
+    modulation: 100,
+    filter: {
+      frequency: 440, // 32, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000
+      q: 1.4
     }
-  }
-
-  constructor(private destroy$: DestroyService, private bpmService: BpmService) { }
+  };
 
   ngAfterViewInit(): void {
     this.initNode();
     this.connectNode();
-    this.subBpm();
-    this.setEnvParam$(this.envParam);
   }
 
   initNode(): void {
-    this.envNode = new GainNode(this.audioCtx);
-    this.oscillator = new OscillatorNode(this.audioCtx, this.oscParam);
+    this.oscillatorGain = new GainNode(this.audioCtx, { gain: this.oscParam.gain });
   }
 
   connectNode() {
-    this.oscillator.connect(this.envNode).connect(this.gainNode);
-    this.oscillator.start();
-    this.interval$.pipe(
-      switchMap(duration => interval(duration)),
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      this.oscillator.type = this.oscParam.typeSelected;
-      this.oscillator.frequency.value = this.oscParam.frequency;
-      this.oscillator.detune.value = this.oscParam.detune;
-      const time = this.audioCtx.currentTime;
-      this.envNode.gain.cancelScheduledValues(time);
-      this.envNode.gain.setValueAtTime(0, time);
-      this.envNode.gain.linearRampToValueAtTime(1, time + this.envParam.attack);
-      this.envNode.gain.linearRampToValueAtTime(this.envParam.sustain, time + (this.beatDuration / 1000) - this.envParam.release);
-      this.envNode.gain.linearRampToValueAtTime(0, time + (this.beatDuration / 1000));
+    this.modulation();
+    this.getInterval$.subscribe(() => {
+      if (this.oscParam.sequence[this.current] != undefined && !this.oscParam.muted)
+        this.oscParam.sequence[this.current].forEach((note: string) => this.playNote(note));
     });
   }
 
-  onTypeChange(typeSelected: OscillatorType): void {
-    this.oscParam.typeSelected = typeSelected;
+  private playNote(note: string): void {
+    const time = this.audioCtx.currentTime;
+    const oscillator = new OscillatorNode(this.audioCtx);
+    const enveloppe = new GainNode(this.audioCtx);
+    oscillator.start();
+    oscillator.type = this.oscParam.type;
+    oscillator.frequency.value = gamme[note].frequencies[this.oscParam.octave];
+    oscillator.detune.value = this.oscParam.detune;
+    // AMP EG - ENVELOPPE
+    oscillator.connect(enveloppe).connect(this.oscillatorGain);
+    if (this.oscParam.eg) {
+      enveloppe.gain.setValueAtTime(0, time);
+      enveloppe.gain.linearRampToValueAtTime(1, time + this.oscParam.envParam.attack);
+      enveloppe.gain.linearRampToValueAtTime(
+        this.oscParam.envParam.sustain,
+        time + this.beatDuration - this.oscParam.envParam.release
+      );
+      enveloppe.gain.linearRampToValueAtTime(0, time + this.beatDuration);
+      oscillator.stop(time + this.beatDuration);
+    } else {
+      //enveloppe.gain.linearRampToValueAtTime(1, time);
+      oscillator.stop(time + this.oscParam.amp * this.beatDuration);
+    }
   }
 
-  onAmpChange(amp: number): void {
-    this.oscParam.ampSelected = amp;
-    this.setInterval$();
-  }
+  private modulation$: BehaviorSubject<number> = new BehaviorSubject<number>(100);
 
-  subBpm(): void {
-    this.bpmService.getBeatDuration$.pipe(takeUntil(this.destroy$)).subscribe(beatDuration => {
-      this.beatDuration = beatDuration;
-      this.setInterval$();
+  private modulation(): void {
+    const biquad = this.audioCtx.createBiquadFilter();
+    this.oscillatorGain.connect(biquad);
+    biquad.connect(this.audioNode);
+    biquad.type = 'peaking';
+    const time = this.audioCtx.currentTime;
+    this.getModulation$.pipe(
+      switchMap(modulation => interval(modulation))
+    ).subscribe(counter => {
+      biquad.frequency.value = this.oscParam.filter.frequency;
+      biquad.Q.value = this.oscParam.filter.q;
+      biquad.gain.linearRampToValueAtTime(counter % 2 === 0 ? 0 : 30, time);
     })
   }
 
-  setInterval$(): void {
-    const interval = this.oscParam.ampSelected * this.beatDuration;
-    this.interval$.next(interval);
+  public setModulation$(): void {
+    this.modulation$.next(this.oscParam.modulation);
+  }
+
+  public get getModulation$(): Observable<number> {
+    return this.modulation$.asObservable();
   }
 
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
 import { BpmService } from '../../services/bpm.service';
@@ -8,13 +8,13 @@ import { BpmService } from '../../services/bpm.service';
   templateUrl: './control-bpm.component.html',
   styleUrls: ['./control-bpm.component.scss']
 })
-export class ControlBpmComponent implements AfterViewInit {
+export class ControlBpmComponent implements OnInit {
 
   bpm: number;
 
   constructor(private bpmService: BpmService, private destroy$: DestroyService) { }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.bpmService.getBpmValue$.pipe(takeUntil(this.destroy$)).subscribe(bpm => this.bpm = bpm);
   }
 
