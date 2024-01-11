@@ -65,6 +65,12 @@
   justify-content: center;
   align-items: center;
 }
+.col-between-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 .col-between-center {
   display: flex;
   flex-direction: column;

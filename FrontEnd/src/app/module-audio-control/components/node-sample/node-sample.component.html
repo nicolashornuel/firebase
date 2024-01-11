@@ -36,6 +36,16 @@
         step="0.1"
         [(value)]="sampleGain.gain.value"
       ></app-control-pot>
+
+      <fieldset>
+        <legend>filter</legend>
+        <div class="row-evenly-center gap-2 pb-1">
+          <app-control-pot name="modulation" min="1" max="1000" step="10" [(value)]="sampleParam.modulation" (valueChange)="setModulation$()"></app-control-pot>
+          <app-control-pot name="frequency" min="1" max="1000" step="10" [(value)]="sampleParam.filter.frequency"></app-control-pot>
+          <app-control-pot name="resonance" min="1" max="80" step="1" [(value)]="sampleParam.filter.q"></app-control-pot>
+        </div>
+      </fieldset>
+
     </div>
   </div>
 

@@ -106,9 +106,9 @@ export class ControlPadComponent implements AfterViewInit {
     this.canvasCtx.stroke();
   }
   
-  onPersistChange(): void {
+  onPersistChange(): void {    
     this.isPersistChange.emit(this.padParam.isPersist);
-    if (this.padParam.isPersist && this.canvas) this.canvasService.clearCanvas(this.canvas)
+    if (!this.padParam.isPersist && this.canvas) this.canvasService.clearCanvas(this.canvas)
   }
 
 }

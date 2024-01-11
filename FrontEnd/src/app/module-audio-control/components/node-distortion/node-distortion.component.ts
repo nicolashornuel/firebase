@@ -23,6 +23,7 @@ export class NodeDistortionComponent implements AfterViewInit, AudioNodeElement 
 
   initNode(): void {
     this.distortion = this.audioCtx.createWaveShaper();
+    this.distortion.oversample = '2x';
   }
 
   connectNode() {
@@ -37,15 +38,10 @@ export class NodeDistortionComponent implements AfterViewInit, AudioNodeElement 
 
   resetParam(): void {
     this.distortion.curve = null;
-    this.distortion.oversample = "none";
   }
 
   onChange(value: number): void {
       this.distortion.curve = this.makeDistortionCurve(value);
-  }
-
-  overSampleTypeChange(value: OverSampleType): void {
-    this.distortion.oversample = value;
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createWaveShaper#examples

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { takeUntil } from 'rxjs/operators';
+import { interval } from 'rxjs';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
 import { BpmService } from '../../services/bpm.service';
 
@@ -9,17 +10,25 @@ import { BpmService } from '../../services/bpm.service';
   styleUrls: ['./control-bpm.component.scss']
 })
 export class ControlBpmComponent implements OnInit {
-
   bpm: number;
+  isRunning = false;
 
-  constructor(private bpmService: BpmService, private destroy$: DestroyService) { }
+  constructor(private bpmService: BpmService, private destroy$: DestroyService) {}
 
   ngOnInit(): void {
-    this.bpmService.getBpmValue$.pipe(takeUntil(this.destroy$)).subscribe(bpm => this.bpm = bpm);
+    this.bpmService.getBpm$
+      .pipe(
+        tap((bpm: number) => (this.bpm = bpm)),
+        map((bpm: number) => 15000 / bpm),
+        tap((duration: number) => this.bpmService.setDuration$(duration / 1000)),
+        switchMap((duration: number) => interval(duration)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((counter: number) => {
+        this.isRunning ? this.bpmService.setCurrent$(counter % 16) : null});
   }
 
   onBpmChange(): void {
-    this.bpmService.setBpmValue$(this.bpm)
+    this.bpmService.setBpm$(this.bpm);
   }
-
 }

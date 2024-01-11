@@ -8,7 +8,6 @@ import { Selectable } from '../../models/input.interface';
 })
 export class ControlSelectComponent {
   @Input() items: Selectable[];
-  @Input() selected: string;
-  @Output() selectedChange = new EventEmitter<string>();
-
+  @Input() selected: Selectable;
+  @Output() selectedChange = new EventEmitter<Selectable>();
 }

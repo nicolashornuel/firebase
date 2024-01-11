@@ -13,10 +13,10 @@ input[type="checkbox"] {
 }
 input[type="checkbox"] {
   &:checked {
-    background-color: $color-primary;
+    background: radial-gradient(circle at center, $green, $green-active)
   }
   &.active {
-    background-color: $grey-80;
+   background-color: $grey-80;
   }
 }
 

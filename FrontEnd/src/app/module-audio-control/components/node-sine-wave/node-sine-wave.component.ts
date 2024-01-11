@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { PAD_MAX } from '../../interfaces/padControlCanvas.interface';
 
 @Component({
   selector: 'app-node-sine-wave',
@@ -28,9 +29,15 @@ export class NodeSineWaveComponent implements AfterViewInit {
   }
 
   private initCanvas(): void {
-    this.canvas.nativeElement.width = 200;
-    this.canvas.nativeElement.height = 200;
+    this.canvas.nativeElement.width = PAD_MAX;
+    this.canvas.nativeElement.height = PAD_MAX;
     this.canvasCtx = this.canvas.nativeElement.getContext('2d');
+    const css: CSSStyleDeclaration = getComputedStyle(this.canvas.nativeElement);
+    const colorCss = css.getPropertyValue('color');
+    const bgColorCss = css.getPropertyValue('background-color');
+    this.canvasCtx.fillStyle = bgColorCss;
+    this.canvasCtx.strokeStyle = colorCss;
+    this.canvasCtx.lineWidth = 2;
     const bufferLength = this.analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     this.draw(bufferLength, dataArray);
@@ -40,10 +47,7 @@ export class NodeSineWaveComponent implements AfterViewInit {
     requestAnimationFrame(() => this.draw(bufferLength, dataArray));
     const { width, height } = this.canvas.nativeElement;
     this.analyser.getByteTimeDomainData(dataArray);
-    this.canvasCtx.fillStyle = "rgb(200, 200, 200)";
     this.canvasCtx.fillRect(0, 0, width, height);
-    this.canvasCtx.lineWidth = 2;
-    this.canvasCtx.strokeStyle = "rgb(0, 0, 0)";
     this.canvasCtx.beginPath();
     const sliceWidth = (width * 1.0) / bufferLength;
     let x = 0;

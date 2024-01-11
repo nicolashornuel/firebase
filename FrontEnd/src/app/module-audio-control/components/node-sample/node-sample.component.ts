@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { AbstractBpmComponent } from '../../abstracts/abstract-bpm.component';
 import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
+import { BehaviorSubject, interval, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-node-sample',
@@ -33,6 +35,11 @@ export class NodeSampleComponent extends AbstractBpmComponent implements AfterVi
     },
     compressor: -24,    // threshold: [0 -100] -24 par défaut
     playbackRate: 1,     // (pitch) [0 10]
+    modulation: 100,
+    filter: {
+      frequency: 440, // 32, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000
+      q: 1.4
+    }
   };
 
   ngAfterViewInit(): void {
@@ -75,7 +82,8 @@ export class NodeSampleComponent extends AbstractBpmComponent implements AfterVi
 
   private loop(buffer: AudioBuffer): void {
     this.backup = buffer;
-    this.getInterval$.subscribe(() => {
+    this.modulation();
+    this.getCurrent$.subscribe(() => {
       const index = this.sampleParam.sequence.findIndex(number => number === this.current);
       if (index != -1 && !this.sampleParam.muted) this.playNote();
     });
@@ -94,15 +102,42 @@ export class NodeSampleComponent extends AbstractBpmComponent implements AfterVi
       this.enveloppe.gain.linearRampToValueAtTime(1, time + this.sampleParam.envParam.attack);
       this.enveloppe.gain.linearRampToValueAtTime(
         this.sampleParam.envParam.sustain,
-        time + this.beatDuration - this.sampleParam.envParam.release
+        time + this.duration - this.sampleParam.envParam.release
       );
-      this.enveloppe.gain.linearRampToValueAtTime(0, time + this.beatDuration);
-      this.bufferSource.stop(time + this.beatDuration);
+      this.enveloppe.gain.linearRampToValueAtTime(0, time + this.duration);
+      this.bufferSource.stop(time + this.duration);
     } else {
-      this.enveloppe.gain.linearRampToValueAtTime(1, time);
-        this.enveloppe.gain.linearRampToValueAtTime(0, time + this.sampleParam.amp * this.beatDuration);
-      this.bufferSource.stop(time + this.sampleParam.amp * this.beatDuration);
+      //this.enveloppe.gain.linearRampToValueAtTime(1, time);
+        //this.enveloppe.gain.linearRampToValueAtTime(0, time + this.sampleParam.amp * this.duration);
+      this.bufferSource.stop(time + this.sampleParam.amp * this.duration);
     }
   }
+
+
+  private modulation$: BehaviorSubject<number> = new BehaviorSubject<number>(100);
+
+  private modulation(): void {
+    const biquad = this.audioCtx.createBiquadFilter();
+    this.sampleGain.connect(biquad);
+    biquad.connect(this.audioNode);
+    biquad.type = 'peaking';
+    const time = this.audioCtx.currentTime;
+    this.getModulation$.pipe(
+      switchMap(modulation => interval(modulation))
+    ).subscribe(counter => {
+      biquad.frequency.value = this.sampleParam.filter.frequency;
+      biquad.Q.value = this.sampleParam.filter.q;
+      biquad.gain.linearRampToValueAtTime(counter % 2 === 0 ? 0 : 30, time);
+    })
+  }
+
+  public setModulation$(): void {
+    this.modulation$.next(this.sampleParam.modulation);
+  }
+
+  public get getModulation$(): Observable<number> {
+    return this.modulation$.asObservable();
+  }
+  
 
 }

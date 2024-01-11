@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
+import { BehaviorSubject, Observable, interval } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { AbstractBpmComponent } from '../../abstracts/abstract-bpm.component';
 import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
 import { gamme } from '../../models/gamme.constant';
 import { OscParam } from '../../models/oscillator.interface';
-import { BehaviorSubject, Observable, interval } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-node-oscillator',
@@ -56,7 +56,7 @@ export class NodeOscillatorComponent extends AbstractBpmComponent implements Aft
 
   connectNode() {
     this.modulation();
-    this.getInterval$.subscribe(() => {
+    this.getCurrent$.subscribe(() => {
       if (this.oscParam.sequence[this.current] != undefined && !this.oscParam.muted)
         this.oscParam.sequence[this.current].forEach((note: string) => this.playNote(note));
     });
@@ -77,13 +77,13 @@ export class NodeOscillatorComponent extends AbstractBpmComponent implements Aft
       enveloppe.gain.linearRampToValueAtTime(1, time + this.oscParam.envParam.attack);
       enveloppe.gain.linearRampToValueAtTime(
         this.oscParam.envParam.sustain,
-        time + this.beatDuration - this.oscParam.envParam.release
+        time + this.duration - this.oscParam.envParam.release
       );
-      enveloppe.gain.linearRampToValueAtTime(0, time + this.beatDuration);
-      oscillator.stop(time + this.beatDuration);
+      enveloppe.gain.linearRampToValueAtTime(0, time + this.duration);
+      oscillator.stop(time + this.duration);
     } else {
       //enveloppe.gain.linearRampToValueAtTime(1, time);
-      oscillator.stop(time + this.oscParam.amp * this.beatDuration);
+      oscillator.stop(time + this.oscParam.amp * this.duration);
     }
   }
 

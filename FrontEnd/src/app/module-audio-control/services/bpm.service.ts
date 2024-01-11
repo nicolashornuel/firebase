@@ -1,32 +1,37 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, interval } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BpmService {
-  private bpmValue$: BehaviorSubject<number> = new BehaviorSubject<number>(128);
+  private bpm$: BehaviorSubject<number> = new BehaviorSubject<number>(150);
+  private duration$: BehaviorSubject<number> = new BehaviorSubject<number>(100);
+  private current$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   constructor() {}
 
-  public setBpmValue$(value: number): void {
-    this.bpmValue$.next(value);
+  public setBpm$(value: number): void {
+    this.bpm$.next(value);
   }
 
-  public get getBpmValue$(): Observable<number> {
-    return this.bpmValue$.asObservable();
+  public get getBpm$(): Observable<number> {
+    return this.bpm$.asObservable();
   }
 
-  public get getBeatDuration$(): Observable<number> {
-    return this.getBpmValue$.pipe(map(bpm => Math.trunc(15000 / bpm)));
+  public setDuration$(value: number): void {
+    this.duration$.next(value);
   }
 
-  public get getInterval$(): Observable<number> {
-    return this.getBeatDuration$.pipe(switchMap((beatDuration: number) => interval(beatDuration)));
+  public get getDuration$(): Observable<number> {
+    return this.duration$.asObservable();
+  }
+
+  public setCurrent$(value: number): void {
+    this.current$.next(value);
   }
 
   public get getCurrent$(): Observable<number> {
-    return this.getInterval$.pipe(map((counter: number) => counter % 16));
+    return this.current$.asObservable();
   }
 }

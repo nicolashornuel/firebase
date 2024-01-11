@@ -1,5 +1,4 @@
-import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Selectable } from '../../models/input.interface';
 
 @Component({
@@ -25,7 +24,7 @@ export class NodeRadioComponent implements AfterViewInit {
       value: 'http://51.89.195.240:8034/stream'
     }
   ]
-  public radioSelected: string = this.radioList[0].value;
+  public radioSelected: Selectable = this.radioList[0];
 
   constructor() {}
 
