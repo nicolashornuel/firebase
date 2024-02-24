@@ -3,7 +3,6 @@ import { takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
 import { NodeSampleComponent } from '../components/node-sample/node-sample.component';
 import { MainGainService } from '../services/mainGain.service';
-import { Selectable } from '../models/input.interface';
 
 @Component({
   selector: 'app-page-audio-control',
@@ -14,21 +13,8 @@ export class PageAudioControlComponent implements OnInit, OnDestroy {
   public audioCtx: AudioContext;
   public gainNode: GainNode;
   @ViewChild('insertNodeSample', {read: ViewContainerRef}) target!: ViewContainerRef;
-  public effectList: Selectable[] = [
-    {
-      label: 'highpass'
-    },
-    {
-      label: 'lowpass'
-    },
-    {
-      label: 'Reverb'
-    },
-    {
-      label: 'Delay'
-    }    
-  ];
-  public effectSelected: Selectable = this.effectList[0];
+  public effectList: string[] = ['highpass', 'lowpass', 'Reverb', 'Delay'];
+  public effectSelected: string = this.effectList[0];
 
   constructor(
     private gainService: MainGainService,

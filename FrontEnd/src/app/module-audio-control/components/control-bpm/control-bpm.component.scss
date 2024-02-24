@@ -11,8 +11,7 @@ input[type='number'] {
     &:before {
         content: "BPM";
         position: absolute;
-        right: 21px;
-        bottom: 29px;
+        bottom: 0px;
         font-size: 10px;
         opacity: .3;
       }

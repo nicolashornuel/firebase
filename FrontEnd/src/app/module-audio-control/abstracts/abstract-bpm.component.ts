@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, interval } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { DestroyService } from 'src/app/services/destroy.service';
 import { BpmService } from '../services/bpm.service';
 
@@ -8,6 +8,10 @@ import { BpmService } from '../services/bpm.service';
 export abstract class AbstractBpmComponent implements OnInit {
   protected duration: number;
   protected current: number;
+  public modulationTypes: string[] = ['none', 'filter'];
+
+
+  private modulation$: BehaviorSubject<number> = new BehaviorSubject<number>(100);
 
   constructor(protected destroy$: DestroyService, private bpmService: BpmService) {}
 
@@ -23,4 +27,16 @@ export abstract class AbstractBpmComponent implements OnInit {
   protected get getCurrent$(): Observable<number> {
     return this.bpmService.getCurrent$.pipe(takeUntil(this.destroy$));
   }
+
+  public setModulation$(value: number): void {
+    this.modulation$.next(1000 - value);
+  }
+
+  public get getModulation$(): Observable<number> {
+    return this.modulation$.asObservable().pipe(
+      switchMap(modulation => interval(modulation)),
+      takeUntil(this.destroy$)
+    );
+  }
+
 }

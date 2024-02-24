@@ -50,14 +50,15 @@ export class NodeFreqBarsComponent implements AfterViewInit {
     this.canvasCtx.fillRect(0, 0, width, height);
     const barWidth = (width/ bufferLength) * 2.5;
     let x = 0;
+    
     for (let i = 0; i < bufferLength; i++) {
       let barHeight = dataArray[i];
       this.canvasCtx.fillStyle = this.strokeStyle;
       this.canvasCtx.fillRect(
         x,
-        height - barHeight / 2,
+        height - barHeight,
         barWidth,
-        barHeight / 2
+        barHeight
       );
       x += barWidth + 1;
     }

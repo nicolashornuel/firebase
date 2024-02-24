@@ -1,32 +1,38 @@
 <section class="col">
   <div class="row-between-center">
-
     <div class="row gap-2 mt-4 position-relative">
       <input #inputFile type="file" (change)="handleFileInput($event)" />
-      <span class="nameFile" *ngIf="nameFile" >{{ nameFile }}</span>
-      <div class="accordeon row-between-start gap-2" [ngClass]="sampleParam.opened ? 'opened' : 'closed'">
-        <app-control-part [sequence]="sampleParam.sequence"></app-control-part>
+      <span class="nameFile" *ngIf="nameFile">{{ nameFile }}</span>
+      <div class="accordeon row-between-start gap-2" [ngClass]="param.opened ? 'opened' : 'closed'">
+        <app-control-part [sequence]="param.sequence"></app-control-part>
       </div>
     </div>
 
     <div class="row-between-center gap-2">
-
       <div class="row-between-center gap-2 mt-4">
-        <button class="btn-outline" (click)="sampleParam.opened = !sampleParam.opened">
-          <mat-icon [svgIcon]="sampleParam.opened ? 'view-off' : 'view-on'"></mat-icon>
+        <button class="btn-outline" (click)="param.opened = !param.opened">
+          <mat-icon [svgIcon]="param.opened ? 'view-off' : 'view-on'"></mat-icon>
         </button>
         <button class="btn-outline" (click)="inputFile.click()">File</button>
-        <app-control-mute [(muted)]="sampleParam.muted"></app-control-mute>
+        <app-control-mute [(muted)]="param.muted"></app-control-mute>
+
         <div>
-          <button class="btn-outline" [appPopover]="templateRef" [disabled]="!sampleParam.eg">EG</button>
+          <button class="btn-outline" [appPopover]="templateRef" [disabled]="!param.eg">EG</button>
         </div>
-        <app-toggle [(value)]="sampleParam.eg" [rotate]="180"></app-toggle>
+        <app-toggle [(value)]="param.eg" [rotate]="180"></app-toggle>
       </div>
 
-      <app-control-pot name="amp" min="0.1" max="16" step="0.1" [(value)]="sampleParam.amp" [disabled]="sampleParam.eg"></app-control-pot>
+      <app-control-pot
+        name="amp"
+        min="0.1"
+        max="16"
+        step="0.1"
+        [(value)]="param.amp"
+        [disabled]="param.eg"
+      ></app-control-pot>
       <span class="divider"></span>
-      <app-control-pot name="pitch" min="0" max="2" step="0.1" [(value)]="sampleParam.playbackRate"></app-control-pot>
-      <app-control-pot name="comp" min="-99" max="-1" step="1" [(value)]="sampleParam.compressor"></app-control-pot>
+      <app-control-pot name="pitch" min="0" max="2" step="0.1" [(value)]="param.playbackRate"></app-control-pot>
+      <app-control-pot name="comp" min="-99" max="-1" step="1" [(value)]="param.compressor"></app-control-pot>
       <span class="divider"></span>
       <app-control-pot
         *ngIf="sampleGain"
@@ -40,18 +46,48 @@
       <fieldset>
         <legend>filter</legend>
         <div class="row-evenly-center gap-2 pb-1">
-          <app-control-pot name="modulation" min="1" max="1000" step="10" [(value)]="sampleParam.modulation" (valueChange)="setModulation$()"></app-control-pot>
-          <app-control-pot name="frequency" min="1" max="1000" step="10" [(value)]="sampleParam.filter.frequency"></app-control-pot>
-          <app-control-pot name="resonance" min="1" max="80" step="1" [(value)]="sampleParam.filter.q"></app-control-pot>
+          <app-control-pot
+            name="frequency"
+            min="1"
+            max="1000"
+            step="10"
+            [(value)]="param.filter.frequency"
+          ></app-control-pot>
+          <app-control-pot
+            name="resonance"
+            min="1"
+            max="80"
+            step="1"
+            [(value)]="param.filter.q"
+          ></app-control-pot>
         </div>
       </fieldset>
 
+      <fieldset>
+        <legend>Modulation</legend>
+        <div class="row-evenly-center gap-2 pb-1">
+          <app-control-select [items]="modulationTypes" [(selected)]="param.modulation.selected"></app-control-select>
+          <app-control-pot
+            name="speed"
+            min="1"
+            max="1000"
+            step="10"
+            [(value)]="param.modulation.speed"
+            (valueChange)="setModulation$(param.modulation.speed)"
+          ></app-control-pot>
+          <app-control-pot
+            name="depth"
+            min="0"
+            max="30"
+            step="1"
+            [(value)]="param.modulation.depth"
+          ></app-control-pot>
+        </div>
+      </fieldset>
     </div>
   </div>
-
-
 </section>
 
 <ng-template #templateRef>
-  <app-control-env [(envParam)]="sampleParam.envParam"></app-control-env>
+  <app-control-env [(envParam)]="param.envParam"></app-control-env>
 </ng-template>

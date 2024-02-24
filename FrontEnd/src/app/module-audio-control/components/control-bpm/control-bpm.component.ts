@@ -25,7 +25,7 @@ export class ControlBpmComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe((counter: number) => {
-        this.isRunning ? this.bpmService.setCurrent$(counter % 16) : null});
+        this.isRunning ? this.bpmService.setCurrent$(counter % 16) : this.bpmService.setCurrent$(-1)});
   }
 
   onBpmChange(): void {

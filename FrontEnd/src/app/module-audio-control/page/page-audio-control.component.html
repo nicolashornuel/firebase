@@ -1,6 +1,7 @@
-<section class="page-container">
-  <div class="center col">
-    <div class="row">
+<section class="page-container row-center-start h-100">
+  <div class="col">
+
+    <div class="row sticky">
       <fieldset>
         <legend>Analyzer SineWave</legend>
         <app-node-sine-wave [source]="gainNode" [context]="audioCtx"></app-node-sine-wave>
@@ -13,16 +14,16 @@
         <legend>Eq</legend>
         <app-node-eq [source]="gainNode" [context]="audioCtx"></app-node-eq>
       </fieldset>
-      <fieldset>
+      <fieldset class="main-container">
         <legend>Main</legend>
         <app-node-gain [source]="gainNode"></app-node-gain>
         <app-node-distortion [source]="gainNode" [context]="audioCtx"></app-node-distortion>
         <app-control-bpm></app-control-bpm>
+        <app-control-select [items]="effectList" [(selected)]="effectSelected"></app-control-select>
       </fieldset>
       <fieldset>
         <legend>Effect</legend>
-        <app-control-select [items]="effectList" [(selected)]="effectSelected"></app-control-select>
-        <ng-container [ngSwitch]="effectSelected.label">
+        <ng-container [ngSwitch]="effectSelected">
           <ng-container *ngSwitchCase="'highpass'">
             <app-node-filter [source]="gainNode" [context]="audioCtx" type="highpass"></app-node-filter>
           </ng-container>
@@ -39,7 +40,7 @@
       </fieldset>
     </div>
 
-    <div class="row">
+    <div class="row overflow">
       <div class="col f-grow">
         <fieldset>
           <legend>Radio</legend>
@@ -52,10 +53,11 @@
         <fieldset>
           <legend>Sample</legend>
           <button class="btn-outline" (click)="addNodeSample()">+</button>
-          <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
-          <ng-container #insertNodeSample></ng-container>
+<!--           <app-node-sample [source]="gainNode" [context]="audioCtx"></app-node-sample>
+ -->          <ng-container #insertNodeSample></ng-container>
         </fieldset>
       </div>
     </div>
+
   </div>
 </section>

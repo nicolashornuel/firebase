@@ -18,10 +18,10 @@ export class NodeFilterComponent implements AfterViewInit, AudioNodeElement, Pad
     libelleX: "frequency",
     libelleY: "Q factor",
     isPersist: false,
-    currentPosition: { x: 0, y: PAD_MAX },
-    onEventStart: () => 
-      {this.filterNode.type = this.type;
-      this.connectNode()},
+    onEventStart: () => {
+      this.filterNode.type = this.type;
+      this.connectNode();
+    },
     onEventMove: (position: Position) => {
       const frequency = position.x / PAD_MAX * this.FREQUENCY_MAX;
       const q = this.Q_MAX * (PAD_MAX - (2 * position.y)) / PAD_MAX;;

@@ -8,12 +8,17 @@ export interface OscParam {
     type: OscillatorType;
     octave: number;
     sequence: { [key: string]: string[] };
-    eg: boolean,
-    amp: number,
+    eg: boolean;
+    amp: number;
     envParam: EnvParam;
-    modulation: number,
+    modulation: {
+      selected: string;
+      speed: number;
+      depth: number;
+    }
+    compressor: number;
     filter: {
       frequency: number, // 32, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000
-      q: number
+      Q: number
     }
   }

@@ -28,6 +28,11 @@
   justify-content: center;
   align-items: center;
 }
+.row-center-start {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
 .row-end-center {
   display: flex;
   justify-content: flex-end;
@@ -58,7 +63,7 @@
   justify-content: space-between;
   align-items: stretch;
 }
-
+// COL
 .col-center-center {
   display: flex;
   flex-direction: column;
@@ -88,6 +93,12 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
+}
+.col-end-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
 }
 
 .f-grow {

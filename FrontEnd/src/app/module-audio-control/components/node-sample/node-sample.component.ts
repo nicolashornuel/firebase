@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
+import { filter, map } from 'rxjs/operators';
 import { AbstractBpmComponent } from '../../abstracts/abstract-bpm.component';
 import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
-import { BehaviorSubject, interval, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-node-sample',
@@ -12,16 +11,17 @@ import { switchMap } from 'rxjs/operators';
 export class NodeSampleComponent extends AbstractBpmComponent implements AfterViewInit, AudioNodeElement {
   @Input('context') audioCtx: AudioContext;
   @Input('source') audioNode: GainNode;
-
+  
   public nameFile?: string;
   private bufferSource: AudioBufferSourceNode;
   private compressor: DynamicsCompressorNode;
   private enveloppe: GainNode;
   public sampleGain: GainNode;
   private backup: AudioBuffer;
-
-  sampleParam = {
-    file: "",
+  private biquad: BiquadFilterNode;
+  
+  param = {
+    file: 'assets/sample/BL_Kick14.wav',
     opened: true,
     muted: false,
     gain: 1,
@@ -33,111 +33,114 @@ export class NodeSampleComponent extends AbstractBpmComponent implements AfterVi
       release: 0.3,
       sustain: 0.9
     },
-    compressor: -24,    // threshold: [0 -100] -24 par défaut
-    playbackRate: 1,     // (pitch) [0 10]
-    modulation: 100,
+    compressor: -24, // threshold: [0 -100] -24 par défaut
+    playbackRate: 1, // (pitch) [0 10]
+    modulation: {
+      selected: 'none',
+      speed: 1, // [1-1000] ms
+      depth: 0 // [0-30]
+    },
     filter: {
       frequency: 440, // 32, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000
       q: 1.4
     }
   };
-
+  
   ngAfterViewInit(): void {
     this.initNode();
-    this.loadSample('assets/sample/BL_Kick14.wav');
+  }
+  
+  handleFileInput(event: any): void {
+    if (event.target.value) {
+      const file: File = event.target.files[0];
+      this.nameFile = file.name;
+      const reader = new FileReader();
+      reader.onload = evt => this.audioCtx.decodeAudioData(evt.target.result as ArrayBuffer, (buffer: AudioBuffer) => this.loop(buffer));
+      reader.readAsArrayBuffer(file);
+    }
   }
 
   initNode(): void {
-    this.sampleGain = new GainNode(this.audioCtx, { gain: this.sampleParam.gain });
+    this.sampleGain = new GainNode(this.audioCtx, { gain: this.param.gain });
     this.compressor = new DynamicsCompressorNode(this.audioCtx);
+    this.biquad = new BiquadFilterNode(this.audioCtx, { type: 'peaking' });
+    if (this.param.file) this.loadSample();
   }
 
   connectNode(): void {
     this.bufferSource = new AudioBufferSourceNode(this.audioCtx);
     this.enveloppe = new GainNode(this.audioCtx);
-    this.bufferSource.connect(this.compressor).connect(this.enveloppe).connect(this.sampleGain).connect(this.audioNode);
+    this.bufferSource
+      .connect(this.compressor)
+      .connect(this.enveloppe)
+      .connect(this.sampleGain)
+      .connect(this.biquad)
+      .connect(this.audioNode);
   }
 
-  async loadSample(url: string) {
-    this.nameFile = url;
-    const response = await fetch(url);
+  private async loadSample(): Promise<void> {
+    this.nameFile = this.param.file;
+    const response = await fetch(this.param.file);
     const buffer = await response.arrayBuffer();
     const sample = await this.audioCtx.decodeAudioData(buffer);
-    return this.loop(sample);
-  }
-
-  public handleFileInput(event: any): void {
-    if (event.target.value) {
-       const file: File = event.target.files[0];
-       this.nameFile = file.name;
-       const reader = new FileReader();
-       reader.onload = evt => this.bufferize(evt.target.result as ArrayBuffer);
-       reader.readAsArrayBuffer(file);
-    }
-  }
-
-  private bufferize(arrayBuffer: ArrayBuffer): void {
-    this.audioCtx.decodeAudioData(arrayBuffer, (buffer: AudioBuffer) => this.loop(buffer));
+    this.loop(sample);
   }
 
   private loop(buffer: AudioBuffer): void {
     this.backup = buffer;
-    this.modulation();
-    this.getCurrent$.subscribe(() => {
-      const index = this.sampleParam.sequence.findIndex(number => number === this.current);
-      if (index != -1 && !this.sampleParam.muted) this.playNote();
-    });
+    this.getModulation$.subscribe(counter => this.applyModulation(this.param.modulation.selected, counter));
+    this.getCurrent$
+      .pipe(
+        filter(() => !this.param.muted),
+        map(current => this.param.sequence.findIndex(number => number === current)),
+        filter(index => index != -1)
+      )
+      .subscribe(() => this.playNote());
   }
 
   private playNote(): void {
+    // BUFFER
     this.connectNode();
     this.bufferSource.start();
     this.bufferSource.buffer = this.backup;
+    this.bufferSource.playbackRate.value = this.param.playbackRate;    
+    // COMPRESSOR
+    this.compressor.threshold.value = this.param.compressor;
+    // FILTER
+    this.biquad.frequency.value = this.param.filter.frequency;
+    this.biquad.Q.value = this.param.filter.q;
+    // ENVELOPPE
     const time = this.audioCtx.currentTime;
-    this.bufferSource.playbackRate.value = this.sampleParam.playbackRate;
-    this.compressor.threshold.value = this.sampleParam.compressor;
-    
-    if (this.sampleParam.eg) {
+    if (this.param.eg) {
       this.enveloppe.gain.setValueAtTime(0, time);
-      this.enveloppe.gain.linearRampToValueAtTime(1, time + this.sampleParam.envParam.attack);
+      this.enveloppe.gain.linearRampToValueAtTime(1, time + this.param.envParam.attack);
       this.enveloppe.gain.linearRampToValueAtTime(
-        this.sampleParam.envParam.sustain,
-        time + this.duration - this.sampleParam.envParam.release
+        this.param.envParam.sustain,
+        time + this.duration - this.param.envParam.release
       );
       this.enveloppe.gain.linearRampToValueAtTime(0, time + this.duration);
-      this.bufferSource.stop(time + this.duration);
+      //this.bufferSource.stop(time + this.duration);
     } else {
-      //this.enveloppe.gain.linearRampToValueAtTime(1, time);
-        //this.enveloppe.gain.linearRampToValueAtTime(0, time + this.sampleParam.amp * this.duration);
-      this.bufferSource.stop(time + this.sampleParam.amp * this.duration);
+      this.enveloppe.gain.linearRampToValueAtTime(1, time);
+      this.enveloppe.gain.linearRampToValueAtTime(0, time + this.param.amp * this.duration);
+      //this.bufferSource.stop(time + this.param.amp * this.duration);
     }
   }
 
-
-  private modulation$: BehaviorSubject<number> = new BehaviorSubject<number>(100);
-
-  private modulation(): void {
-    const biquad = this.audioCtx.createBiquadFilter();
-    this.sampleGain.connect(biquad);
-    biquad.connect(this.audioNode);
-    biquad.type = 'peaking';
-    const time = this.audioCtx.currentTime;
-    this.getModulation$.pipe(
-      switchMap(modulation => interval(modulation))
-    ).subscribe(counter => {
-      biquad.frequency.value = this.sampleParam.filter.frequency;
-      biquad.Q.value = this.sampleParam.filter.q;
-      biquad.gain.linearRampToValueAtTime(counter % 2 === 0 ? 0 : 30, time);
-    })
+  private applyModulation(type: string, counter?: number): void {
+    switch (type) {
+      case 'none':
+        if (!this.param.muted && this.bufferSource) {
+          this.biquad.gain.value = 30;
+        } else {
+          this.biquad.gain.value = 0;
+        }
+        break;
+      case 'filter':
+        this.biquad.gain.linearRampToValueAtTime(counter % 2 === 0 ? (30 - this.param.modulation.depth) : 30, this.audioCtx.currentTime);
+        break;
+      default:
+        break;
+    }
   }
-
-  public setModulation$(): void {
-    this.modulation$.next(this.sampleParam.modulation);
-  }
-
-  public get getModulation$(): Observable<number> {
-    return this.modulation$.asObservable();
-  }
-  
-
 }

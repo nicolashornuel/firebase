@@ -1,6 +1,4 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { BehaviorSubject, Observable, interval } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { AbstractBpmComponent } from '../../abstracts/abstract-bpm.component';
 import { AudioNodeElement } from '../../interfaces/audioNodeElement.interface';
 import { gamme } from '../../models/gamme.constant';
@@ -15,101 +13,100 @@ export class NodeOscillatorComponent extends AbstractBpmComponent implements Aft
   @Input('context') audioCtx: AudioContext;
   @Input('source') audioNode: GainNode;
   oscillatorGain: GainNode;
+  biquad: BiquadFilterNode;
+  compressor: DynamicsCompressorNode;
+  oscillator: OscillatorNode;
+  private enveloppe: GainNode;
   oscillatorTypes: OscillatorType[] = ['sine', 'square', 'sawtooth', 'triangle'];
   octaves: number[] = [...Array(9).keys()];
 
-  oscParam: OscParam = {
+  param: OscParam = {
     opened: true,
-    muted: true,
-    gain: 0.1,
+    muted: false,
+    gain: 5,
     detune: 0,
     type: 'sine',
-    octave: 1,
+    octave: 3,
     sequence: {
-      0: ['do'],
-      4: ['do'],
-      8: ['do'],
-      12: ['re']
+      0: ['do']
     },
     eg: false,
-    amp: 4,
+    amp: 16,
     envParam: {
       attack: 0.1,
       release: 0.3,
       sustain: 0.9
     },
-    modulation: 100,
+    modulation: {
+      selected: 'none',
+      speed: 1, // [1-1000] ms
+      depth: 0 // [0-30]
+    },
+    compressor: -24,    // threshold: [0 -100] -24 par défaut
     filter: {
       frequency: 440, // 32, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000
-      q: 1.4
+      Q: 1.4
     }
   };
 
   ngAfterViewInit(): void {
     this.initNode();
-    this.connectNode();
   }
 
   initNode(): void {
-    this.oscillatorGain = new GainNode(this.audioCtx, { gain: this.oscParam.gain });
+    this.oscillatorGain = new GainNode(this.audioCtx, { gain: this.param.gain });
+    this.biquad = new BiquadFilterNode(this.audioCtx, { ...this.param.filter, type: 'peaking', gain: 0});
+    this.compressor = new DynamicsCompressorNode(this.audioCtx, { threshold: this.param.compressor });
+    this.oscillator = new OscillatorNode(this.audioCtx);
+    this.enveloppe = new GainNode(this.audioCtx);
+    this.getModulation$.subscribe(counter => this.applyModulation(this.param.modulation.selected, counter));
+    this.getCurrent$.subscribe(() => {
+      if (this.param.sequence[this.current] != undefined && !this.param.muted)
+        this.param.sequence[this.current].forEach((note: string) => this.playNote(note));
+    });
   }
 
   connectNode() {
-    this.modulation();
-    this.getCurrent$.subscribe(() => {
-      if (this.oscParam.sequence[this.current] != undefined && !this.oscParam.muted)
-        this.oscParam.sequence[this.current].forEach((note: string) => this.playNote(note));
-    });
+    this.oscillator = new OscillatorNode(this.audioCtx);
+    this.enveloppe = new GainNode(this.audioCtx);
+    this.oscillator.connect(this.compressor).connect(this.enveloppe).connect(this.oscillatorGain).connect(this.biquad).connect(this.audioNode);
   }
 
   private playNote(note: string): void {
     const time = this.audioCtx.currentTime;
-    const oscillator = new OscillatorNode(this.audioCtx);
-    const enveloppe = new GainNode(this.audioCtx);
-    oscillator.start();
-    oscillator.type = this.oscParam.type;
-    oscillator.frequency.value = gamme[note].frequencies[this.oscParam.octave];
-    oscillator.detune.value = this.oscParam.detune;
+    this.connectNode();
+    this.oscillator.start();
+    this.oscillator.type = this.param.type;
+    this.oscillator.detune.value = this.param.detune;
+    this.oscillator.frequency.value = gamme[note].frequencies[this.param.octave];
     // AMP EG - ENVELOPPE
-    oscillator.connect(enveloppe).connect(this.oscillatorGain);
-    if (this.oscParam.eg) {
-      enveloppe.gain.setValueAtTime(0, time);
-      enveloppe.gain.linearRampToValueAtTime(1, time + this.oscParam.envParam.attack);
-      enveloppe.gain.linearRampToValueAtTime(
-        this.oscParam.envParam.sustain,
-        time + this.duration - this.oscParam.envParam.release
+    if (this.param.eg) {
+      this.enveloppe.gain.setValueAtTime(0, time);
+      this.enveloppe.gain.linearRampToValueAtTime(1, time + this.param.envParam.attack);
+      this.enveloppe.gain.linearRampToValueAtTime(
+        this.param.envParam.sustain,
+        time + this.duration - this.param.envParam.release
       );
-      enveloppe.gain.linearRampToValueAtTime(0, time + this.duration);
-      oscillator.stop(time + this.duration);
+      this.enveloppe.gain.exponentialRampToValueAtTime(0.01, time + this.duration);
+      this.oscillator.stop(time + this.duration);
     } else {
-      //enveloppe.gain.linearRampToValueAtTime(1, time);
-      oscillator.stop(time + this.oscParam.amp * this.duration);
+      this.enveloppe.gain.linearRampToValueAtTime(1, time);
+      this.enveloppe.gain.exponentialRampToValueAtTime(0.01, time + this.param.amp * this.duration);
+      this.oscillator.stop(time + this.param.amp * this.duration);
     }
   }
 
-  private modulation$: BehaviorSubject<number> = new BehaviorSubject<number>(100);
-
-  private modulation(): void {
-    const biquad = this.audioCtx.createBiquadFilter();
-    this.oscillatorGain.connect(biquad);
-    biquad.connect(this.audioNode);
-    biquad.type = 'peaking';
-    const time = this.audioCtx.currentTime;
-    this.getModulation$.pipe(
-      switchMap(modulation => interval(modulation))
-    ).subscribe(counter => {
-      biquad.frequency.value = this.oscParam.filter.frequency;
-      biquad.Q.value = this.oscParam.filter.q;
-      biquad.gain.linearRampToValueAtTime(counter % 2 === 0 ? 0 : 30, time);
-    })
-  }
-
-  public setModulation$(): void {
-    this.modulation$.next(this.oscParam.modulation);
-  }
-
-  public get getModulation$(): Observable<number> {
-    return this.modulation$.asObservable();
+  private applyModulation(type: string, counter?: number): void {
+    switch (type) {
+      case 'none':
+        //this.biquad.gain.linearRampToValueAtTime(this.param.muted ? 0 : 30, this.audioCtx.currentTime);
+        break;
+      case 'filter':
+        this.biquad.gain.linearRampToValueAtTime(counter % 2 === 0 ? (30 - this.param.modulation.depth) : 30, this.audioCtx.currentTime);
+      break;
+      default:
+        break;
+    }
   }
 
 }

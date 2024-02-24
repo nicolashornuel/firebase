@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Selectable } from '../../models/input.interface';
 
 @Component({
   selector: 'app-control-select',
@@ -7,7 +6,7 @@ import { Selectable } from '../../models/input.interface';
   styleUrls: ['./control-select.component.scss']
 })
 export class ControlSelectComponent {
-  @Input() items: Selectable[];
-  @Input() selected: Selectable;
-  @Output() selectedChange = new EventEmitter<Selectable>();
+  @Input() items: string[];
+  @Input() selected: string;
+  @Output() selectedChange = new EventEmitter<string>();
 }

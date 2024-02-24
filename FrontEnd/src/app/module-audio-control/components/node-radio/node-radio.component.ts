@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { Selectable } from '../../models/input.interface';
 
 @Component({
   selector: 'app-node-radio',
@@ -7,30 +6,25 @@ import { Selectable } from '../../models/input.interface';
   styleUrls: ['./node-radio.component.scss']
 })
 export class NodeRadioComponent implements AfterViewInit {
-
   @Input('context') audioCtx: AudioContext;
   @Input('source') gainNode!: GainNode;
   @ViewChild('audio') audio: ElementRef;
   private source: MediaElementAudioSourceNode;
   public gainRadio: GainNode;
   public isPlaying: boolean = false;
-  public radioList: Selectable[] = [
-    {
-      label: 'Bassdrive',
-      value: 'http://chi.bassdrive.co/;stream/1'
-    },
-    {
-      label: 'Trancetechnique UK',
-      value: 'http://51.89.195.240:8034/stream'
-    }
-  ]
-  public radioSelected: Selectable = this.radioList[0];
+  public radioList: string[] = ['Bassdrive', 'Trancetechnique UK'];
+  public radioStream = {
+    'Bassdrive': 'http://chi.bassdrive.co/;stream/1',
+    'Trancetechnique UK': 'http://51.89.195.240:8034/stream'
+  };
+
+  public radioSelected: string = this.radioList[0];
 
   constructor() {}
 
   ngAfterViewInit(): void {
     this.initNode();
-    this.connectNode();  
+    this.connectNode();
   }
 
   initNode(): void {
