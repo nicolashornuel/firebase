@@ -6,7 +6,8 @@ import { TableComponent } from './components/table/table.component';
 const routes: Routes = [
   { path: 'table/:categorie', component: TableComponent },
   { path: 'list/:q', component: SearchListComponent },
-  { path: '', redirectTo: 'table/all', pathMatch: 'full' }
+  { path: 'equalizer', loadChildren: () => import('./module-audio-control/audio-control.module').then(m => m.AudioControlModule) },
+  { path: '', redirectTo: 'table/all', pathMatch: 'full' },
 ];
 
 @NgModule({

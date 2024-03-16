@@ -1,0 +1,70 @@
+<section class="center">
+
+
+
+  <mat-icon svgIcon="highpass"></mat-icon>
+  <mat-icon svgIcon="bandpass"></mat-icon>
+  <mat-icon svgIcon="lowpass"></mat-icon>
+  <mat-icon svgIcon="none"></mat-icon>
+
+  <app-audio-filter [source]="gainNode" [context]="audioCtx"></app-audio-filter>
+
+  <canvas #sineWave class="canvas"> </canvas>
+  <canvas #freqBars class="canvas"> </canvas>
+
+
+  <audio
+    #audio
+    src="http://chi.bassdrive.co/;stream/1"
+    preload="auto"
+    controls="true"
+    autoplay="true"
+    style="width: 200px; height: 30px"
+    crossorigin="anonymous"
+  ></audio>
+
+  <div *ngFor="let control of controls" class="col f-stretch">
+    <ng-container [ngSwitch]="control.type">
+      <ng-container
+        *ngSwitchCase="'number'"
+        [ngTemplateOutlet]="number"
+        [ngTemplateOutletContext]="{control: control}"
+      ></ng-container>
+      <ng-container
+        *ngSwitchCase="'select'"
+        [ngTemplateOutlet]="select"
+        [ngTemplateOutletContext]="{control: control}"
+      ></ng-container>
+    </ng-container>
+  </div>
+</mat-card>
+
+<ng-template #number let-control="control">
+  <div class="row-between-center">
+    <label id="example-name-label" class="example-name-label">{{ control.name }}</label>
+    <label class="example-value-label">{{ control.value }}</label>
+  </div>
+  <mat-slider
+    [disabled]="disabled"
+    [max]="control.max"
+    [min]="control.min"
+    [step]="control.step"
+    [discrete]="true"
+    [showTickMarks]="true"
+    [(ngModel)]="control.value"
+    (valueChange)="control.apply(control.value)"
+  >
+    <input matSliderThumb />
+  </mat-slider>
+</ng-template>
+
+<ng-template #select let-control="control">
+  <mat-form-field>
+    <mat-label>{{ control.name }}</mat-label>
+    <mat-select [(ngModel)]="control.value" (selectionChange)="control.apply(control.value)">
+      <mat-option *ngFor="let option of control.options" [value]="option">
+        {{ option }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</ng-template>

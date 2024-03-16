@@ -12,10 +12,7 @@ import { RssService } from 'src/app/services/rss.service';
 export class RssFluxComponent implements OnInit {
   private rssUrl: string[] = [
     'https://www.developpez.com/index/rss',
-    'https://www.leprogres.fr/rss',
-    'https://www.leprogres.fr/france-monde/rss',
-    'http://www.dna.fr/une-region/rss',
-    'http://www.ledauphine.com/actualite/a-la-une/rss'
+    'https://www.leprogres.fr/france-monde/rss'
   ];
   public rssThread: string = '';
   private counter: number = 0;

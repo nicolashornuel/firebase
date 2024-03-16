@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 
 import { MatSliderModule } from '@angular/material/slider';
 import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -27,7 +26,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDividerModule } from '@angular/material/divider';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { MatIconModule } from "@angular/material/icon";
+
 
 const MaterialComponents = [
   MatSliderModule,
@@ -57,7 +60,9 @@ const MaterialComponents = [
   MatCheckboxModule,
   MatSlideToggleModule,
   MatDividerModule,
-  DragDropModule
+  DragDropModule,
+  MatFormFieldModule,
+  MatButtonToggleModule
 ];
 
 @NgModule({

@@ -22,6 +22,9 @@ import { APP_INITIALIZER } from '@angular/core';
 import { PreferenceService } from './services/preference.service';
 import { AudioElementComponent } from './components/audio-element/audio-element.component';
 import { IframeTrackerDirective } from './directives/iframe-tracker.directive';
+import { IconSvgRegistryService } from './services/icon-svg-registry.service';
+import { AudioControlModule } from './module-audio-control/audio-control.module';
+import { PageAudioControlComponent } from './module-audio-control/page/page-audio-control.component';
 
 export function initializeApp(pref: PreferenceService) {
   return (): Promise<any> => { 
@@ -53,12 +56,13 @@ export function initializeApp(pref: PreferenceService) {
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    GraphQLModule
+    GraphQLModule,
+    AudioControlModule
   ],
   providers: [{
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [PreferenceService],
+      deps: [PreferenceService, IconSvgRegistryService],
       multi: true
     }],
   bootstrap: [AppComponent]
