@@ -1,7 +1,7 @@
 /functions/resources
 *.DS_Store
 /functions/.DS_Store
-/e2e
+e2e
 /node_modules
 /src/environments/environment.prod.ts
 /dist
