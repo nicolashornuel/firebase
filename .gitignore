@@ -1,11 +1,10 @@
 /functions/resources
 *.DS_Store
 /functions/.DS_Store
-/FrontEnd/e2e
-/FrontEnd/node_modules
-/BackEnd
-/FrontEnd/src/environments/environment.prod.ts
-/FrontEnd/dist
+/e2e
+/node_modules
+/src/environments/environment.prod.ts
+/dist
 
 # Logs
 logs
